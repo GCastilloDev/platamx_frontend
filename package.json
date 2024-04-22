@@ -8,7 +8,7 @@
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
-    "build": "quasar build",
+    "build": "npx quasar build -m ssr",
     "start": "cd dist/ssr; npm i; npm start"
   },
   "dependencies": {
