@@ -16,6 +16,12 @@
       </button>
     </div>
   </section>
+
+  <section class="hero__images">
+    <img src="../assets/images/hero_1.jpg" alt="" />
+    <img src="../assets/images/hero_2.jpg" alt="" />
+    <img src="../assets/images/hero_3.jpg" alt="" />
+  </section>
 </template>
 
 <script>
@@ -25,6 +31,22 @@ export default {};
 <style lang="scss" scoped>
 .hero__container {
   padding: 80px 60px 0px 60px;
+}
+
+.hero__images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 512px;
+  grid-gap: 15px;
+  position: relative;
+  margin-top: 35px;
+  // clip-path: circle(50% at 0 0px);
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .hero__signature,
