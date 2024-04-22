@@ -93,14 +93,14 @@ const menu = [
 
 .header-action {
   display: grid;
-  grid-template-columns: 2fr 12fr 1fr;
+  grid-template-columns: 3fr 10fr 3fr;
   align-items: end;
   padding: 0px 50px 0px 50px;
   margin-top: 15px;
 }
 
 .header-action__logo {
-  width: 257px;
+  width: 230px;
 }
 
 .header-action__search {
@@ -124,7 +124,7 @@ const menu = [
   display: flex;
   justify-content: center;
   gap: 4px;
-  padding-bottom: 10px;
+  padding-bottom: 3px;
   border-bottom: 1px solid #e8e9ef;
 }
 
