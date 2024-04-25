@@ -10,7 +10,8 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "npx quasar build -m ssr",
-    "start": "cd dist/ssr; npm i; npm start"
+    "start": "cd dist/ssr; npm i; npm start",
+    "prestart": "sed -i '/\"type\": \"module\",/d' node_modules/lowlight/package.json && sed -i '/\"type\": \"module\",/d' node_modules/@tiptap/extension-code-block-lowlight/package.json"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
