@@ -11,7 +11,7 @@
     "dev": "quasar dev",
     "build": "npx quasar build -m ssr",
     "start": "cd dist/ssr; npm i; npm start",
-    "prestart": "sed -i '/\"type\": \"module\",/d' swiper/swiper-vue.mjs"
+    "prestart": "sed -i '/\"type\": \"module\",/d' /app/dist/ssr/node_modules/swiper/swiper-vue.mjs"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
