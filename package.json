@@ -6,11 +6,10 @@
   "productDescription": "Página de venta Plata MX",
   "author": "GCN",
   "private": true,
-  "type": "module",
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
-    "build": "npx quasar build -m ssr",
+    "build": "npx quasar build",
     "start": "cd dist/ssr; npm i; npm start"
   },
   "dependencies": {
