@@ -27,11 +27,12 @@
 </template>
 
 <script setup lang="ts">
+// import "swipper/swipper.css";
+
 import { Swiper, SwiperSlide } from "swiper/vue";
 import ProductCard from "./ProductCard.vue";
 
-import "swiper/css";
-import "swiper/css/autoplay";
+// import "swiper/swiper.css";
 </script>
 
 <style scoped>
