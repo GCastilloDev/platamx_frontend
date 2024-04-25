@@ -6,12 +6,12 @@
   "productDescription": "Página de venta Plata MX",
   "author": "GCN",
   "private": true,
+  "type": "module",
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "npx quasar build -m ssr",
-    "start": "cd dist/ssr; npm i; npm start",
-    "prestart:test:webserver": "sed -i '/\"type\": \"module\",/d' /app/dist/ssr/node_modules/swiper/swiper-vue.mjs"
+    "start": "cd dist/ssr; npm i; npm start"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
