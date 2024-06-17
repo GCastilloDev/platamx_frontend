@@ -9,14 +9,13 @@
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
-    "build": "npx quasar build",
+    "build": "npx quasar build -m ssr",
     "start": "cd dist/ssr; npm i; npm start"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
     "axios": "^1.2.1",
     "quasar": "^2.8.0",
-    "swiper": "^11.1.1",
     "vue": "^3.4.18",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.0.12"

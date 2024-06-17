@@ -11,28 +11,12 @@
       <div class="top-products__menu--item"><span>Rosarios</span></div>
     </section>
 
-    <swiper
-      class="top-products__carrousel"
-      :slides-per-view="4.5"
-      space-between="0"
-      navigation
-      :grab-cursor="true"
-      loop
-    >
-      <swiper-slide v-for="i in 10">
-        <ProductCard />
-      </swiper-slide>
-    </swiper>
+    <ProductCard />
   </section>
 </template>
 
 <script setup lang="ts">
-// import "swipper/swipper.css";
-
-import { Swiper, SwiperSlide } from "swiper/vue";
-import ProductCard from "./ProductCard.vue";
-
-// import "swiper/swiper.css";
+import ProductCard from "../components/ProductCard.vue";
 </script>
 
 <style scoped>
