@@ -11,7 +11,11 @@
       <div class="top-products__menu--item"><span>Rosarios</span></div>
     </section>
 
-    <ProductCard />
+    <section class="top-products__container-card">
+      <section class="top-products__container-card-carrusell">
+        <ProductCard v-for="i in 10" />
+      </section>
+    </section>
   </section>
 </template>
 
@@ -20,6 +24,18 @@ import ProductCard from "../components/ProductCard.vue";
 </script>
 
 <style scoped>
+.top-products__container-card {
+  margin-top: 30px;
+  padding-right: 60px;
+  padding-left: 60px;
+}
+
+.top-products__container-card-carrusell {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  overflow: auto;
+}
 .top-products__container {
   margin-top: 70px;
 }
