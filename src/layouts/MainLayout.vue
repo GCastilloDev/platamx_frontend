@@ -41,6 +41,28 @@
       <router-view />
     </q-page-container>
   </q-layout>
+
+  <section class="footer__container">
+    <div>
+      <p class="footer__title">Contacto</p>
+      <p class="footer__list">800 202 8283</p>
+      <p class="footer__list">clientes@plata.mx</p>
+      <p class="footer__list">
+        Camelia 2550-2560, Moderna, 64530 Monterrey, N.L
+      </p>
+    </div>
+    <div>
+      <p class="footer__title">Contacto</p>
+      <p class="footer__list">Dijes de zirconia para mujer</p>
+      <p class="footer__list">Cadenas de plata</p>
+      <p class="footer__list">Anillos de promesa</p>
+      <p class="footer__list">Esclavas</p>
+      <p class="footer__list">Rosarios</p>
+    </div>
+    <div>
+      <p class="footer__title">Siguenos en:</p>
+    </div>
+  </section>
 </template>
 
 <script lang="ts" setup>
@@ -135,5 +157,39 @@ const menu = [
   font-weight: 400;
   color: #2d2e36;
   letter-spacing: 1px;
+}
+
+.footer__container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 70px;
+  padding-bottom: 70px;
+  background-color: #222222;
+}
+
+.footer__container > div {
+  width: 25%;
+}
+
+.footer__title {
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 36px;
+  color: #f4f4f4;
+}
+
+.footer__list {
+  font-family: "Switzer-Variable", serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 27.72px;
+  color: #a7a7a7;
+  margin: 0;
+  padding: 0;
 }
 </style>
