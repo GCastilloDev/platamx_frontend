@@ -43,9 +43,9 @@ const loading = ref(true);
 async function getProductsByCollection(collectionID: number) {
   try {
     loading.value = true;
+    productsByCollection.value = [null, null, null];
     const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products?page=1&items=10&collestionsIds=${collectionID}`;
     const { data: response } = await axios.get(url);
-    productsByCollection.value = [];
     productsByCollection.value = response.data;
     loading.value = false;
   } catch (error) {
