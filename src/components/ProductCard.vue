@@ -1,21 +1,70 @@
 <template>
   <div class="product-card__container">
+    <q-card flat style="max-height: 100%" v-if="loading">
+      <q-skeleton height="360px" square animation="fade" />
+
+      <q-card-section>
+        <q-skeleton type="text" class="text-subtitle2" animation="fade" />
+        <q-skeleton
+          type="text"
+          width="50%"
+          class="text-subtitle2"
+          animation="fade"
+        />
+      </q-card-section>
+    </q-card>
     <img
       class="product-card__image"
-      src="../assets/images/Imagen de producto 04 652 x 630.jpg"
+      :src="defineImage(props.product)"
       alt=""
+      v-if="!loading"
     />
-    <section class="product-card__description">
-      <p class="product-card__price">999.00 MXN</p>
-      <p class="product-card__title">
-        Solitario De Oro Amarillo Estilo mexicanos nacionaleis
+
+    <section class="product-card__description" v-if="!loading">
+      <p class="product-card__price">
+        {{ converToCurrency(props.product.price) }}
       </p>
-      <p class="product-card__subtitle">14K Con 20Pts De Diamante (Si) (H)</p>
+      <p class="product-card__title">
+        {{ props.product.name }}
+      </p>
+      <p class="product-card__subtitle">{{ props.product.description }}</p>
     </section>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const props = defineProps<{
+  loading: boolean;
+  product: {
+    name: string;
+    description: string;
+    price: string;
+    images?: [
+      {
+        url?: string;
+      }
+    ];
+  };
+}>();
+
+function converToCurrency(price) {
+  return new Intl.NumberFormat("es-MX", {
+    style: "currency",
+    currency: "MXN",
+    currencyDisplay: "code",
+  }).format(price);
+}
+
+function defineImage(product) {
+  const image =
+    "https://res.cloudinary.com/dhils8jyq/image/upload/v1725562192/plata_generico_on9yy1.jpg";
+  console.log(product);
+
+  if (product.images.length > 0) return product.images[0].url;
+
+  return image;
+}
+</script>
 
 <style scoped>
 .product-card__container {
@@ -47,10 +96,10 @@
   color: #2d2e36;
 }
 
-.product-card__price::before {
+/* .product-card__price::before {
   content: "$";
   margin-right: 7px;
-}
+} */
 
 .product-card__title {
   padding: 0;

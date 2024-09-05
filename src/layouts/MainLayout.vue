@@ -66,35 +66,41 @@
 </template>
 
 <script lang="ts" setup>
+import axios from "axios";
+import { ref } from "vue";
+
 import ShopBag from "../components/icons/ShopBag.vue";
 import Account from "../components/icons/Account.vue";
 
-const menu = [
+const menu = ref([
   {
+    id: 0,
     title: "Inicio",
     expand: false,
   },
-  {
-    title: "Anillos",
-    expand: true,
-  },
-  {
-    title: "Cadenas",
-    expand: true,
-  },
-  {
-    title: "Esclavas",
-    expand: true,
-  },
-  {
-    title: "Dijes de Zirconia",
-    expand: true,
-  },
-  {
-    title: "Rosarios",
-    expand: true,
-  },
-];
+]);
+
+async function getCollections() {
+  try {
+    const url =
+      "https://platamx-backend-98b7dd1a72e1.herokuapp.com/collections?page=1&items=25";
+    const { data: response } = await axios.get(url);
+
+    response.data.forEach((e: any) => {
+      const item = {
+        id: e.id,
+        title: e.name,
+        expand: false,
+      };
+
+      menu.value.push(item);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+getCollections();
 </script>
 
 <style>

@@ -2,25 +2,98 @@
   <section class="top-products__container">
     <h2 class="top-products__title">Los mejores accesorios</h2>
     <section class="top-products__menu">
-      <div class="top-products__menu--item menu--item__selected">
-        <span>Dijes de Zirconia</span>
+      <div
+        v-for="(collection, index) in collections"
+        class="top-products__menu--item"
+        :class="{ 'menu--item__selected': collection.selected }"
+        @click="changeCollection(index)"
+      >
+        <span>{{ collection.title }}</span>
       </div>
-      <div class="top-products__menu--item"><span>Cadenas</span></div>
-      <div class="top-products__menu--item"><span>Anillos</span></div>
-      <div class="top-products__menu--item"><span>Esclavas</span></div>
-      <div class="top-products__menu--item"><span>Rosarios</span></div>
     </section>
-
     <section class="top-products__container-card">
       <section class="top-products__container-card-carrusell">
-        <ProductCard v-for="i in 10" />
+        <!-- <ProductCard v-for="i in 10" /> -->
+        <ProductCard
+          v-for="product in productsByCollection"
+          :product="product"
+          :loading="loading"
+        />
       </section>
     </section>
   </section>
 </template>
 
 <script setup lang="ts">
+import axios from "axios";
+import { ref } from "vue";
+
 import ProductCard from "../components/ProductCard.vue";
+
+type collection = {
+  id: number;
+  title: string;
+  selected: boolean;
+};
+
+const collections = ref<collection[]>([]);
+const productsByCollection = ref([]);
+const loading = ref(true);
+
+async function getProductsByCollection(collectionID: number) {
+  try {
+    loading.value = true;
+    const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products?page=1&items=10&collestionsIds=${collectionID}`;
+    const { data: response } = await axios.get(url);
+    productsByCollection.value = [];
+    productsByCollection.value = response.data;
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getCollections() {
+  try {
+    const url =
+      "https://platamx-backend-98b7dd1a72e1.herokuapp.com/collections?page=1&items=25";
+    const { data: response } = await axios.get(url);
+
+    response.data.forEach((e: any) => {
+      const item = {
+        id: e.id,
+        title: e.name,
+        selected: false,
+      };
+
+      collections.value.push(item);
+    });
+
+    collections.value = collections.value.slice(0, 5);
+    collections.value[0].selected = true;
+    const collectionID = collections.value[0].id;
+    getProductsByCollection(collectionID);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function changeCollection(index: number) {
+  try {
+    if (collections.value[index].selected) return;
+    const indexSelected = collections.value.findIndex((e) => e.selected);
+    const productCollectionID = collections.value[index].id;
+
+    collections.value[indexSelected].selected = false;
+    collections.value[index].selected = true;
+
+    await getProductsByCollection(productCollectionID);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+getCollections();
 </script>
 
 <style scoped>
