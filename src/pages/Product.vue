@@ -39,12 +39,31 @@
 
   <section v-if="!loading" class="product__container">
     <div class="product__section">
-      <q-carousel swipeable animated v-model="slide" thumbnails infinite>
+      <q-carousel
+        swipeable
+        animated
+        v-model="slide"
+        thumbnails
+        infinite
+        v-model:fullscreen="fullscreen"
+      >
         <q-carousel-slide
           v-for="image in product.images"
           :name="image.file_name"
           :img-src="image.url"
         />
+
+        <template v-slot:control>
+          <q-carousel-control position="bottom-right" :offset="[18, 18]">
+            <q-btn
+              class="btn__zoom"
+              round
+              dense
+              :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
+              @click="fullscreen = !fullscreen"
+            />
+          </q-carousel-control>
+        </template>
         <!-- <q-carousel-slide
           :name="2"
           img-src="../assets/images/Imagen de producto 04 652 x 630.jpg"
@@ -104,6 +123,7 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 const loading = ref(true);
+const fullscreen = ref(false);
 const product = ref({
   collections: [{ description: "Colección de dijes", id: 2, name: "Anillos" }],
   name: "Arracadas Huggies",
@@ -124,6 +144,7 @@ const product = ref({
     },
   ],
 });
+
 const slide = ref("87_vuknuc");
 
 async function getProduct() {
@@ -280,5 +301,16 @@ getProduct();
   margin-top: 15px;
   padding-top: 15px;
   padding-bottom: 15px;
+}
+
+.q-carousel__slide {
+  background-color: #0a0a0a;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.btn__zoom {
+  background-color: #2f3033;
+  color: #ffffff;
 }
 </style>
