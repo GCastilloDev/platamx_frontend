@@ -63,6 +63,8 @@ function defineImage(product) {
   const image =
     "https://res.cloudinary.com/dhils8jyq/image/upload/v1725562192/plata_generico_on9yy1.jpg";
 
+  console.log(product);
+
   if (product.images.length > 0) return product.images[0].url;
 
   return image;

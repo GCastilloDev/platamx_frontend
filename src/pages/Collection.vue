@@ -16,6 +16,18 @@
       </div>
       <p v-if="!loading && products.length == 0">Sin productos</p>
     </div>
+    <div v-if="isNext" class="text-center" style="margin-top: 25px">
+      <q-btn
+        class="btn__more"
+        @click="chargeMoreProducts()"
+        unelevated
+        rounded
+        no-caps
+        :loading="loadingBtn"
+        size="lg"
+        label="Cargar más"
+      />
+    </div>
   </section>
 </template>
 
@@ -29,8 +41,13 @@ const route = useRoute();
 const loading = ref(true);
 const products = ref([null, null, null]);
 const collection = ref("");
+const isNext = ref(false);
+const loadingBtn = ref(false);
+let page = ref(1);
 
 function init() {
+  page.value = 1;
+  isNext.value = false;
   collection.value = route.params.name;
   loading.value = true;
   products.value = [null, null, null];
@@ -38,23 +55,41 @@ function init() {
   getProductsByCollection(idCollection);
 }
 
-async function getProductsByCollection(idCollection) {
+async function chargeMoreProducts() {
   try {
-    const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products?page=1&items=10&collestionsIds=${idCollection}`;
+    const idCollection = route.params.id;
+    loadingBtn.value = true;
+    page.value += 1;
+    const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products?page=${page.value}&items=8&collestionsIds=${idCollection}`;
     const { data: response } = await axios.get(url);
-    products.value = response.data;
+
+    response.data.forEach((e) => {
+      products.value.push(e);
+    });
     loading.value = false;
+    isNext.value = response.pagination.next;
+    loadingBtn.value = false;
   } catch (error) {
     console.log(error);
   }
 }
-// onBeforeRouteUpdate(async (to, from) => {
-//   init();
-// });
+
+async function getProductsByCollection(idCollection) {
+  try {
+    const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products?page=${page.value}&items=8&collestionsIds=${idCollection}`;
+    const { data: response } = await axios.get(url);
+    products.value = response.data;
+    loading.value = false;
+    isNext.value = response.pagination.next;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 watch(
   () => route.params.id,
   (newId, oldId) => {
+    console.log("ENTREEEE");
     init();
   }
 );
@@ -89,5 +124,19 @@ init();
 
 .search__result_item {
   margin-bottom: 20px;
+}
+
+.btn__more {
+  font-family: "Switzer-Variable", serif;
+  font-weight: 600;
+  font-size: 64px;
+  text-align: center;
+  width: 260px;
+  height: 50px;
+  border-radius: 360px;
+  padding: 2px 16px;
+  background-color: #2f3033;
+  color: white;
+  letter-spacing: 1px;
 }
 </style>
