@@ -7,12 +7,14 @@
     </section>
 
     <section class="header-action">
-      <img
-        class="header-action__logo"
-        src="../assets/images/plata_mx_logo.png"
-        alt=""
-        srcset=""
-      />
+      <router-link :to="{ name: 'home' }">
+        <img
+          class="header-action__logo"
+          src="../assets/images/plata_mx_logo.png"
+          alt=""
+          srcset=""
+        />
+      </router-link>
       <div class="header-action__search">
         <q-input
           class="header-action__search--input"
@@ -31,7 +33,11 @@
     </section>
 
     <section class="menu__container">
-      <span class="menu__item" v-for="item in menu">
+      <span
+        class="menu__item"
+        v-for="(item, index) in menu"
+        @click="goToSection(index)"
+      >
         {{ item.title }}
         <q-icon v-if="item.expand" name="expand_more"></q-icon>
       </span>
@@ -68,17 +74,39 @@
 <script lang="ts" setup>
 import axios from "axios";
 import { ref } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 import ShopBag from "../components/icons/ShopBag.vue";
 import Account from "../components/icons/Account.vue";
 
+const router = useRouter();
 const menu = ref([
   {
-    id: 0,
+    id: -1,
     title: "Inicio",
     expand: false,
   },
 ]);
+
+function goToSection(index: number) {
+  const idSection = menu.value[index].id;
+  const nameSection = menu.value[index].title;
+
+  if (idSection != -1) {
+    router.push({
+      name: "collection",
+      params: {
+        id: idSection,
+        name: nameSection,
+      },
+    });
+    return;
+  }
+
+  router.push({
+    name: "home",
+  });
+}
 
 async function getCollections() {
   try {
@@ -163,6 +191,7 @@ getCollections();
   font-weight: 400;
   color: #2d2e36;
   letter-spacing: 1px;
+  cursor: pointer;
 }
 
 .footer__container {

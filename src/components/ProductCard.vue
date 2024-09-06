@@ -1,5 +1,5 @@
 <template>
-  <div class="product-card__container">
+  <div class="product-card__container" @click="goToProduct()">
     <q-card flat style="max-height: 100%" v-if="loading">
       <q-skeleton height="360px" square animation="fade" />
 
@@ -33,9 +33,13 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter, useRoute } from "vue-router";
+
+const router = useRouter();
 const props = defineProps<{
   loading: boolean;
   product: {
+    id: number;
     name: string;
     description: string;
     price: string;
@@ -58,11 +62,20 @@ function converToCurrency(price) {
 function defineImage(product) {
   const image =
     "https://res.cloudinary.com/dhils8jyq/image/upload/v1725562192/plata_generico_on9yy1.jpg";
-  console.log(product);
 
   if (product.images.length > 0) return product.images[0].url;
 
   return image;
+}
+
+function goToProduct() {
+  const id = props.product.id;
+  router.push({
+    name: "product",
+    params: {
+      id,
+    },
+  });
 }
 </script>
 
@@ -72,6 +85,7 @@ function defineImage(product) {
   width: 288px;
   border-radius: 8px;
   border: 1px solid #e3e4eb;
+  cursor: pointer;
 }
 
 .product-card__description {

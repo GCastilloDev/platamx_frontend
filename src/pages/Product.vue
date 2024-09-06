@@ -1,19 +1,51 @@
 <template>
-  <section class="product__container">
-    <!-- <div class="product__section">
-      <img
-        class="product-card__image"
-        src="../assets/images/Imagen de producto 04 652 x 630.jpg"
-        alt=""
-      />
-    </div> -->
+  <div
+    v-if="loading"
+    style="margin-top: 50px; padding-left: 60px; padding-right: 60px"
+  >
+    <q-card flat class="row">
+      <q-skeleton height="250px" square class="col-6" />
+
+      <q-card-section class="col-6">
+        <q-skeleton
+          animation="fade"
+          type="QBadge"
+          style="margin-bottom: 10px"
+        />
+        <q-skeleton animation="fade" type="rect" class="text-subtitle1" />
+        <q-skeleton animation="fade" type="QBadge" style="margin-top: 10px" />
+        <q-skeleton
+          animation="fade"
+          type="QChip"
+          width="250px"
+          height="40px"
+          style="margin-top: 10px"
+        />
+        <q-skeleton
+          type="text"
+          class="text-subtitle2"
+          animation="fade"
+          style="margin-top: 10px"
+        />
+        <q-skeleton
+          type="text"
+          width="50%"
+          class="text-subtitle2"
+          animation="fade"
+        />
+      </q-card-section>
+    </q-card>
+  </div>
+
+  <section v-if="!loading" class="product__container">
     <div class="product__section">
       <q-carousel swipeable animated v-model="slide" thumbnails infinite>
         <q-carousel-slide
-          :name="1"
-          img-src="../assets/images/Imagen de producto 03 652 x 630.jpg"
+          v-for="image in product.images"
+          :name="image.file_name"
+          :img-src="image.url"
         />
-        <q-carousel-slide
+        <!-- <q-carousel-slide
           :name="2"
           img-src="../assets/images/Imagen de producto 04 652 x 630.jpg"
         />
@@ -24,21 +56,32 @@
         <q-carousel-slide
           :name="4"
           img-src="../assets/images/Imagen de producto 08 652 x 632.jpg"
-        />
+        /> -->
       </q-carousel>
     </div>
     <div class="product__section">
-      <div class="product__tag">Anillos</div>
-      <h2 class="product__title">Arracadas Huggies</h2>
-      <p class="product__price">$8,599.00 MXN</p>
-      <p class="product__subtitle">Tamaño</p>
-      <div class="product__size-container">
-        <a class="product__size product__size_active" href="#">8</a>
-        <a class="product__size" href="#">9</a>
-        <a class="product__size product__size_disabled" href="#">10</a>
-        <a class="product__size" href="#">11</a>
-        <a class="product__size" href="#">12</a>
-      </div>
+      <div class="product__tag">{{ product.collections[0].name }}</div>
+      <h2 class="product__title">{{ product.name }}</h2>
+      <p class="product__price">
+        {{
+          new Intl.NumberFormat("es-MX", {
+            style: "currency",
+            currency: "MXN",
+            currencyDisplay: "code",
+          }).format(product.price)
+        }}
+      </p>
+
+      <section v-if="product.variants.length > 0">
+        <p class="product__subtitle">Tamaño</p>
+        <div class="product__size-container">
+          <a class="product__size product__size_active" href="#">8</a>
+          <a class="product__size" href="#">9</a>
+          <a class="product__size product__size_disabled" href="#">10</a>
+          <a class="product__size" href="#">11</a>
+          <a class="product__size" href="#">12</a>
+        </div>
+      </section>
       <!-- <p>Conoce tu talla</p> -->
       <a href="#" class="product__btn">
         <span>Añadir al carrito</span>
@@ -47,11 +90,7 @@
       <div class="product__description">
         <h3 class="product__subtitle">Detalle del producto</h3>
         <p class="product__text">
-          Arracadas de plata 14k con zirconias Las arracadas siempre serán unas
-          excelentes aliadas de las mujeres. No importa si el maquillaje es
-          escaso o no se llevan más accesorios. Cuando las arracadas están
-          presentes, el rostro de cualquier dama adquiere brillo y glamour.
-          Adquiere estas arracadas de oro blanco y vístete para triunfar.
+          {{ product.description }}
         </p>
       </div>
     </div>
@@ -60,8 +99,56 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import axios from "axios";
+import { useRoute } from "vue-router";
 
-const slide = ref(1);
+const route = useRoute();
+const loading = ref(true);
+const product = ref({
+  collections: [{ description: "Colección de dijes", id: 2, name: "Anillos" }],
+  name: "Arracadas Huggies",
+  price: "8599",
+  variants: [],
+  description:
+    "Arracadas de plata 14k con zirconias Las arracadas siempre serán unas excelentes aliadas de las mujeres. No importa si el maquillaje es escaso o no se llevan más accesorios. Cuando las arracadas están presentes, el rostro de cualquier dama adquiere brillo y glamour. Adquiere estas arracadas de oro blanco y vístete para triunfar.",
+  images: [
+    {
+      id: 58,
+      file_name: "87_vuknuc",
+      url: "http://res.cloudinary.com/dhils8jyq/image/upload/v1725327519/87_vuknuc.jpg",
+    },
+    {
+      id: 59,
+      file_name: "86_qlwdgo",
+      url: "http://res.cloudinary.com/dhils8jyq/image/upload/v1725327519/86_qlwdgo.jpg",
+    },
+  ],
+});
+const slide = ref("87_vuknuc");
+
+async function getProduct() {
+  try {
+    loading.value = true;
+    const idProduct = route.params.id;
+    const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products/${idProduct}`;
+
+    const { data: response } = await axios.get(url);
+    if (response.data.images.length === 0) {
+      response.data.images.push({
+        id: 0,
+        file_name: "default",
+        url: "https://res.cloudinary.com/dhils8jyq/image/upload/v1725562192/plata_generico_on9yy1.jpg",
+      });
+    }
+    slide.value = response.data.images[0].file_name;
+    product.value = response.data;
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+getProduct();
 </script>
 
 <style scoped>
