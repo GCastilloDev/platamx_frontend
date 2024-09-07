@@ -17,12 +17,20 @@
       </router-link>
       <div class="header-action__search">
         <q-input
+          :ref="(el) => (prueba['prueba'] = el)"
+          v-model:model-value="searchQ"
           class="header-action__search--input"
           standout
           label="Buscar en toda la tienda"
+          @keyup.enter="search()"
         >
           <template v-slot:append>
-            <q-icon name="search" color="#2f3033" />
+            <q-icon
+              style="cursor: pointer"
+              name="search"
+              color="#2f3033"
+              @click="search()"
+            />
           </template>
         </q-input>
       </div>
@@ -79,6 +87,9 @@ import { useRouter, useRoute } from "vue-router";
 import ShopBag from "../components/icons/ShopBag.vue";
 import Account from "../components/icons/Account.vue";
 
+const searchQ = ref("");
+const prueba = ref({});
+
 const router = useRouter();
 const menu = ref([
   {
@@ -126,6 +137,20 @@ async function getCollections() {
   } catch (error) {
     console.log(error);
   }
+}
+
+function search() {
+  console.log("entre");
+
+  router.push({
+    name: "search",
+    query: {
+      q: searchQ.value,
+    },
+  });
+
+  searchQ.value = "";
+  prueba.value.prueba.blur();
 }
 
 getCollections();

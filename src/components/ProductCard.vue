@@ -96,9 +96,10 @@ function goToProduct() {
   padding-top: 15px;
 }
 .product-card__image {
+  background-color: #0a0a0a;
   width: 100%;
   height: 360px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 8px 8px 0 0;
 }
 

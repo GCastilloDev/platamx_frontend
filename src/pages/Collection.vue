@@ -89,7 +89,6 @@ async function getProductsByCollection(idCollection) {
 watch(
   () => route.params.id,
   (newId, oldId) => {
-    console.log("ENTREEEE");
     init();
   }
 );
