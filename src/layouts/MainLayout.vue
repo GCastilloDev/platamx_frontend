@@ -104,7 +104,7 @@
           </q-card-section>
         </q-form>
 
-        <q-card-actions align="center">
+        <q-card-actions align="center" style="margin-top: 10px">
           <span class="login__button" @click="loginValidate" ref="loginButton">
             <span v-if="!loading">Iniciar Sesión</span>
             <q-spinner-tail v-if="loading" color="white" size="2em" />

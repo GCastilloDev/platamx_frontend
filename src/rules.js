@@ -10,7 +10,8 @@ const validationRules = () => ({
     (v) =>
       /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/.test(
         v
-      ) || "Contraseña con formato incorrecto",
+      ) ||
+      "Contraseña con formato incorrecto, la contraseña debe ser de almenos 8 caracteres, incluyendo al menos un numero, mayuscula, minuscula y un caracter especial",
   ],
   confirmPassword: (password) => {
     return [
@@ -19,7 +20,8 @@ const validationRules = () => ({
       (v) =>
         /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/.test(
           v
-        ) || "Contraseña con formato incorrecto",
+        ) ||
+        "Contraseña con formato incorrecto, la contraseña debe ser de almenos 8 caracteres, incluyendo al menos un numero, mayuscula, minuscula y un caracter especial",
     ];
   },
   required: [(v) => !!v || "Campo requerido"],
