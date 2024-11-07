@@ -224,10 +224,15 @@
   <section class="footer__container">
     <div>
       <p class="footer__title">Contacto</p>
-      <p class="footer__list">800 202 8283</p>
-      <p class="footer__list">clientes@plata.mx</p>
       <p class="footer__list">
-        Camelia 2550-2560, Moderna, 64530 Monterrey, N.L
+        <phone class="icon__info" />
+        <a href="https://wa.link/zydit9" target="”_blank”"> +52 81 1079 0972</a>
+      </p>
+      <p class="footer__list">
+        <email class="icon__info" />
+        <a href="mailto:platam_mx0925@hotmail.com" target="”_blank”">
+          platam_mx0925@hotmail.com</a
+        >
       </p>
     </div>
     <div>
@@ -240,6 +245,15 @@
     </div>
     <div>
       <p class="footer__title">Siguenos en:</p>
+      <a href="https://www.facebook.com/PLATAMX21MX" target="”_blank”">
+        <facebook
+      /></a>
+      <a href="https://www.instagram.com/platamx.925" target="”_blank”">
+        <instagram
+      /></a>
+      <a href="https://www.tiktok.com/@platamx925" target="”_blank”">
+        <tiktok
+      /></a>
     </div>
   </section>
 </template>
@@ -254,6 +268,11 @@ import validationRules from "../rules";
 
 import ShopBag from "../components/icons/ShopBag.vue";
 import Account from "../components/icons/Account.vue";
+import Facebook from "../components/icons/Facebook.vue";
+import Instagram from "../components/icons/Instagram.vue";
+import Tiktok from "../components/icons/Tiktok.vue";
+import Email from "../components/icons/Email.vue";
+import Phone from "../components/icons/Phone.vue";
 
 const $q = useQuasar();
 const loginButton = ref(null);
@@ -472,6 +491,16 @@ getCollections();
 </script>
 
 <style>
+a {
+  color: #a7a7a7;
+}
+
+.icon__info {
+  margin-right: 5px;
+  width: 15px;
+  height: 15px;
+}
+
 .login__title {
   font-family: "Playfair Display", serif;
   font-weight: 600;
