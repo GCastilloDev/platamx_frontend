@@ -236,7 +236,7 @@
       </p>
     </div>
     <div>
-      <p class="footer__title">Contacto</p>
+      <p class="footer__title">Búsquedas populares</p>
       <p class="footer__list">Dijes de zirconia para mujer</p>
       <p class="footer__list">Cadenas de plata</p>
       <p class="footer__list">Anillos de promesa</p>
