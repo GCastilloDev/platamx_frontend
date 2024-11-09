@@ -71,6 +71,7 @@ function defineImage(product) {
 }
 
 function goToProduct() {
+  alert("di click");
   const id = props.product.id;
   router.push({
     name: "product",

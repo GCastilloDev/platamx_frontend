@@ -1,7 +1,8 @@
-import { boot } from 'quasar/wrappers';
-import axios, { AxiosInstance } from 'axios';
+import { boot } from "quasar/wrappers";
+import axios, { AxiosInstance } from "axios";
+import { LocalStorage } from "quasar";
 
-declare module '@vue/runtime-core' {
+declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
     $api: AxiosInstance;
@@ -14,7 +15,22 @@ declare module '@vue/runtime-core' {
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const api = axios.create({ baseURL: 'https://api.example.com' });
+const apiNoAuth = axios.create({
+  baseURL: "https://platamx-backend-98b7dd1a72e1.herokuapp.com/",
+});
+
+const apiAuth = () => {
+  LocalStorage.getItem("plataMX");
+  const token = JSON.parse(LocalStorage.getItem("plataMX"));
+  const baseURL = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/`;
+  const headers = {
+    Authorization: `Bearer ${token?.token}`,
+  };
+
+  const http = axios.create({ baseURL, headers });
+
+  return http;
+};
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
@@ -23,9 +39,10 @@ export default boot(({ app }) => {
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
 
-  app.config.globalProperties.$api = api;
+  app.config.globalProperties.$apiAuth = apiAuth;
+  app.config.globalProperties.$apiNoAuth = apiNoAuth;
   // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
   //       so you can easily perform requests against your app's API
 });
 
-export { api };
+export { apiAuth, apiNoAuth };

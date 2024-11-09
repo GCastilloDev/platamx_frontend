@@ -36,7 +36,7 @@
       </div>
       <div class="header-action__icons">
         <shop-bag />
-        <account class="icon__pointer" @click="dialogLogin = true" />
+        <account class="icon__pointer" @click="openDialogLogin" />
       </div>
     </section>
 
@@ -315,6 +315,21 @@ function openCreateAccount() {
   dialogCreateAccount.value = true;
 }
 
+function openDialogLogin() {
+  if (!sessionExists()) {
+    dialogLogin.value = true;
+    return;
+  }
+
+  router.push({
+    name: "profile",
+  });
+}
+
+function sessionExists() {
+  return localStorage.plataMX !== undefined;
+}
+
 function goToSection(index: number) {
   const idSection = menu.value[index].id;
   const nameSection = menu.value[index].title;
@@ -397,7 +412,10 @@ async function login() {
 }
 
 function saveToken(token: string) {
-  localStorage.setItem("token", token);
+  const data = {
+    token,
+  };
+  localStorage.setItem("plataMX", JSON.stringify(data));
 }
 
 function closeCreateAccount() {
