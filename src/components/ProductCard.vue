@@ -36,6 +36,7 @@
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
+
 const props = defineProps<{
   loading: boolean;
   product: {
@@ -71,7 +72,6 @@ function defineImage(product) {
 }
 
 function goToProduct() {
-  alert("di click");
   const id = props.product.id;
   router.push({
     name: "product",

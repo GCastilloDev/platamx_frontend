@@ -102,7 +102,7 @@
         </div>
       </section>
       <!-- <p>Conoce tu talla</p> -->
-      <a href="#" class="product__btn">
+      <a class="product__btn" @click="addProduct">
         <span>Añadir al carrito</span>
       </a>
 
@@ -113,6 +113,18 @@
         </p>
       </div>
     </div>
+
+    <Login
+      :open="openLogin"
+      :isAddProduct="isAddProduct"
+      @close="closeLogin"
+      @create-account="createAccountOpen"
+    />
+    <CreateAccount
+      :open="openCreateAccount"
+      @close="openCreateAccount = false"
+      @open-login="openDialogLogin"
+    />
   </section>
 </template>
 
@@ -121,9 +133,16 @@ import { ref } from "vue";
 import axios from "axios";
 import { useRoute } from "vue-router";
 
+import Login from "../components/Login.vue";
+import CreateAccount from "../components/CreateAccount.vue";
+
 const route = useRoute();
 const loading = ref(true);
 const fullscreen = ref(false);
+const openLogin = ref(false);
+const openCreateAccount = ref(false);
+const isAddProduct = ref(false);
+
 const product = ref({
   collections: [{ description: "Colección de dijes", id: 2, name: "Anillos" }],
   name: "Arracadas Huggies",
@@ -167,6 +186,32 @@ async function getProduct() {
   } catch (error) {
     console.log(error);
   }
+}
+
+function addProduct() {
+  const existSession = localStorage.plataMX;
+
+  if (existSession === undefined) {
+    isAddProduct.value = true;
+    openLogin.value = true;
+    return;
+  }
+}
+
+function closeLogin() {
+  isAddProduct.value = false;
+  openLogin.value = false;
+}
+
+function openDialogLogin() {
+  openCreateAccount.value = false;
+  isAddProduct.value = true;
+  openLogin.value = true;
+}
+
+function createAccountOpen() {
+  closeLogin();
+  openCreateAccount.value = true;
 }
 
 getProduct();

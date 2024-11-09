@@ -35,7 +35,7 @@
         </q-input>
       </div>
       <div class="header-action__icons">
-        <shop-bag />
+        <shop-bag class="icon__pointer" @click="goToShoppingCart" />
         <account class="icon__pointer" @click="openDialogLogin" />
       </div>
     </section>
@@ -50,171 +50,6 @@
         <q-icon v-if="item.expand" name="expand_more"></q-icon>
       </span>
     </section>
-
-    <!-- Login -->
-    <q-dialog
-      v-model="dialogLogin"
-      persistent
-      :backdrop-filter="backdropFilter"
-    >
-      <q-card style="width: 420px">
-        <q-card-section class="text-right q-pb-none">
-          <q-icon
-            @click="closeLogin"
-            class="icon__close"
-            name="close"
-            color="black"
-            size="28px"
-          ></q-icon>
-        </q-card-section>
-        <q-card-section class="q-pt-none">
-          <div class="login__title">Inicio de sesión</div>
-        </q-card-section>
-        <q-form ref="loginForm">
-          <q-card-section>
-            <p class="input__title">Correo electrónico</p>
-            <q-input
-              :autofocus="true"
-              standout
-              v-model="email"
-              type="email"
-              placeholder="ejemplo@hotmail.com"
-              stack-label
-              :rules="rules.email"
-            >
-            </q-input>
-          </q-card-section>
-          <q-card-section>
-            <p class="input__title">Contraseña</p>
-            <q-input
-              :type="typeInputPassword"
-              placeholder="•••••••"
-              standout
-              v-model="password"
-              :rules="rules.password"
-            >
-              <template v-slot:append>
-                <q-icon
-                  style="cursor: pointer"
-                  @click="changeIcon"
-                  :name="iconPassword"
-                />
-              </template>
-            </q-input>
-          </q-card-section>
-        </q-form>
-
-        <q-card-actions align="center" style="margin-top: 10px">
-          <span class="login__button" @click="loginValidate" ref="loginButton">
-            <span v-if="!loading">Iniciar Sesión</span>
-            <q-spinner-tail v-if="loading" color="white" size="2em" />
-          </span>
-        </q-card-actions>
-        <q-card-section>
-          <p class="login__create-account">
-            ¿No tienes cuenta?
-            <span @click="openCreateAccount">Regístrate</span>
-          </p>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <!-- Create Account -->
-    <q-dialog
-      v-model="dialogCreateAccount"
-      persistent
-      :backdrop-filter="backdropFilter"
-    >
-      <q-card style="width: 420px">
-        <q-card-section class="text-right q-pb-none">
-          <q-icon
-            @click="closeCreateAccount"
-            class="icon__close"
-            name="close"
-            color="black"
-            size="28px"
-          ></q-icon>
-        </q-card-section>
-        <q-card-section class="q-pt-none">
-          <div class="login__title">Regístrate</div>
-        </q-card-section>
-        <q-form ref="accountCreateForm">
-          <q-card-section>
-            <p class="input__title">Nombre completo</p>
-            <q-input
-              :autofocus="true"
-              standout
-              v-model="user.name"
-              type="text"
-              placeholder="Arturo Salinas Nuñez"
-              stack-label
-              :rules="rules.required"
-            >
-            </q-input>
-          </q-card-section>
-          <q-card-section>
-            <p class="input__title">Correo electrónico</p>
-            <q-input
-              :autofocus="true"
-              standout
-              v-model="user.email"
-              type="email"
-              placeholder="ejemplo@hotmail.com"
-              stack-label
-              :rules="rules.email"
-            >
-            </q-input>
-          </q-card-section>
-          <q-card-section>
-            <p class="input__title">Contraseña</p>
-            <q-input
-              :type="typeInputPassword"
-              placeholder="•••••••"
-              standout
-              v-model="user.password"
-              :rules="rules.password"
-            >
-              <template v-slot:append>
-                <q-icon
-                  style="cursor: pointer"
-                  @click="changeIcon"
-                  :name="iconPassword"
-                />
-              </template>
-            </q-input>
-          </q-card-section>
-          <q-card-section>
-            <p class="input__title">Confirmar contraseña</p>
-            <q-input
-              :type="typeInputPasswordConfirm"
-              placeholder="•••••••"
-              standout
-              v-model="user.password_comfirm"
-              :rules="rules.confirmPassword(user.password)"
-            >
-              <template v-slot:append>
-                <q-icon
-                  style="cursor: pointer"
-                  @click="changeIconConfirm"
-                  :name="iconPasswordConfirm"
-                />
-              </template>
-            </q-input>
-          </q-card-section>
-        </q-form>
-
-        <q-card-actions align="center">
-          <span
-            class="login__button"
-            @click="createAccountValidate"
-            ref="createAccountButton"
-          >
-            <span v-if="!loading">Registrarme</span>
-            <q-spinner-tail v-if="loading" color="white" size="2em" />
-          </span>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
 
     <q-page-container>
       <router-view />
@@ -255,6 +90,18 @@
         <tiktok
       /></a>
     </div>
+
+    <Login
+      :open="dialogLogin"
+      @close="dialogLogin = false"
+      @createAccount="openCreateAccount"
+    />
+
+    <CreateAccount
+      :open="dialogCreateAccount"
+      @close="dialogCreateAccount = false"
+      @openLogin="openLogin"
+    />
   </section>
 </template>
 
@@ -273,6 +120,8 @@ import Instagram from "../components/icons/Instagram.vue";
 import Tiktok from "../components/icons/Tiktok.vue";
 import Email from "../components/icons/Email.vue";
 import Phone from "../components/icons/Phone.vue";
+import Login from "../components/Login.vue";
+import CreateAccount from "../components/CreateAccount.vue";
 
 const $q = useQuasar();
 const loginButton = ref(null);
@@ -310,6 +159,11 @@ const menu = ref([
   },
 ]);
 
+function openLogin() {
+  dialogCreateAccount.value = false;
+  dialogLogin.value = true;
+}
+
 function openCreateAccount() {
   dialogLogin.value = false;
   dialogCreateAccount.value = true;
@@ -323,6 +177,12 @@ function openDialogLogin() {
 
   router.push({
     name: "profile",
+  });
+}
+
+function goToShoppingCart() {
+  router.push({
+    name: "shopping-cart",
   });
 }
 
