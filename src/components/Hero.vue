@@ -18,9 +18,18 @@
   </section>
 
   <section class="hero__images">
-    <img src="../assets/images/hero_1.jpg" alt="" />
-    <img src="../assets/images/hero_2.jpg" alt="" />
-    <img src="../assets/images/hero_3.jpg" alt="" />
+    <img
+      src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg"
+      alt=""
+    />
+    <img
+      src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg"
+      alt=""
+    />
+    <img
+      src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg"
+      alt=""
+    />
   </section>
 </template>
 

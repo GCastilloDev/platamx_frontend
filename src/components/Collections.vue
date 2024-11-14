@@ -8,22 +8,22 @@
     <div class="collection__sections">
       <img
         class="collection__sections--images img__one"
-        src="../assets/images/collection_1.jpg"
+        src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_OCTUBRE_2023_Tama%C3%B1o_original_dlp2sw.jpg"
         alt=""
       />
       <img
         class="collection__sections--images img__two"
-        src="../assets/images/collection_2.jpg"
+        src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_pwbqnb.jpg"
         alt=""
       />
       <img
         class="collection__sections--images img__three"
-        src="../assets/images/collection_3.jpg"
+        src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_vc0o5d.jpg"
         alt=""
       />
       <img
         class="collection__sections--images img__four"
-        src="../assets/images/collection_4.jpg"
+        src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_-_167_e7uea2.jpg"
         alt=""
       />
     </div>
