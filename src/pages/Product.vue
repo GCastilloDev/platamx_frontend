@@ -135,6 +135,9 @@ import { useRoute } from "vue-router";
 
 import Login from "../components/Login.vue";
 import CreateAccount from "../components/CreateAccount.vue";
+import { apiAuth } from "../boot/axios";
+
+const api = apiAuth();
 
 const route = useRoute();
 const loading = ref(true);
@@ -195,6 +198,23 @@ function addProduct() {
     isAddProduct.value = true;
     openLogin.value = true;
     return;
+  }
+
+  postProduct();
+}
+
+async function postProduct() {
+  try {
+    const item = {
+      productId: product.value.id,
+      variantId: 0,
+      quantity: 1,
+    };
+
+    const response = await api.post("/shopping-cart", item);
+    console.log(response);
+  } catch (error) {
+    console.log(error);
   }
 }
 

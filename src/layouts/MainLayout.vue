@@ -506,6 +506,7 @@ a {
   padding-top: 70px;
   padding-bottom: 70px;
   background-color: #222222;
+  margin-top: 50px;
 }
 
 .footer__container > div {
