@@ -13,14 +13,34 @@
           <div class="col-3 table__title">Precio</div>
           <div class="col-2"></div>
         </div>
-        <div class="row q-pt-lg q-pb-lg border" v-for="product in products">
+        <div
+          class="row q-pt-lg q-pb-lg border"
+          v-for="(product, index) in products"
+        >
           <div class="col-1">
             <img class="product__image" :src="product.imageUrl" alt="" />
           </div>
-          <div class="col-2 self-center text-center table__product-title">
+          <div
+            class="col-2 self-center justify-center table__product-title prueba"
+          >
+            <q-btn
+              flat
+              round
+              size="xs"
+              icon="remove"
+              :disable="product.quantity <= 1"
+              @click="updateProduct(index, 'remove')"
+            ></q-btn>
             {{ product.quantity }}
+            <q-btn
+              flat
+              round
+              size="xs"
+              icon="add"
+              @click="updateProduct(index, 'add')"
+            ></q-btn>
           </div>
-          <div class="col-4 table__product-title self-center">
+          <div class="col-4 table__product-title self-center q-pr-lg">
             {{ product.nameItem }}
           </div>
           <div class="col-3 self-center table__product-price">
@@ -34,7 +54,13 @@
             MXN
           </div>
           <div class="col-2 text-center self-center">
-            <q-icon name="delete"></q-icon>
+            <q-btn
+              flat
+              round
+              size="sm"
+              icon="delete"
+              @click="deleteProduct(product.shoppingCartItemId)"
+            ></q-btn>
           </div>
         </div>
         <h2>Total del carrito</h2>
@@ -77,6 +103,12 @@
             MXN
           </div>
         </div>
+
+        <section class="text-center q-mt-lg">
+          <a class="product__btn" @click="purchase">
+            <span>Finalizar compra</span>
+          </a>
+        </section>
       </div>
     </div>
   </section>
@@ -84,6 +116,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useQuasar } from "quasar";
 import { apiAuth } from "../boot/axios";
 
 const api = apiAuth();
@@ -91,6 +124,8 @@ const products = ref([]);
 const subtotal = ref("$0.00 MXN");
 const shipping = ref("$0.00 MXN");
 const total = ref("$0.00 MXN");
+
+const $q = useQuasar();
 
 async function getShoppingCart() {
   try {
@@ -105,6 +140,66 @@ async function getShoppingCart() {
   }
 }
 
+async function updateProduct(index, action) {
+  try {
+    $q.loading.show();
+    const productID = products.value[index].shoppingCartItemId;
+    let quantity = products.value[index].quantity;
+
+    if (action === "remove") quantity--;
+    if (action === "add") quantity++;
+
+    const data = {
+      quantity,
+    };
+
+    await api.patch(`shopping-cart/item/${productID}`, data);
+    await getShoppingCart();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    $q.loading.hide();
+  }
+}
+
+async function deleteProduct(productID) {
+  try {
+    $q.loading.show();
+    await api.delete(`shopping-cart/item/${productID}`);
+    await getShoppingCart();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    $q.loading.hide();
+  }
+}
+
+async function purchase() {
+  try {
+    $q.loading.show();
+    const data = {
+      currencyPurchase: "MXN",
+      urlSuccess: "string",
+      urlCancel: "string",
+    };
+
+    const { data: response } = await api.post(
+      "shopping-cart/purchase/checkout",
+      data
+    );
+
+    const urlPayment = response.data.session_url;
+    const element = document.createElement("a");
+    // element.target = "_blank";
+    element.href = urlPayment;
+    element.click();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    $q.loading.hide();
+  }
+}
+
 getShoppingCart();
 </script>
 
@@ -113,6 +208,26 @@ getShoppingCart();
   margin-left: 60px;
   margin-right: 60px;
   margin-top: 50px;
+}
+
+.product__btn {
+  font-family: "Switzer-Variable", serif;
+  font-size: 16px !important;
+  text-align: center;
+  width: 345px;
+  height: 50px;
+  background-color: #2f3033;
+  border-radius: 360px;
+  border: 1px solid #2f3033;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 17px;
+  padding: 12px 16px;
+  text-decoration: none;
+  margin-top: 20px;
+  margin-bottom: 5px;
 }
 
 .title {
@@ -188,5 +303,11 @@ h2 {
   line-height: 26px;
   letter-spacing: calc(14px * 0.03);
   color: #2f3033;
+}
+
+.prueba {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

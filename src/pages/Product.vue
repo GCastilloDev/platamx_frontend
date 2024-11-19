@@ -102,8 +102,9 @@
         </div>
       </section>
       <!-- <p>Conoce tu talla</p> -->
-      <a class="product__btn" @click="addProduct">
-        <span>Añadir al carrito</span>
+      <a class="product__btn" @click="addProduct" ref="addProductButton">
+        <span v-if="!loadingBtn">Añadir al carrito</span>
+        <q-spinner-tail v-if="loadingBtn" color="white" size="2em" />
       </a>
 
       <div class="product__description">
@@ -131,20 +132,25 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import axios from "axios";
+import { useQuasar } from "quasar";
 import { useRoute } from "vue-router";
 
 import Login from "../components/Login.vue";
 import CreateAccount from "../components/CreateAccount.vue";
 import { apiAuth } from "../boot/axios";
 
+const $q = useQuasar();
+
 const api = apiAuth();
 
 const route = useRoute();
 const loading = ref(true);
+const loadingBtn = ref(false);
 const fullscreen = ref(false);
 const openLogin = ref(false);
 const openCreateAccount = ref(false);
 const isAddProduct = ref(false);
+const addProductButton = ref(null);
 
 const product = ref({
   collections: [{ description: "Colección de dijes", id: 2, name: "Anillos" }],
@@ -192,9 +198,11 @@ async function getProduct() {
 }
 
 function addProduct() {
+  loadingBtn.value = true;
   const existSession = localStorage.plataMX;
 
   if (existSession === undefined) {
+    loadingBtn.value = false;
     isAddProduct.value = true;
     openLogin.value = true;
     return;
@@ -205,16 +213,23 @@ function addProduct() {
 
 async function postProduct() {
   try {
+    addProductButton.value?.setAttribute("disabled", "");
     const item = {
       productId: product.value.id,
       variantId: 0,
       quantity: 1,
     };
 
-    const response = await api.post("/shopping-cart", item);
-    console.log(response);
+    await api.post("/shopping-cart", item);
+    $q.notify({
+      message: "Producto añadido al carrito",
+      color: "green",
+    });
   } catch (error) {
     console.log(error);
+  } finally {
+    addProductButton.value?.removeAttribute("disabled");
+    loadingBtn.value = false;
   }
 }
 
