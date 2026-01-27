@@ -44,7 +44,7 @@ async function getProductsByCollection(collectionID: number) {
   try {
     loading.value = true;
     productsByCollection.value = [null, null, null];
-    const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products?page=1&items=10&collestionsIds=${collectionID}`;
+    const url = `https://platamx-backend-1cvg.onrender.com/products?page=1&items=10&collestionsIds=${collectionID}`;
     const { data: response } = await axios.get(url);
     productsByCollection.value = response.data;
     loading.value = false;
@@ -56,7 +56,7 @@ async function getProductsByCollection(collectionID: number) {
 async function getCollections() {
   try {
     const url =
-      "https://platamx-backend-98b7dd1a72e1.herokuapp.com/collections?page=1&items=25";
+      "https://platamx-backend-1cvg.onrender.com/collections?page=1&items=25";
     const { data: response } = await axios.get(url);
 
     response.data.forEach((e: any) => {

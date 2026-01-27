@@ -187,7 +187,7 @@ async function createAccount() {
   try {
     createAccountButton.value?.setAttribute("disabled", "");
     loading.value = true;
-    const url = "https://platamx-backend-98b7dd1a72e1.herokuapp.com/users";
+    const url = "https://platamx-backend-1cvg.onrender.com/users";
 
     await axios.post(url, user.value);
     $q.notify("Cuenta creada correctamente");

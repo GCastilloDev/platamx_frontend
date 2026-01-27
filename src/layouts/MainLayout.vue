@@ -213,7 +213,7 @@ function goToSection(index: number) {
 async function getCollections() {
   try {
     const url =
-      "https://platamx-backend-98b7dd1a72e1.herokuapp.com/collections?page=1&items=25";
+      "https://platamx-backend-1cvg.onrender.com/collections?page=1&items=25";
     const { data: response } = await axios.get(url);
 
     response.data.forEach((e: any) => {
@@ -246,7 +246,7 @@ async function login() {
   try {
     loginButton.value?.setAttribute("disabled", "");
     loading.value = true;
-    const url = "https://platamx-backend-98b7dd1a72e1.herokuapp.com/auth/login";
+    const url = "https://platamx-backend-1cvg.onrender.com/auth/login";
 
     const data = {
       email: email.value,
@@ -344,7 +344,7 @@ async function createAccount() {
   try {
     createAccountButton.value?.setAttribute("disabled", "");
     loading.value = true;
-    const url = "https://platamx-backend-98b7dd1a72e1.herokuapp.com/users";
+    const url = "https://platamx-backend-1cvg.onrender.com/users";
 
     await axios.post(url, user.value);
     dialogCreateAccount.value = false;

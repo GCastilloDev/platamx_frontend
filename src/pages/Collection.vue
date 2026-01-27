@@ -60,7 +60,7 @@ async function chargeMoreProducts() {
     const idCollection = route.params.id;
     loadingBtn.value = true;
     page.value += 1;
-    const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products?page=${page.value}&items=8&collestionsIds=${idCollection}`;
+    const url = `https://platamx-backend-1cvg.onrender.com/products?page=${page.value}&items=8&collestionsIds=${idCollection}`;
     const { data: response } = await axios.get(url);
 
     response.data.forEach((e) => {
@@ -76,7 +76,7 @@ async function chargeMoreProducts() {
 
 async function getProductsByCollection(idCollection) {
   try {
-    const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products?page=${page.value}&items=8&collestionsIds=${idCollection}`;
+    const url = `https://platamx-backend-1cvg.onrender.com/products?page=${page.value}&items=8&collestionsIds=${idCollection}`;
     const { data: response } = await axios.get(url);
     products.value = response.data;
     loading.value = false;

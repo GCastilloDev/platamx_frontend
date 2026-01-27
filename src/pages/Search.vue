@@ -68,7 +68,7 @@ function init() {
 
 async function getProductsBySearch(search) {
   try {
-    const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products?page=${page.value}&items=8&find=${search}`;
+    const url = `https://platamx-backend-1cvg.onrender.com/products?page=${page.value}&items=8&find=${search}`;
     const { data: response } = await axios.get(url);
     total.value = response.pagination.total;
     products.value = response.data;
@@ -84,7 +84,7 @@ async function chargeMoreProducts() {
     search.value = route.query.q;
     loadingBtn.value = true;
     page.value += 1;
-    const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products?page=${page.value}&items=8&find=${search.value}`;
+    const url = `https://platamx-backend-1cvg.onrender.com/products?page=${page.value}&items=8&find=${search.value}`;
     const { data: response } = await axios.get(url);
 
     response.data.forEach((e) => {

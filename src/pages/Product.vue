@@ -179,7 +179,7 @@ async function getProduct() {
   try {
     loading.value = true;
     const idProduct = route.params.id;
-    const url = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/products/${idProduct}`;
+    const url = `https://platamx-backend-1cvg.onrender.com/products/${idProduct}`;
 
     const { data: response } = await axios.get(url);
     if (response.data.images.length === 0) {

@@ -16,13 +16,13 @@ declare module "@vue/runtime-core" {
 // "export default () => {}" function below (which runs individually
 // for each client)
 const apiNoAuth = axios.create({
-  baseURL: "https://platamx-backend-98b7dd1a72e1.herokuapp.com/",
+  baseURL: "https://platamx-backend-1cvg.onrender.com/",
 });
 
 const apiAuth = () => {
   LocalStorage.getItem("plataMX");
   const token = JSON.parse(LocalStorage.getItem("plataMX"));
-  const baseURL = `https://platamx-backend-98b7dd1a72e1.herokuapp.com/`;
+  const baseURL = `https://platamx-backend-1cvg.onrender.com/`;
   const headers = {
     Authorization: `Bearer ${token?.token}`,
   };
