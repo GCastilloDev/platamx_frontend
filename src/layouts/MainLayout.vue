@@ -110,7 +110,7 @@
 
 <script lang="ts" setup>
 import axios from "axios";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 
@@ -145,6 +145,7 @@ const backdropFilter = ref("blur(5px) saturate(150%)");
 const cartTotalItems = ref(0);
 
 async function fetchCartItems() {
+  if (typeof window === "undefined") return;
   if (!localStorage.plataMX) {
     cartTotalItems.value = 0;
     return;
@@ -158,8 +159,10 @@ async function fetchCartItems() {
   }
 }
 
-// Ejecutar en el montado
-fetchCartItems();
+// Solo ejecutar en el cliente, NUNCA en Node SSR
+onMounted(() => {
+  fetchCartItems();
+});
 
 // Eventos de Windows para comunicación limpia entre componentes 
 if (typeof window !== "undefined") {
