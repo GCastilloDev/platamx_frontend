@@ -236,7 +236,8 @@ function addProduct() {
 async function postProduct() {
   try {
     addProductButton.value?.setAttribute("disabled", "");
-    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: 1 } }));
+    if (typeof window !== "undefined")
+      window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: 1 } }));
 
     const item = {
       productId: product.value.id,
@@ -249,9 +250,11 @@ async function postProduct() {
       message: "Producto añadido al carrito",
       color: "green",
     });
-    window.dispatchEvent(new CustomEvent("cart-updated"));
+    if (typeof window !== "undefined")
+      window.dispatchEvent(new CustomEvent("cart-updated"));
   } catch (error) {
-    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -1 } }));
+    if (typeof window !== "undefined")
+      window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -1 } }));
     console.log(error);
   } finally {
     addProductButton.value?.removeAttribute("disabled");

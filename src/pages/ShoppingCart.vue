@@ -128,6 +128,11 @@ const total = ref("$0.00 MXN");
 const $q = useQuasar();
 
 async function getShoppingCart() {
+  const dispatch = (event: string, detail?: object) => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent(event, detail ? { detail } : undefined));
+    }
+  };
   try {
     const { data: response } = await api.get("/shopping-cart/user");
 
@@ -138,9 +143,7 @@ async function getShoppingCart() {
       total.value = 0;
       products.value = [];
       
-      window.dispatchEvent(
-        new CustomEvent("cart-updated", { detail: { totalItems: 0 } })
-      );
+      dispatch("cart-updated", { totalItems: 0 });
       return;
     }
 
@@ -150,9 +153,7 @@ async function getShoppingCart() {
     products.value = response.data.items;
     
     // Empujar evento al root pero con Maletín Inteligente para evitarle gastar red
-    window.dispatchEvent(
-      new CustomEvent("cart-updated", { detail: { totalItems: response.data.totalItems } })
-    );
+    dispatch("cart-updated", { totalItems: response.data.totalItems });
   } catch (error) {
     console.log(error);
   }
@@ -171,7 +172,8 @@ async function updateProduct(index, action) {
 
   // Engaño visual 
   products.value[index].quantity = quantity;
-  window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta } }));
+  if (typeof window !== "undefined")
+    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta } }));
 
   try {
     $q.loading.show();
@@ -179,7 +181,8 @@ async function updateProduct(index, action) {
     await getShoppingCart();
   } catch (error) {
     products.value[index].quantity = previousQuantity;
-    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -delta } }));
+    if (typeof window !== "undefined")
+      window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -delta } }));
     console.log(error);
   } finally {
     $q.loading.hide();
@@ -195,7 +198,8 @@ async function deleteProduct(productID) {
 
   // Engaño visual 
   products.value.splice(prodIndex, 1);
-  window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta } }));
+  if (typeof window !== "undefined")
+    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta } }));
 
   try {
     $q.loading.show();
@@ -203,7 +207,8 @@ async function deleteProduct(productID) {
     await getShoppingCart();
   } catch (error) {
     products.value.splice(prodIndex, 0, prevProd);
-    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -delta } }));
+    if (typeof window !== "undefined")
+      window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -delta } }));
     console.log(error);
   } finally {
     $q.loading.hide();
