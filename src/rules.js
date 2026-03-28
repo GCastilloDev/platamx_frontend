@@ -25,6 +25,18 @@ const validationRules = () => ({
     ];
   },
   required: [(v) => !!v || "Campo requerido"],
+  zipcode: [
+    (v) => !!v || "Campo requerido",
+    (v) => /^\d{5}$/.test(v) || "El código postal debe tener exactamente 5 números",
+  ],
+  phone: [
+    (v) => !!v || "Campo requerido",
+    (v) => /^\d{10}$/.test(v) || "El teléfono debe tener exactamente 10 números",
+  ],
+  maxLength200: [
+    (v) => !!v || "Campo requerido",
+    (v) => v.length <= 200 || "El texto excede los 200 caracteres permitidos",
+  ],
 });
 
 export default validationRules;

@@ -1,20 +1,39 @@
 <template>
   <section class="container">
-    <q-splitter v-model="splitterModel">
-      <template v-slot:before>
-        <q-tabs
-          v-model="tab"
-          vertical
-          class="black"
-          @update:model-value="tabEvent"
-        >
-          <q-tab name="account" label="MI CUENTA" />
-          <q-tab name="purchases" label="MI LISTA DE COMPRAS" />
-          <q-tab name="exit" label="SALIR DE LA CUENTA" />
-        </q-tabs>
-      </template>
+    <div class="row q-col-gutter-xl">
+      <div class="col-12 col-md-3">
+        <div class="profile-menu-wrapper q-pt-none">
+          <div
+            class="profile-menu-tab cursor-pointer row items-center"
+            :class="{ 'profile-menu-tab--active': tab === 'account' }"
+            @click="
+              tab = 'account';
+              tabEvent('account');
+            "
+          >
+            Mi cuenta
+          </div>
+          <div
+            class="profile-menu-tab cursor-pointer row items-center"
+            :class="{ 'profile-menu-tab--active': tab === 'purchases' }"
+            @click="
+              tab = 'purchases';
+              tabEvent('purchases');
+            "
+          >
+            Mi lista de compras
+          </div>
+          <div
+            class="profile-menu-tab cursor-pointer row items-center"
+            :class="{ 'profile-menu-tab--active': tab === 'exit' }"
+            @click="tabEvent('exit')"
+          >
+            Salir de cuenta
+          </div>
+        </div>
+      </div>
 
-      <template v-slot:after>
+      <div class="col-12 col-md-9 q-pl-xl">
         <q-tab-panels
           v-model="tab"
           animated
@@ -23,60 +42,127 @@
           transition-prev="jump-up"
           transition-next="jump-up"
         >
-          <q-tab-panel name="account">
-            <section class="row">
-              <div class="col-3 profile__title">Nombre</div>
-              <div class="col-9">
-                <q-card flat bordered class="my-card">
+          <q-tab-panel name="account" class="q-pa-none">
+            <section class="row q-mb-lg items-start">
+              <div class="col-12 col-md-3 profile__title q-mt-md">Nombre</div>
+              <div class="col-12 col-md-7">
+                <q-card flat bordered class="rounded-borders">
                   <q-card-section v-if="loadingProfile">
-                    <q-skeleton style="width: 400px" type="text" />
+                    <q-skeleton style="width: 100%" type="text" />
                   </q-card-section>
-                  <q-card-section v-if="!loadingProfile">
-                    <div class="profile__content">
-                      {{ userProfile.name }}
-                    </div>
-                  </q-card-section>
+                  <transition name="elegant-fade" mode="out-in">
+                    <q-card-section v-if="!loadingProfile && !isEditingName" key="readName" class="q-pa-lg q-py-xl">
+                      <div class="row justify-between items-center">
+                        <div class="col-8 profile-card-content">
+                          {{ userProfile.name }}
+                        </div>
+                        <div class="col-auto text-right">
+                          <span class="profile-card-link cursor-pointer" @click="attemptChangeName">Cambiar</span>
+                        </div>
+                      </div>
+                    </q-card-section>
+
+                    <!-- MODO EDICIÓN FORMULARIO NOMBRE -->
+                    <q-card-section v-else-if="!loadingProfile && isEditingName" key="editName" class="q-pa-lg">
+                      <q-form @submit="saveName">
+                        <p class="input__title q-mb-sm">Nombre completo</p>
+                        <q-input outlined v-model="formName" :rules="rules.maxLength200" placeholder="" class="q-mb-lg custom-input-border" />
+                        
+                        <div class="row q-mt-lg items-center">
+                          <button
+                            class="login__button"
+                            type="submit"
+                            style="outline: none; border: none; font-family: 'Switzer-Variable', Switzer, serif; width: auto; padding: 0 32px;"
+                            :disabled="loadingSaveName"
+                          >
+                            <span v-if="!loadingSaveName">Guardar cambios</span>
+                            <q-spinner-tail v-if="loadingSaveName" color="white" size="20px" />
+                          </button>
+                          <span
+                            class="btn-cancel-form q-ml-xl cursor-pointer"
+                            @click="closeNameModal"
+                          >
+                            Cancelar
+                          </span>
+                        </div>
+                      </q-form>
+                    </q-card-section>
+                  </transition>
                 </q-card>
               </div>
             </section>
 
-            <section class="row q-mt-md">
-              <div class="col-3 profile__title">Correo</div>
-              <div class="col-9">
-                <q-card flat bordered class="my-card">
-                  <q-card-section v-if="loadingProfile">
-                    <q-skeleton style="width: 400px" type="text" />
-                  </q-card-section>
-                  <q-card-section v-if="!loadingProfile">
-                    <div class="profile__content">{{ userProfile.email }}</div>
-                  </q-card-section>
-                </q-card>
+            <section class="row q-mb-lg items-start">
+              <div class="col-12 col-md-3 profile__title q-mt-md">
+                Dirección de envío
               </div>
-            </section>
-
-            <section class="row q-mt-md">
-              <div class="col-3 profile__title">Dirección</div>
-              <div class="col-9">
-                <q-card flat bordered class="my-card">
+              <div class="col-12 col-md-7">
+                <q-card flat bordered class="rounded-borders">
                   <q-card-section v-if="loadingProfile">
-                    <q-skeleton style="width: 400px" type="text" />
-                    <q-skeleton style="width: 400px" type="text" />
-                    <q-skeleton style="width: 400px" type="text" />
+                    <q-skeleton style="width: 100%" type="text" />
                   </q-card-section>
-                  <q-card-section v-if="userAddress !== null">
-                    <div class="text-bold">
-                      {{ userProfile.address.streat }},
-                      {{ userProfile.address.city }}, C.P.
-                      {{ userProfile.address.zip }}, Teléfono:
-                      {{ userProfile.address.phone }}
+                  <transition name="elegant-fade" mode="out-in">
+                    <q-card-section v-if="!loadingProfile && !isEditingAddress" key="read" class="q-pa-lg q-py-xl">
+                    <div class="row justify-between items-center">
+                      <div class="col-8 profile-card-content">
+                        <span v-if="userAddress !== null">
+                          {{
+                            userProfile.address.street ||
+                            userProfile.address.streat
+                          }}, {{ userProfile.address.city }}, C.P.
+                          {{ userProfile.address.zip }}, Teléfono:
+                          {{ userProfile.address.phone }}
+                        </span>
+                        <span v-else> Sin dirección registrada </span>
+                      </div>
+                      <div class="col-auto text-right">
+                        <span
+                          class="profile-card-link cursor-pointer"
+                          @click="openAddressModal"
+                        >
+                          {{ userAddress !== null ? "Cambiar" : "Agregar" }}
+                        </span>
+                      </div>
                     </div>
                   </q-card-section>
-
-                  <q-card-section
-                    v-if="userAddress === null && !loadingProfile"
-                  >
-                    <div class="profile__content">Sin dirección registrada</div>
+                  <q-card-section v-else-if="!loadingProfile && isEditingAddress" key="edit" class="q-pa-lg">
+                    <q-form ref="addressForm" @submit="saveAddress">
+                      
+                      <p class="input__title q-mb-sm">Estado</p>
+                      <q-input outlined v-model="formAddress.state" :rules="rules.maxLength200" placeholder="Por ejemplo: Nuevo León" class="q-mb-md custom-input-border" />
+                      
+                      <p class="input__title q-mb-sm">Ciudad</p>
+                      <q-input outlined v-model="formAddress.city" :rules="rules.maxLength200" placeholder="Por ejemplo: Monterrey" class="q-mb-md custom-input-border" />
+                      
+                      <p class="input__title q-mb-sm">Calle, número y colonia</p>
+                      <q-input outlined v-model="formAddress.street" :rules="rules.maxLength200" placeholder="Calle, número ext e int" class="q-mb-md custom-input-border" />
+                      
+                      <p class="input__title q-mb-sm">Código Postal</p>
+                      <q-input outlined v-model="formAddress.zip" :rules="rules.zipcode" mask="#####" placeholder="Por ejemplo: 01000" class="q-mb-md custom-input-border" />
+                      
+                      <p class="input__title q-mb-sm">Número de teléfono</p>
+                      <q-input outlined v-model="formAddress.phone" :rules="rules.phone" mask="##########" placeholder="" class="q-mb-lg custom-input-border" />
+                      
+                      <div class="row q-mt-lg items-center">
+                        <button
+                          class="login__button"
+                          type="submit"
+                          style="outline: none; border: none; font-family: 'Switzer-Variable', Switzer, serif; width: auto; padding: 0 32px;"
+                          :disabled="loadingSaveAddress"
+                        >
+                          <span v-if="!loadingSaveAddress">Guardar cambios</span>
+                          <q-spinner-tail v-if="loadingSaveAddress" color="white" size="20px" />
+                        </button>
+                        <span
+                          class="btn-cancel-form q-ml-xl cursor-pointer"
+                          @click="closeAddressModal"
+                        >
+                          Cancelar
+                        </span>
+                      </div>
+                    </q-form>
                   </q-card-section>
+                  </transition>
                 </q-card>
               </div>
             </section>
@@ -120,17 +206,9 @@
             </p>
           </q-tab-panel>
         </q-tab-panels>
-      </template>
-    </q-splitter>
-
-    <!-- <div class="row">
-      <div class="col-3">
-
       </div>
-      <div class="col-9">
+    </div>
 
-      </div>
-    </div> -->
   </section>
 </template>
 
@@ -138,9 +216,11 @@
 import { ref } from "vue";
 import { useQuasar } from "quasar";
 import { apiAuth, apiNoAuth } from "../boot/axios";
+import validationRules from "../rules";
 
 import { useRouter } from "vue-router";
 
+const rules = validationRules();
 const $q = useQuasar();
 const router = useRouter();
 const auth = apiAuth();
@@ -207,6 +287,135 @@ async function getOrders() {
     console.log(error);
   }
 }
+
+// Lógica del Panel "In-place"
+const isEditingAddress = ref(false);
+const addressForm = ref(null);
+const loadingSaveAddress = ref(false);
+
+const isEditingName = ref(false);
+const formName = ref("");
+const loadingSaveName = ref(false);
+
+const formAddress = ref({
+  street: "",
+  city: "",
+  state: "",
+  zip: "",
+  phone: "",
+});
+
+function attemptChangeName() {
+  if (userAddress.value === null) {
+    $q.notify({
+      message:
+        "Para poder cambiar tu nombre, primero debes registrar una dirección de envío.",
+      color: "warning",
+      icon: "warning",
+    });
+    return;
+  }
+
+  // Desbloquear Edición
+  formName.value = userProfile.value.name;
+  isEditingName.value = true;
+}
+
+function closeNameModal() {
+  isEditingName.value = false;
+}
+
+async function saveName() {
+  loadingSaveName.value = true;
+  try {
+    const adr = userProfile.value.address || {};
+    const payload = {
+      name: formName.value,
+      email: userProfile.value.email,
+      street: adr.street || adr.streat || "",
+      city: adr.city || "",
+      state: adr.state || "",
+      zip: adr.zip || "",
+      phone: adr.phone || "",
+    };
+    await apiAuth().patch(`users/${userProfile.value.id}`, payload);
+
+    $q.notify({
+      message: "Nombre actualizado correctamente",
+      color: "positive",
+    });
+
+    userProfile.value.name = formName.value;
+    isEditingName.value = false;
+  } catch (error) {
+    console.log(error);
+    $q.notify({
+      message: "¡Oops! Ocurrió un error al guardar",
+      color: "negative",
+    });
+  } finally {
+    loadingSaveName.value = false;
+  }
+}
+
+function openAddressModal() {
+  const adr = userProfile.value.address || {};
+  formAddress.value = {
+    street: adr.street || adr.streat || "",
+    city: adr.city || "",
+    state: adr.state || "",
+    zip: adr.zip || "",
+    phone: adr.phone || "",
+  };
+  isEditingAddress.value = true;
+}
+
+function closeAddressModal() {
+  isEditingAddress.value = false;
+}
+
+async function saveAddress() {
+  try {
+    loadingSaveAddress.value = true;
+    const payload = {
+      name: userProfile.value.name,
+      email: userProfile.value.email,
+      street: formAddress.value.street,
+      city: formAddress.value.city,
+      state: formAddress.value.state,
+      zip: formAddress.value.zip,
+      phone: formAddress.value.phone,
+    };
+
+    // Actualizando el usuario haciendo PATCH a su ID
+    await auth.patch(`users/${userProfile.value.id}`, payload);
+
+    $q.notify({
+      message: "Dirección actualizada correctamente",
+      color: "positive",
+    });
+
+    // Inyección optimista para repintar UI al instante
+    userProfile.value.address = {
+      street: formAddress.value.street,
+      city: formAddress.value.city,
+      state: formAddress.value.state,
+      zip: formAddress.value.zip,
+      phone: formAddress.value.phone,
+    };
+    userAddress.value = userProfile.value.address;
+
+    isEditingAddress.value = false;
+  } catch (error) {
+    console.log(error);
+    $q.notify({
+      message: "¡Oops! Ocurrió un error al guardar",
+      color: "negative",
+    });
+  } finally {
+    loadingSaveAddress.value = false;
+  }
+}
 </script>
 
 <style scoped>
@@ -216,10 +425,8 @@ async function getOrders() {
   margin-top: 50px;
 }
 
-.my-card {
-  min-height: 166px;
-  display: flex;
-  align-items: center;
+.line-height-relaxed {
+  line-height: 1.6;
 }
 
 .profile__title {
@@ -233,8 +440,83 @@ async function getOrders() {
 .profile__content {
   font-family: "Switzer-Variable", serif;
   color: #707279;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 16px;
   letter-spacing: calc(18px * 0.005);
+}
+
+.profile-card-content {
+  font-family: "Switzer-Variable", Switzer, serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: 0.05em;
+  color: var(--Black-button, #2f3033);
+}
+
+.btn-cancel-form {
+  font-family: "Switzer-Variable", Switzer, serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: 0.05em;
+  text-align: center;
+  color: #2f3033;
+}
+
+.profile-card-link {
+  font-family: "Switzer-Variable", Switzer, serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 140%;
+  letter-spacing: 0.05em;
+  text-decoration: underline;
+  text-decoration-style: solid;
+  color: var(--Body-Text, #707279);
+}
+
+:deep(.profile-menu-tab) {
+  font-family: "Switzer-Variable", Switzer, serif;
+  font-weight: 400 !important;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 130%;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--Body-Text, #707279);
+  justify-content: flex-start;
+  text-align: left !important;
+  border-bottom: 1px solid #e8e9ef;
+  width: 100%;
+  padding: 0 0 0 20px !important;
+  min-height: 38px !important;
+  height: 38px !important;
+}
+
+:deep(.profile-menu-tab--active) {
+  background-color: #2f3033;
+  color: #e8e9ef !important;
+  border-bottom: 1px solid #2f3033;
+}
+
+:deep(.custom-input-border .q-field__control) {
+  border-radius: 4px;
+  background-color: #fafafa;
+}
+:deep(.custom-input-border .q-field__control:before) {
+  border-color: #e8e9ef;
+}
+
+.elegant-fade-enter-active,
+.elegant-fade-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.elegant-fade-enter-from {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+.elegant-fade-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
 }
 </style>

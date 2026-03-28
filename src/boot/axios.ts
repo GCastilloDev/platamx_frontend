@@ -20,8 +20,8 @@ const apiNoAuth = axios.create({
 });
 
 const apiAuth = () => {
-  LocalStorage.getItem("plataMX");
-  const token = JSON.parse(LocalStorage.getItem("plataMX"));
+  const localItem = LocalStorage.getItem("plataMX");
+  const token = localItem ? JSON.parse(localItem as string) : null;
   const baseURL = `https://platamx-backend-1cvg.onrender.com/`;
   const headers = {
     Authorization: `Bearer ${token?.token}`,
