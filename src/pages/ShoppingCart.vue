@@ -120,7 +120,7 @@ import { useQuasar } from "quasar";
 import { apiAuth } from "../boot/axios";
 
 const api = apiAuth();
-const products = ref([]);
+const products = ref<any[]>([]);
 const subtotal = ref("$0.00 MXN");
 const shipping = ref("$0.00 MXN");
 const total = ref("$0.00 MXN");
