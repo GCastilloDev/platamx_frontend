@@ -27,7 +27,7 @@
       <p class="product-card__title">
         {{ props.product.name }}
       </p>
-      <p class="product-card__subtitle">{{ props.product.description }}</p>
+      <p class="product-card__subtitle">{{ stripHTML(props.product.description) }}</p>
     </section>
   </div>
 </template>
@@ -58,6 +58,12 @@ function converToCurrency(price) {
     currency: "MXN",
     currencyDisplay: "code",
   }).format(price);
+}
+
+function stripHTML(html?: string) {
+  if (!html) return "";
+  // Expresión regular compatible con SSR (Sin usar DOMParser)
+  return html.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
 }
 
 function defineImage(product) {

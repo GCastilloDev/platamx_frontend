@@ -79,7 +79,18 @@
       </q-carousel>
     </div>
     <div class="product__section">
-      <div class="product__tag">{{ product.collections[0].name }}</div>
+      <div v-if="product.collections && product.collections.length > 0" class="product__tags-wrapper">
+        <div
+          class="product__tag"
+          v-for="collection in product.collections"
+          :key="collection.id"
+        >
+          {{ collection.name }}
+          <q-tooltip v-if="collection.description" anchor="bottom middle" self="top middle" :offset="[0, 8]">
+            {{ collection.description }}
+          </q-tooltip>
+        </div>
+      </div>
       <h2 class="product__title">{{ product.name }}</h2>
       <p class="product__price">
         {{
@@ -91,14 +102,19 @@
         }}
       </p>
 
-      <section v-if="product.variants.length > 0">
-        <p class="product__subtitle">Tamaño</p>
+      <section v-if="product.variants && product.variants.length > 0">
+        <p class="product__subtitle">Tallas</p>
         <div class="product__size-container">
-          <a class="product__size product__size_active" href="#">8</a>
-          <a class="product__size" href="#">9</a>
-          <a class="product__size product__size_disabled" href="#">10</a>
-          <a class="product__size" href="#">11</a>
-          <a class="product__size" href="#">12</a>
+          <a
+            v-for="variant in product.variants"
+            :key="variant.id"
+            href="#"
+            class="product__size"
+            :class="{ 'product__size_active': selectedVariant === variant.id }"
+            @click.prevent="selectedVariant = variant.id"
+          >
+            {{ variant.name }}
+          </a>
         </div>
       </section>
       <!-- <p>Conoce tu talla</p> -->
@@ -109,9 +125,8 @@
 
       <div class="product__description">
         <h3 class="product__subtitle">Detalle del producto</h3>
-        <p class="product__text">
-          {{ product.description }}
-        </p>
+        <div class="product__text" v-html="product.description">
+        </div>
       </div>
     </div>
 
@@ -152,7 +167,7 @@ const openCreateAccount = ref(false);
 const isAddProduct = ref(false);
 const addProductButton = ref(null);
 
-const product = ref({
+const product = ref<any>({
   collections: [{ description: "Colección de dijes", id: 2, name: "Anillos" }],
   name: "Arracadas Huggies",
   price: "8599",
@@ -174,6 +189,7 @@ const product = ref({
 });
 
 const slide = ref("87_vuknuc");
+const selectedVariant = ref<any>(null);
 
 async function getProduct() {
   try {
@@ -191,6 +207,12 @@ async function getProduct() {
     }
     slide.value = response.data.images[0].file_name;
     product.value = response.data;
+    
+    // Auto-seleccionar la primera variante si existen para no mandar nulos al carrito
+    if (product.value.variants && product.value.variants.length > 0) {
+      selectedVariant.value = product.value.variants[0].id;
+    }
+    
     loading.value = false;
   } catch (error) {
     console.log(error);
@@ -214,9 +236,11 @@ function addProduct() {
 async function postProduct() {
   try {
     addProductButton.value?.setAttribute("disabled", "");
+    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: 1 } }));
+
     const item = {
       productId: product.value.id,
-      variantId: 0,
+      variantId: selectedVariant.value || 0,
       quantity: 1,
     };
 
@@ -225,7 +249,9 @@ async function postProduct() {
       message: "Producto añadido al carrito",
       color: "green",
     });
+    window.dispatchEvent(new CustomEvent("cart-updated"));
   } catch (error) {
+    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -1 } }));
     console.log(error);
   } finally {
     addProductButton.value?.removeAttribute("disabled");
@@ -292,20 +318,25 @@ getProduct();
 
 .product__size-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
 .product__size {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-family: "Switzer-Variable", serif;
   font-size: 12px;
+  line-height: 1.2;
   color: #707279;
   text-align: center;
-  width: 87px;
-  height: 41px;
+  min-width: 87px;
+  width: auto;
+  min-height: 41px;
+  height: auto;
   background-color: #f4f4f4;
   border-radius: 360px;
   border: 1px solid #f4f4f4;
-  display: inline-block;
   cursor: pointer;
   padding: 10px 16px;
   text-decoration: none;
@@ -321,18 +352,32 @@ getProduct();
   cursor: not-allowed;
 }
 
+.product__tags-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
 .product__tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-family: "Switzer-Variable", serif;
   font-size: 12px;
+  line-height: 1.2;
   color: #707279;
   text-align: center;
-  width: 72px;
-  height: 21px;
+  min-width: 72px;
+  width: auto;
+  min-height: 23px;
+  height: auto;
   background-color: #f4f4f4;
   border-radius: 360px;
   border: 1px solid #f4f4f4;
-  padding: 0px 16px;
+  padding: 5px 16px;
+  white-space: nowrap;
+  cursor: default;
 }
 
 .product__title {

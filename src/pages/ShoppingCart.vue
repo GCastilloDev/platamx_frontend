@@ -130,32 +130,56 @@ const $q = useQuasar();
 async function getShoppingCart() {
   try {
     const { data: response } = await api.get("/shopping-cart/user");
+
+    // Guardián contra el Backend que avienta `{}` cuando la canasta se quedó huérfana
+    if (!response.data || Object.keys(response.data).length === 0) {
+      subtotal.value = 0;
+      shipping.value = 0;
+      total.value = 0;
+      products.value = [];
+      
+      window.dispatchEvent(
+        new CustomEvent("cart-updated", { detail: { totalItems: 0 } })
+      );
+      return;
+    }
+
     subtotal.value = response.data.subTotal;
     shipping.value = response.data.deliveryCost;
     total.value = response.data.total;
     products.value = response.data.items;
-    console.log(response);
+    
+    // Empujar evento al root pero con Maletín Inteligente para evitarle gastar red
+    window.dispatchEvent(
+      new CustomEvent("cart-updated", { detail: { totalItems: response.data.totalItems } })
+    );
   } catch (error) {
     console.log(error);
   }
 }
 
 async function updateProduct(index, action) {
+  const productID = products.value[index].shoppingCartItemId;
+  const previousQuantity = products.value[index].quantity;
+  let quantity = previousQuantity;
+
+  if (action === "remove") quantity--;
+  if (action === "add") quantity++;
+
+  const delta = action === "add" ? 1 : -1;
+  const data = { quantity };
+
+  // Engaño visual 
+  products.value[index].quantity = quantity;
+  window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta } }));
+
   try {
     $q.loading.show();
-    const productID = products.value[index].shoppingCartItemId;
-    let quantity = products.value[index].quantity;
-
-    if (action === "remove") quantity--;
-    if (action === "add") quantity++;
-
-    const data = {
-      quantity,
-    };
-
     await api.patch(`shopping-cart/item/${productID}`, data);
     await getShoppingCart();
   } catch (error) {
+    products.value[index].quantity = previousQuantity;
+    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -delta } }));
     console.log(error);
   } finally {
     $q.loading.hide();
@@ -163,11 +187,23 @@ async function updateProduct(index, action) {
 }
 
 async function deleteProduct(productID) {
+  const prodIndex = products.value.findIndex(p => p.shoppingCartItemId === productID);
+  if (prodIndex === -1) return;
+  
+  const prevProd = products.value[prodIndex];
+  const delta = -prevProd.quantity;
+
+  // Engaño visual 
+  products.value.splice(prodIndex, 1);
+  window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta } }));
+
   try {
     $q.loading.show();
     await api.delete(`shopping-cart/item/${productID}`);
     await getShoppingCart();
   } catch (error) {
+    products.value.splice(prodIndex, 0, prevProd);
+    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -delta } }));
     console.log(error);
   } finally {
     $q.loading.hide();

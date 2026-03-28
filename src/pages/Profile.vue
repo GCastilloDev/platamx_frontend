@@ -169,17 +169,58 @@
           </q-tab-panel>
 
           <q-tab-panel name="purchases">
-            <section class="text-center text-h6" v-if="userOrders.length === 0">
+            <section class="text-center q-py-xl" v-if="loadingOrders">
+              <q-spinner color="black" size="3em" />
+            </section>
+
+            <section class="text-center text-h6 text-grey-8 q-mt-lg" v-else-if="userOrders.length === 0">
               Sin compras
             </section>
-            <section class="row" v-if="userOrders.length > 0">
-              <div class="col-4">Compras</div>
-              <div class="col-8">
-                <q-card flat bordered class="my-card">
-                  <q-card-section>
-                    <div class="text-bold">{{ userOrders }}</div>
-                  </q-card-section>
-                </q-card>
+            
+            <!-- Compras Listado -->
+            <section v-else class="purchases__container">
+              <!-- Encabezados de tabla falsa -->
+              <div class="row q-pb-sm text-left purchases__header">
+                <div class="col-4">ID del pedido</div>
+                <div class="col-3">Fecha</div>
+                <div class="col-3">Costo</div>
+                <div class="col-2">Detalle</div>
+              </div>
+
+              <!-- Iteración de registros -->
+              <div
+                class="row q-py-lg purchases__row"
+                v-for="order in userOrders"
+                :key="order.id"
+              >
+                <!-- Col 1: ID -->
+                <div class="col-4 q-pr-sm">
+                  <div class="purchases__folio">Pedido {{ order.folio }}</div>
+                  <div class="purchases__product-name ellipsis">{{ order.productName }}</div>
+                  <q-badge
+                    outline
+                    class="q-mt-sm"
+                    style="font-family: 'Switzer-Variable', serif;"
+                    :color="order.shipment_status === 'PENDING' ? 'orange' : 'green'"
+                  >
+                    {{ order.shipment_status === 'PENDING' ? 'Pendiente' : 'Enviado' }}
+                  </q-badge>
+                </div>
+
+                <!-- Col 2: Fecha -->
+                <div class="col-3 self-center purchases__date">
+                  {{ formatDate(order.datePurchase) }}
+                </div>
+
+                <!-- Col 3: Costo -->
+                <div class="col-3 self-center purchases__cost">
+                  {{ converToCurrency(order.total) }} MXN
+                </div>
+
+                <!-- Col 4: Action -->
+                <div class="col-2 self-center">
+                  <a href="#" class="purchases__action" @click.prevent="router.push('/order/' + order.id)">Ver pedido</a>
+                </div>
               </div>
             </section>
           </q-tab-panel>
@@ -218,20 +259,27 @@ import { useQuasar } from "quasar";
 import { apiAuth, apiNoAuth } from "../boot/axios";
 import validationRules from "../rules";
 
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 const rules = validationRules();
 const $q = useQuasar();
 const router = useRouter();
+const route = useRoute();
 const auth = apiAuth();
 const tab = ref("account");
 const splitterModel = ref("30");
-const userProfile = ref({});
+const userProfile = ref<any>({});
 const userOrders = ref([]);
 const userAddress = ref(null);
 const loadingProfile = ref(true);
+const loadingOrders = ref(false);
 
-getProfile();
+if (route.query.tab === "purchases") {
+  tab.value = "purchases";
+  getOrders();
+} else {
+  getProfile();
+}
 
 async function tabEvent(event: string) {
   if (event === "account") {
@@ -246,11 +294,10 @@ async function tabEvent(event: string) {
 
   if (event === "exit") {
     localStorage.clear();
+    window.dispatchEvent(new CustomEvent("user-logout"));
     router.push({
       name: "home",
     });
-
-    $q.notify("Sesión cerrada correctamente");
     return;
   }
 }
@@ -279,12 +326,32 @@ async function getProfile() {
   }
 }
 
+function converToCurrency(price: any) {
+  return new Intl.NumberFormat("es-MX", {
+    style: "currency",
+    currency: "MXN",
+    currencyDisplay: "symbol",
+  }).format(price || 0);
+}
+
+function formatDate(dateStr: string) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = String(d.getFullYear()).slice(-2);
+  return `${day}/${month}/${year}`;
+}
+
 async function getOrders() {
   try {
+    loadingOrders.value = true;
     const { data: orders } = await auth.get("orders");
     userOrders.value = orders.data;
   } catch (error) {
     console.log(error);
+  } finally {
+    loadingOrders.value = false;
   }
 }
 
@@ -518,5 +585,57 @@ async function saveAddress() {
 .elegant-fade-leave-to {
   opacity: 0;
   transform: translateY(8px);
+}
+.purchases__container {
+  max-width: 850px;
+}
+
+.purchases__header {
+  font-family: "Switzer-Variable", serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #707279;
+  border-bottom: 1px solid #e3e4eb;
+}
+
+.purchases__row {
+  border-bottom: 1px solid #e3e4eb;
+}
+
+.purchases__folio {
+  font-family: "Switzer-Variable", serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #4f4f4f;
+}
+
+.purchases__product-name {
+  font-family: "Switzer-Variable", serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: #707279;
+}
+
+.purchases__date {
+  font-family: "Switzer-Variable", serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #707279;
+}
+
+.purchases__cost {
+  font-family: "Switzer-Variable", serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #2F3033;
+}
+
+.purchases__action {
+  font-family: "Switzer-Variable", serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: #707279;
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>

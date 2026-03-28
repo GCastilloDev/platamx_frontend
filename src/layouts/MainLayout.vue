@@ -35,7 +35,10 @@
         </q-input>
       </div>
       <div class="header-action__icons">
-        <shop-bag class="icon__pointer" @click="goToShoppingCart" />
+        <div class="cursor-pointer relative-position" style="display: inline-flex;" @click="goToShoppingCart">
+          <shop-bag class="icon__pointer" />
+          <q-badge v-if="cartTotalItems > 0" color="red" rounded floating>{{ cartTotalItems }}</q-badge>
+        </div>
         <account class="icon__pointer" @click="openDialogLogin" />
       </div>
     </section>
@@ -93,7 +96,7 @@
 
     <Login
       :open="dialogLogin"
-      @close="dialogLogin = false"
+      @close="onLoginClose"
       @createAccount="openCreateAccount"
     />
 
@@ -112,6 +115,7 @@ import { useRouter, useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 
 import validationRules from "../rules";
+import { apiAuth } from "../boot/axios";
 
 import ShopBag from "../components/icons/ShopBag.vue";
 import Account from "../components/icons/Account.vue";
@@ -138,6 +142,50 @@ const prueba = ref({});
 const dialogLogin = ref(false);
 const dialogCreateAccount = ref(false);
 const backdropFilter = ref("blur(5px) saturate(150%)");
+const cartTotalItems = ref(0);
+
+async function fetchCartItems() {
+  if (!localStorage.plataMX) {
+    cartTotalItems.value = 0;
+    return;
+  }
+  try {
+    const { data } = await apiAuth().get("shopping-cart/user");
+    cartTotalItems.value = parseInt(data.data.totalItems, 10) || 0;
+  } catch (error) {
+    console.log("Error trayendo carrito:", error);
+    cartTotalItems.value = 0;
+  }
+}
+
+// Ejecutar en el montado
+fetchCartItems();
+
+// Eventos de Windows para comunicación limpia entre componentes 
+if (typeof window !== "undefined") {
+  window.addEventListener("cart-updated", (event: any) => {
+    if (event.detail && event.detail.totalItems !== undefined) {
+      cartTotalItems.value = parseInt(event.detail.totalItems, 10) || 0;
+    } else {
+      fetchCartItems();
+    }
+  });
+
+  window.addEventListener("cart-optimistic", (event: any) => {
+    if (event.detail && event.detail.delta !== undefined) {
+      cartTotalItems.value = Math.max(0, cartTotalItems.value + event.detail.delta);
+    }
+  });
+
+  window.addEventListener("user-logout", () => {
+    cartTotalItems.value = 0;
+  });
+}
+
+function onLoginClose() {
+  dialogLogin.value = false;
+  fetchCartItems();
+}
 const iconPassword = ref("visibility");
 const iconPasswordConfirm = ref("visibility");
 const typeInputPassword = ref("password");
