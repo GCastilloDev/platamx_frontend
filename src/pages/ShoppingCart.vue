@@ -1,11 +1,18 @@
 <template>
   <section class="container">
     <h2 class="title">Tu carrito</h2>
-    <div class="text-center text-h5" v-if="products.length == 0">
-      Sin productos seleccionados
+
+    <!-- Estado de carga inicial -->
+    <div v-if="loadingCart" class="text-center q-py-xl">
+      <q-spinner color="black" size="3em" />
     </div>
-    <div class="products__cart">
-      <div class="products__container" v-if="products.length > 0">
+
+    <template v-else>
+      <div class="text-center text-h5" v-if="products.length == 0">
+        Sin productos seleccionados
+      </div>
+      <div class="products__cart">
+        <div class="products__container" v-if="products.length > 0">
         <div class="row q-pt-lg q-pb-lg border">
           <div class="col-1"></div>
           <div class="col-2 table__title text-center">Cantidad</div>
@@ -111,6 +118,7 @@
         </section>
       </div>
     </div>
+    </template>
   </section>
 </template>
 
@@ -124,6 +132,7 @@ const products = ref<any[]>([]);
 const subtotal = ref("$0.00 MXN");
 const shipping = ref("$0.00 MXN");
 const total = ref("$0.00 MXN");
+const loadingCart = ref(true);
 
 const $q = useQuasar();
 
@@ -134,6 +143,7 @@ async function getShoppingCart() {
     }
   };
   try {
+    loadingCart.value = true;
     const { data: response } = await api.get("/shopping-cart/user");
 
     // Guardián contra el Backend que avienta `{}` cuando la canasta se quedó huérfana
@@ -156,6 +166,8 @@ async function getShoppingCart() {
     dispatch("cart-updated", { totalItems: response.data.totalItems });
   } catch (error) {
     console.log(error);
+  } finally {
+    loadingCart.value = false;
   }
 }
 
