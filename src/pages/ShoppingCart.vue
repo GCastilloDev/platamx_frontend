@@ -13,111 +13,111 @@
       </div>
       <div class="products__cart">
         <div class="products__container" v-if="products.length > 0">
-        <div class="row q-pt-lg q-pb-lg border">
-          <div class="col-1"></div>
-          <div class="col-2 table__title text-center">Cantidad</div>
-          <div class="col-4 table__title">Producto</div>
-          <div class="col-3 table__title">Precio</div>
-          <div class="col-2"></div>
-        </div>
-        <div
-          class="row q-pt-lg q-pb-lg border"
-          v-for="(product, index) in products"
-        >
-          <div class="col-1">
-            <img class="product__image" :src="product.imageUrl" alt="" />
+          <div class="row q-pt-lg q-pb-lg border">
+            <div class="col-1"></div>
+            <div class="col-2 table__title text-center">Cantidad</div>
+            <div class="col-4 table__title">Producto</div>
+            <div class="col-3 table__title">Precio</div>
+            <div class="col-2"></div>
           </div>
           <div
-            class="col-2 self-center justify-center table__product-title prueba"
+            class="row q-pt-lg q-pb-lg border"
+            v-for="(product, index) in products"
           >
-            <q-btn
-              flat
-              round
-              size="xs"
-              icon="remove"
-              :disable="product.quantity <= 1"
-              @click="updateProduct(index, 'remove')"
-            ></q-btn>
-            {{ product.quantity }}
-            <q-btn
-              flat
-              round
-              size="xs"
-              icon="add"
-              @click="updateProduct(index, 'add')"
-            ></q-btn>
+            <div class="col-1">
+              <img class="product__image" :src="product.imageUrl" alt="" />
+            </div>
+            <div
+              class="col-2 self-center justify-center table__product-title prueba"
+            >
+              <q-btn
+                flat
+                round
+                size="xs"
+                icon="remove"
+                :disable="product.quantity <= 1"
+                @click="updateProduct(index, 'remove')"
+              ></q-btn>
+              {{ product.quantity }}
+              <q-btn
+                flat
+                round
+                size="xs"
+                icon="add"
+                @click="updateProduct(index, 'add')"
+              ></q-btn>
+            </div>
+            <div class="col-4 table__product-title self-center q-pr-lg">
+              {{ product.nameItem }}
+            </div>
+            <div class="col-3 self-center table__product-price">
+              {{
+                new Intl.NumberFormat("es-MX", {
+                  style: "currency",
+                  currency: "MXN",
+                  currencyDisplay: "symbol",
+                }).format(product.total)
+              }}
+              MXN
+            </div>
+            <div class="col-2 text-center self-center">
+              <q-btn
+                flat
+                round
+                size="sm"
+                icon="delete"
+                @click="deleteProduct(product.shoppingCartItemId)"
+              ></q-btn>
+            </div>
           </div>
-          <div class="col-4 table__product-title self-center q-pr-lg">
-            {{ product.nameItem }}
+          <h2>Total del carrito</h2>
+          <div class="row table__row border">
+            <div class="col-6 table__info">Subtotal</div>
+            <div class="col-6 text-right table__price">
+              {{
+                new Intl.NumberFormat("es-MX", {
+                  style: "currency",
+                  currency: "MXN",
+                  currencyDisplay: "symbol",
+                }).format(subtotal)
+              }}
+              MXN
+            </div>
           </div>
-          <div class="col-3 self-center table__product-price">
-            {{
-              new Intl.NumberFormat("es-MX", {
-                style: "currency",
-                currency: "MXN",
-                currencyDisplay: "symbol",
-              }).format(product.total)
-            }}
-            MXN
+          <div class="row table__row border">
+            <div class="col-6 table__info">Envío</div>
+            <div class="col-6 text-right table__price">
+              {{
+                new Intl.NumberFormat("es-MX", {
+                  style: "currency",
+                  currency: "MXN",
+                  currencyDisplay: "symbol",
+                }).format(shipping)
+              }}
+              MXN
+            </div>
           </div>
-          <div class="col-2 text-center self-center">
-            <q-btn
-              flat
-              round
-              size="sm"
-              icon="delete"
-              @click="deleteProduct(product.shoppingCartItemId)"
-            ></q-btn>
+          <div class="row table__row border">
+            <div class="col-6 table__info">Total</div>
+            <div class="col-6 text-right table__price">
+              {{
+                new Intl.NumberFormat("es-MX", {
+                  style: "currency",
+                  currency: "MXN",
+                  currencyDisplay: "symbol",
+                }).format(total)
+              }}
+              MXN
+            </div>
           </div>
-        </div>
-        <h2>Total del carrito</h2>
-        <div class="row table__row border">
-          <div class="col-6 table__info">Subtotal</div>
-          <div class="col-6 text-right table__price">
-            {{
-              new Intl.NumberFormat("es-MX", {
-                style: "currency",
-                currency: "MXN",
-                currencyDisplay: "symbol",
-              }).format(subtotal)
-            }}
-            MXN
-          </div>
-        </div>
-        <div class="row table__row border">
-          <div class="col-6 table__info">Envío</div>
-          <div class="col-6 text-right table__price">
-            {{
-              new Intl.NumberFormat("es-MX", {
-                style: "currency",
-                currency: "MXN",
-                currencyDisplay: "symbol",
-              }).format(shipping)
-            }}
-            MXN
-          </div>
-        </div>
-        <div class="row table__row border">
-          <div class="col-6 table__info">Total</div>
-          <div class="col-6 text-right table__price">
-            {{
-              new Intl.NumberFormat("es-MX", {
-                style: "currency",
-                currency: "MXN",
-                currencyDisplay: "symbol",
-              }).format(total)
-            }}
-            MXN
-          </div>
-        </div>
 
-        <section class="text-center q-mt-lg">
-          <a class="product__btn" @click="purchase">
-            <span>Finalizar compra</span>
-          </a>
-        </section>
+          <section class="text-center q-mt-lg">
+            <a class="product__btn" @click="purchase">
+              <span>Finalizar compra</span>
+            </a>
+          </section>
+        </div>
       </div>
-    </div>
     </template>
   </section>
 </template>
@@ -139,7 +139,9 @@ const $q = useQuasar();
 async function getShoppingCart() {
   const dispatch = (event: string, detail?: object) => {
     if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent(event, detail ? { detail } : undefined));
+      window.dispatchEvent(
+        new CustomEvent(event, detail ? { detail } : undefined),
+      );
     }
   };
   try {
@@ -152,7 +154,7 @@ async function getShoppingCart() {
       shipping.value = 0;
       total.value = 0;
       products.value = [];
-      
+
       dispatch("cart-updated", { totalItems: 0 });
       return;
     }
@@ -161,7 +163,7 @@ async function getShoppingCart() {
     shipping.value = response.data.deliveryCost;
     total.value = response.data.total;
     products.value = response.data.items;
-    
+
     // Empujar evento al root pero con Maletín Inteligente para evitarle gastar red
     dispatch("cart-updated", { totalItems: response.data.totalItems });
   } catch (error) {
@@ -182,10 +184,12 @@ async function updateProduct(index, action) {
   const delta = action === "add" ? 1 : -1;
   const data = { quantity };
 
-  // Engaño visual 
+  // Engaño visual
   products.value[index].quantity = quantity;
   if (typeof window !== "undefined")
-    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta } }));
+    window.dispatchEvent(
+      new CustomEvent("cart-optimistic", { detail: { delta } }),
+    );
 
   try {
     $q.loading.show();
@@ -194,7 +198,9 @@ async function updateProduct(index, action) {
   } catch (error) {
     products.value[index].quantity = previousQuantity;
     if (typeof window !== "undefined")
-      window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -delta } }));
+      window.dispatchEvent(
+        new CustomEvent("cart-optimistic", { detail: { delta: -delta } }),
+      );
     console.log(error);
   } finally {
     $q.loading.hide();
@@ -202,16 +208,20 @@ async function updateProduct(index, action) {
 }
 
 async function deleteProduct(productID) {
-  const prodIndex = products.value.findIndex(p => p.shoppingCartItemId === productID);
+  const prodIndex = products.value.findIndex(
+    (p) => p.shoppingCartItemId === productID,
+  );
   if (prodIndex === -1) return;
-  
+
   const prevProd = products.value[prodIndex];
   const delta = -prevProd.quantity;
 
-  // Engaño visual 
+  // Engaño visual
   products.value.splice(prodIndex, 1);
   if (typeof window !== "undefined")
-    window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta } }));
+    window.dispatchEvent(
+      new CustomEvent("cart-optimistic", { detail: { delta } }),
+    );
 
   try {
     $q.loading.show();
@@ -220,7 +230,9 @@ async function deleteProduct(productID) {
   } catch (error) {
     products.value.splice(prodIndex, 0, prevProd);
     if (typeof window !== "undefined")
-      window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -delta } }));
+      window.dispatchEvent(
+        new CustomEvent("cart-optimistic", { detail: { delta: -delta } }),
+      );
     console.log(error);
   } finally {
     $q.loading.hide();
@@ -232,13 +244,13 @@ async function purchase() {
     $q.loading.show();
     const data = {
       currencyPurchase: "MXN",
-      urlSuccess: "string",
+      urlSuccess: "/profile",
       urlCancel: "string",
     };
 
     const { data: response } = await api.post(
       "shopping-cart/purchase/checkout",
-      data
+      data,
     );
 
     const urlPayment = response.data.session_url;
