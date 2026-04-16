@@ -15,11 +15,11 @@
         ></q-icon>
       </q-card-section>
       <q-card-section class="q-pt-none">
-        <div class="login__title">Regístrate</div>
+        <div class="login__title">{{ t('register_title') }}</div>
       </q-card-section>
       <q-form ref="accountCreateForm">
         <q-card-section>
-          <p class="input__title">Nombre completo</p>
+          <p class="input__title">{{ t('register_name') }}</p>
           <q-input
             :autofocus="true"
             standout
@@ -32,7 +32,7 @@
           </q-input>
         </q-card-section>
         <q-card-section>
-          <p class="input__title">Correo electrónico</p>
+          <p class="input__title">{{ t('register_email') }}</p>
           <q-input
             :autofocus="true"
             standout
@@ -45,7 +45,7 @@
           </q-input>
         </q-card-section>
         <q-card-section>
-          <p class="input__title">Contraseña</p>
+          <p class="input__title">{{ t('register_password') }}</p>
           <q-input
             :type="typeInputPassword"
             placeholder="•••••••"
@@ -63,7 +63,7 @@
           </q-input>
         </q-card-section>
         <q-card-section>
-          <p class="input__title">Confirmar contraseña</p>
+          <p class="input__title">{{ t('register_confirm') }}</p>
           <q-input
             :type="typeInputPasswordConfirm"
             placeholder="•••••••"
@@ -88,7 +88,7 @@
           @click="createAccountValidate"
           ref="createAccountButton"
         >
-          <span v-if="!loading">Registrarme</span>
+          <span v-if="!loading">{{ t('register_cta') }}</span>
           <q-spinner-tail v-if="loading" color="white" size="2em" />
         </span>
       </q-card-actions>
@@ -99,11 +99,12 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useQuasar } from "quasar";
-
 import axios from "axios";
+import { useI18n } from 'vue-i18n';
 
 import validationRules from "../rules";
 
+const { t } = useI18n();
 const rules = validationRules();
 const $q = useQuasar();
 const dialogCreateAccount = ref(false);
@@ -190,14 +191,14 @@ async function createAccount() {
     const url = "https://platamx-backend-1cvg.onrender.com/users";
 
     await axios.post(url, user.value);
-    $q.notify("Cuenta creada correctamente");
+    $q.notify(t('register_success'));
     emit("openLogin");
     // dialogCreateAccount.value = false;
     // dialogLogin.value = true;
   } catch (error) {
     console.log(error);
     $q.notify({
-      message: "Error al crear la cuenta",
+      message: t('register_error'),
       color: "red",
     });
   } finally {

@@ -7,6 +7,7 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
+import { i18n } from 'src/boot/i18n';
 
 /*
  * If not building with SSR mode, you can
@@ -32,5 +33,16 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
+  // Sync locale with URL lang prefix
+  Router.beforeEach((to) => {
+    const lang = to.params.lang as string;
+    if (lang === 'en') {
+      i18n.global.locale.value = 'en-US';
+    } else if (lang === 'es') {
+      i18n.global.locale.value = 'es-MX';
+    }
+  });
+
   return Router;
 });
+

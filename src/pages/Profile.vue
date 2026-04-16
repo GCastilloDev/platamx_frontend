@@ -11,7 +11,7 @@
               tabEvent('account');
             "
           >
-            Mi cuenta
+            {{ t('profile_my_account') }}
           </div>
           <div
             class="profile-menu-tab cursor-pointer row items-center"
@@ -21,14 +21,14 @@
               tabEvent('purchases');
             "
           >
-            Mi lista de compras
+            {{ t('profile_purchases') }}
           </div>
           <div
             class="profile-menu-tab cursor-pointer row items-center"
             :class="{ 'profile-menu-tab--active': tab === 'exit' }"
             @click="tabEvent('exit')"
           >
-            Salir de cuenta
+            {{ t('profile_sign_out') }}
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@
         >
           <q-tab-panel name="account" class="q-pa-none">
             <section class="row q-mb-lg items-start">
-              <div class="col-12 col-md-3 profile__title q-mt-md">Nombre</div>
+              <div class="col-12 col-md-3 profile__title q-mt-md">{{ t('profile_name_label') }}</div>
               <div class="col-12 col-md-7">
                 <q-card flat bordered class="rounded-borders">
                   <q-card-section v-if="loadingProfile">
@@ -57,7 +57,7 @@
                           {{ userProfile.name }}
                         </div>
                         <div class="col-auto text-right">
-                          <span class="profile-card-link cursor-pointer" @click="attemptChangeName">Cambiar</span>
+                          <span class="profile-card-link cursor-pointer" @click="attemptChangeName">{{ t('profile_change') }}</span>
                         </div>
                       </div>
                     </q-card-section>
@@ -65,7 +65,7 @@
                     <!-- MODO EDICIÓN FORMULARIO NOMBRE -->
                     <q-card-section v-else-if="!loadingProfile && isEditingName" key="editName" class="q-pa-lg">
                       <q-form @submit="saveName">
-                        <p class="input__title q-mb-sm">Nombre completo</p>
+                        <p class="input__title q-mb-sm">{{ t('profile_name_full') }}</p>
                         <q-input outlined v-model="formName" :rules="rules.maxLength200" placeholder="" class="q-mb-lg custom-input-border" />
                         
                         <div class="row q-mt-lg items-center">
@@ -75,14 +75,14 @@
                             style="outline: none; border: none; font-family: 'Switzer-Variable', Switzer, serif; width: auto; padding: 0 32px;"
                             :disabled="loadingSaveName"
                           >
-                            <span v-if="!loadingSaveName">Guardar cambios</span>
+                            <span v-if="!loadingSaveName">{{ t('profile_save') }}</span>
                             <q-spinner-tail v-if="loadingSaveName" color="white" size="20px" />
                           </button>
                           <span
                             class="btn-cancel-form q-ml-xl cursor-pointer"
                             @click="closeNameModal"
                           >
-                            Cancelar
+                             {{ t('profile_cancel') }}
                           </span>
                         </div>
                       </q-form>
@@ -94,7 +94,7 @@
 
             <section class="row q-mb-lg items-start">
               <div class="col-12 col-md-3 profile__title q-mt-md">
-                Dirección de envío
+                {{ t('profile_address_label') }}
               </div>
               <div class="col-12 col-md-7">
                 <q-card flat bordered class="rounded-borders">
@@ -113,14 +113,14 @@
                           {{ userProfile.address.zip }}, Teléfono:
                           {{ userProfile.address.phone }}
                         </span>
-                        <span v-else> Sin dirección registrada </span>
+                        <span v-else>{{ t('profile_no_address') }}</span>
                       </div>
                       <div class="col-auto text-right">
                         <span
                           class="profile-card-link cursor-pointer"
                           @click="openAddressModal"
                         >
-                          {{ userAddress !== null ? "Cambiar" : "Agregar" }}
+                          {{ userAddress !== null ? t('profile_change') : t('profile_add') }}
                         </span>
                       </div>
                     </div>
@@ -128,19 +128,19 @@
                   <q-card-section v-else-if="!loadingProfile && isEditingAddress" key="edit" class="q-pa-lg">
                     <q-form ref="addressForm" @submit="saveAddress">
                       
-                      <p class="input__title q-mb-sm">Estado</p>
+                      <p class="input__title q-mb-sm">{{ t('profile_state') }}</p>
                       <q-input outlined v-model="formAddress.state" :rules="rules.maxLength200" placeholder="Por ejemplo: Nuevo León" class="q-mb-md custom-input-border" />
                       
-                      <p class="input__title q-mb-sm">Ciudad</p>
+                      <p class="input__title q-mb-sm">{{ t('profile_city') }}</p>
                       <q-input outlined v-model="formAddress.city" :rules="rules.maxLength200" placeholder="Por ejemplo: Monterrey" class="q-mb-md custom-input-border" />
                       
-                      <p class="input__title q-mb-sm">Calle, número y colonia</p>
+                      <p class="input__title q-mb-sm">{{ t('profile_street') }}</p>
                       <q-input outlined v-model="formAddress.street" :rules="rules.maxLength200" placeholder="Calle, número ext e int" class="q-mb-md custom-input-border" />
                       
-                      <p class="input__title q-mb-sm">Código Postal</p>
+                      <p class="input__title q-mb-sm">{{ t('profile_zip') }}</p>
                       <q-input outlined v-model="formAddress.zip" :rules="rules.zipcode" mask="#####" placeholder="Por ejemplo: 01000" class="q-mb-md custom-input-border" />
                       
-                      <p class="input__title q-mb-sm">Número de teléfono</p>
+                      <p class="input__title q-mb-sm">{{ t('profile_phone') }}</p>
                       <q-input outlined v-model="formAddress.phone" :rules="rules.phone" mask="##########" placeholder="" class="q-mb-lg custom-input-border" />
                       
                       <div class="row q-mt-lg items-center">
@@ -150,14 +150,14 @@
                           style="outline: none; border: none; font-family: 'Switzer-Variable', Switzer, serif; width: auto; padding: 0 32px;"
                           :disabled="loadingSaveAddress"
                         >
-                          <span v-if="!loadingSaveAddress">Guardar cambios</span>
+                          <span v-if="!loadingSaveAddress">{{ t('profile_save') }}</span>
                           <q-spinner-tail v-if="loadingSaveAddress" color="white" size="20px" />
                         </button>
                         <span
                           class="btn-cancel-form q-ml-xl cursor-pointer"
                           @click="closeAddressModal"
                         >
-                          Cancelar
+                          {{ t('profile_cancel') }}
                         </span>
                       </div>
                     </q-form>
@@ -174,17 +174,17 @@
             </section>
 
             <section class="text-center text-h6 text-grey-8 q-mt-lg" v-else-if="userOrders.length === 0">
-              Sin compras
+              {{ t('profile_orders_empty') }}
             </section>
             
             <!-- Compras Listado -->
             <section v-else class="purchases__container">
               <!-- Encabezados de tabla falsa -->
               <div class="row q-pb-sm text-left purchases__header">
-                <div class="col-4">ID del pedido</div>
-                <div class="col-3">Fecha</div>
-                <div class="col-3">Costo</div>
-                <div class="col-2">Detalle</div>
+                <div class="col-4">{{ t('profile_table_order') }}</div>
+                <div class="col-3">{{ t('profile_table_date') }}</div>
+                <div class="col-3">{{ t('profile_table_cost') }}</div>
+                <div class="col-2">{{ t('profile_table_detail') }}</div>
               </div>
 
               <!-- Iteración de registros -->
@@ -195,16 +195,27 @@
               >
                 <!-- Col 1: ID -->
                 <div class="col-4 q-pr-sm">
-                  <div class="purchases__folio">Pedido {{ order.folio }}</div>
-                  <div class="purchases__product-name ellipsis">{{ order.productName }}</div>
-                  <q-badge
-                    outline
-                    class="q-mt-sm"
-                    style="font-family: 'Switzer-Variable', serif;"
-                    :color="order.shipment_status === 'PENDING' ? 'orange' : 'green'"
-                  >
-                    {{ order.shipment_status === 'PENDING' ? 'Pendiente' : 'Enviado' }}
-                  </q-badge>
+                  <div class="purchases__folio">{{ t('profile_table_order') }} {{ order.folio }}</div>
+                  <div class="purchases__product-name ellipsis">{{ locale === 'en-US' ? (order.productName_en || order.productName) : order.productName }}</div>
+                  <div class="flex items-center q-mt-sm">
+                    <q-badge
+                      outline
+                      style="font-family: 'Switzer-Variable', serif;"
+                      :color="order.shipment_status === 'PENDING' ? 'orange' : (order.shipment_status === 'DELIVERED' ? 'blue' : 'green')"
+                    >
+                      {{ order.shipment_status === 'PENDING' ? t('profile_status_pending') : (order.shipment_status === 'DELIVERED' ? t('profile_status_delivered') : t('profile_status_shipped')) }}
+                    </q-badge>
+
+                    <a 
+                      v-if="order.tracking_url" 
+                      :href="order.tracking_url" 
+                      target="_blank" 
+                      style="font-family: 'Switzer-Variable', serif; font-size: 13px; font-weight: 500; color: #2F3033; text-decoration: underline;"
+                      class="q-ml-md tracking-link"
+                    >
+                      {{ t('order_detail_track_package') }} <q-icon name="open_in_new" size="12px" />
+                    </a>
+                  </div>
                 </div>
 
                 <!-- Col 2: Fecha -->
@@ -212,14 +223,15 @@
                   {{ formatDate(order.datePurchase) }}
                 </div>
 
-                <!-- Col 3: Costo -->
+                <!-- Col 3: Costo (Moneda de Compra Real) -->
                 <div class="col-3 self-center purchases__cost">
-                  {{ converToCurrency(order.total) }} MXN
+                  {{ converToCurrency(order.payment_currency === 'USD' ? order.totalUsd : order.total, order.payment_currency) }} 
+                  <span style="font-size: 14px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span>
                 </div>
 
                 <!-- Col 4: Action -->
                 <div class="col-2 self-center">
-                  <a href="#" class="purchases__action" @click.prevent="router.push('/order/' + order.id)">Ver pedido</a>
+                  <a href="#" class="purchases__action" @click.prevent="router.push('/' + route.params.lang + '/order/' + order.id)">{{ t('profile_view_order') }}</a>
                 </div>
               </div>
             </section>
@@ -258,9 +270,11 @@ import { ref } from "vue";
 import { useQuasar } from "quasar";
 import { apiAuth, apiNoAuth } from "../boot/axios";
 import validationRules from "../rules";
+import { useI18n } from 'vue-i18n';
 
 import { useRouter, useRoute } from "vue-router";
 
+const { t, locale } = useI18n();
 const rules = validationRules();
 const $q = useQuasar();
 const router = useRouter();
@@ -326,10 +340,10 @@ async function getProfile() {
   }
 }
 
-function converToCurrency(price: any) {
-  return new Intl.NumberFormat("es-MX", {
+function converToCurrency(price: any, currency: string = "MXN") {
+  return new Intl.NumberFormat(currency === "USD" ? "en-US" : "es-MX", {
     style: "currency",
-    currency: "MXN",
+    currency: currency || "MXN",
     currencyDisplay: "symbol",
   }).format(price || 0);
 }
@@ -376,7 +390,7 @@ function attemptChangeName() {
   if (userAddress.value === null) {
     $q.notify({
       message:
-        "Para poder cambiar tu nombre, primero debes registrar una dirección de envío.",
+        t('profile_name_change_warning'),
       color: "warning",
       icon: "warning",
     });
@@ -408,7 +422,7 @@ async function saveName() {
     await apiAuth().patch(`users/${userProfile.value.id}`, payload);
 
     $q.notify({
-      message: "Nombre actualizado correctamente",
+      message: t('profile_name_saved'),
       color: "positive",
     });
 
@@ -458,7 +472,7 @@ async function saveAddress() {
     await auth.patch(`users/${userProfile.value.id}`, payload);
 
     $q.notify({
-      message: "Dirección actualizada correctamente",
+      message: t('profile_address_saved'),
       color: "positive",
     });
 
@@ -476,7 +490,7 @@ async function saveAddress() {
   } catch (error) {
     console.log(error);
     $q.notify({
-      message: "¡Oops! Ocurrió un error al guardar",
+      message: t('profile_save_error'),
       color: "negative",
     });
   } finally {

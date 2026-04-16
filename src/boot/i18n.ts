@@ -1,5 +1,5 @@
-import { boot } from 'quasar/wrappers';
 import { createI18n } from 'vue-i18n';
+import { boot } from 'quasar/wrappers';
 
 import messages from 'src/i18n';
 
@@ -21,13 +21,14 @@ declare module 'vue-i18n' {
 }
 /* eslint-enable @typescript-eslint/no-empty-interface */
 
-export default boot(({ app }) => {
-  const i18n = createI18n({
-    locale: 'en-US',
-    legacy: false,
-    messages,
-  });
+// Export i18n instance so the router guard can use it
+export const i18n = createI18n({
+  locale: 'es-MX',
+  fallbackLocale: 'es-MX',
+  legacy: false,
+  messages,
+});
 
-  // Set i18n instance on app
+export default boot(({ app }) => {
   app.use(i18n);
 });

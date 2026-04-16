@@ -2,19 +2,21 @@
   <section class="promotion__container">
     <img class="promotion__img" src="../assets/images/promocion.jpg" alt="" />
     <h2 class="promotion__title">
-      Encuentra el anillo ideal para tu persona especial
+      {{ t('promo_title') }}
     </h2>
     <h3 class="promotion__subtitle">
-      Descubre nuestro increíble catálogo de anillos perfectos para cualquier
-      ocasión.
+      {{ t('promo_subtitle') }}
     </h3>
     <div class="promotion__button">
-      <span>Ir a sección</span>
+      <span>{{ t('promo_cta') }}</span>
     </div>
   </section>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+</script>
 
 <style scoped>
 .promotion__container {

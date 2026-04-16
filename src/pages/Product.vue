@@ -85,25 +85,31 @@
           v-for="collection in product.collections"
           :key="collection.id"
         >
-          {{ collection.name }}
+          {{ locale === 'en-US' ? (collection.name_en || collection.name) : collection.name }}
           <q-tooltip v-if="collection.description" anchor="bottom middle" self="top middle" :offset="[0, 8]">
-            {{ collection.description }}
+            {{ locale === 'en-US' ? (collection.description_en || collection.description) : collection.description }}
           </q-tooltip>
         </div>
       </div>
-      <h2 class="product__title">{{ product.name }}</h2>
+      <h2 class="product__title">{{ locale === 'en-US' ? (product.name_en || product.name) : product.name }}</h2>
       <p class="product__price">
         {{
-          new Intl.NumberFormat("es-MX", {
-            style: "currency",
-            currency: "MXN",
-            currencyDisplay: "code",
-          }).format(product.price)
+          locale === 'en-US'
+            ? new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                currencyDisplay: 'code',
+              }).format(product.price_usd ?? product.price)
+            : new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN',
+                currencyDisplay: 'code',
+              }).format(product.price)
         }}
       </p>
 
       <section v-if="product.variants && product.variants.length > 0">
-        <p class="product__subtitle">Tallas</p>
+        <p class="product__subtitle">{{ t('product_sizes') }}</p>
         <div class="product__size-container">
           <a
             v-for="variant in product.variants"
@@ -119,13 +125,13 @@
       </section>
       <!-- <p>Conoce tu talla</p> -->
       <a class="product__btn" @click="addProduct" ref="addProductButton">
-        <span v-if="!loadingBtn">Añadir al carrito</span>
+        <span v-if="!loadingBtn">{{ t('product_add_to_cart') }}</span>
         <q-spinner-tail v-if="loadingBtn" color="white" size="2em" />
       </a>
 
       <div class="product__description">
-        <h3 class="product__subtitle">Detalle del producto</h3>
-        <div class="product__text" v-html="product.description">
+        <h3 class="product__subtitle">{{ t('product_detail_title') }}</h3>
+        <div class="product__text" v-html="locale === 'en-US' ? (product.description_en || product.description) : product.description">
         </div>
       </div>
     </div>
@@ -149,11 +155,13 @@ import { ref } from "vue";
 import axios from "axios";
 import { useQuasar } from "quasar";
 import { useRoute } from "vue-router";
+import { useI18n } from 'vue-i18n';
 
 import Login from "../components/Login.vue";
 import CreateAccount from "../components/CreateAccount.vue";
 import { apiAuth } from "../boot/axios";
 
+const { t, locale } = useI18n();
 const $q = useQuasar();
 
 const api = apiAuth();
@@ -247,7 +255,7 @@ async function postProduct() {
 
     await api.post("/shopping-cart", item);
     $q.notify({
-      message: "Producto añadido al carrito",
+      message: t('product_added_ok'),
       color: "green",
     });
     if (typeof window !== "undefined")

@@ -1,8 +1,8 @@
 <template>
   <section class="collection__container">
-    <h2 class="collection__title">Nuestras colecciones</h2>
+    <h2 class="collection__title">{{ t('collections_title') }}</h2>
     <h3 class="collection__subtitle">
-      Buen gusto y prestigio siempre a la vanguardia
+      {{ t('collections_subtitle') }}
     </h3>
 
     <div class="collection__sections">
@@ -30,7 +30,10 @@
   </section>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+</script>
 
 <style scoped>
 .collection__container {

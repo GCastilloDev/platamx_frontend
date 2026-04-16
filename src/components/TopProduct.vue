@@ -29,18 +29,18 @@
     </div>
     <div class="top-product__detail">
       <section>
-        <div class="top-products__tag">Dije de zirconia</div>
-        <h2>Corazón Blanco</h2>
-        <p class="top-product__price">$999.00 MXN</p>
+        <div class="top-products__tag">{{ t('top_product_tag') }}</div>
+        <h2>{{ t('top_product_name') }}</h2>
+        <p class="top-product__price">{{ t('top_product_price') }}</p>
         <div class="hero__button">
           <button>
-            <span>Ver producto</span>
+            <span>{{ t('top_product_cta') }}</span>
           </button>
         </div>
 
         <hr />
 
-        <p class="top-product__title-list">Detalle del producto</p>
+        <p class="top-product__title-list">{{ t('top_product_detail_title') }}</p>
         <ul class="top-product__list">
           <li>Largo de Cadena: 45 cm</li>
           <li>Alto del Corazón: 1.2 mm</li>
@@ -58,7 +58,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const slide = ref(1);
 </script>
 

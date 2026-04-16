@@ -20,7 +20,7 @@ const apiNoAuth = axios.create({
 });
 
 const apiAuth = () => {
-  const localItem = LocalStorage.getItem("plataMX");
+  const localItem = LocalStorage.getItem('plataMX');
   const token = localItem ? JSON.parse(localItem as string) : null;
   const baseURL = `https://platamx-backend-1cvg.onrender.com/`;
   const headers = {
@@ -29,8 +29,25 @@ const apiAuth = () => {
 
   const http = axios.create({ baseURL, headers });
 
+  // Interceptor: si el backend responde 401, sesión expirada → pedir re-login
+  http.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response?.status === 401) {
+        // Limpiar sesión
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('plataMX');
+          // Avisar a MainLayout para que abra el diálogo de login
+          window.dispatchEvent(new CustomEvent('auth-expired'));
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
+
   return http;
 };
+
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api

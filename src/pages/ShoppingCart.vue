@@ -1,6 +1,6 @@
 <template>
   <section class="container">
-    <h2 class="title">Tu carrito</h2>
+    <h2 class="title">{{ t('cart_title') }}</h2>
 
     <!-- Estado de carga inicial -->
     <div v-if="loadingCart" class="text-center q-py-xl">
@@ -9,15 +9,15 @@
 
     <template v-else>
       <div class="text-center text-h5" v-if="products.length == 0">
-        Sin productos seleccionados
+        {{ t('cart_empty') }}
       </div>
       <div class="products__cart">
         <div class="products__container" v-if="products.length > 0">
           <div class="row q-pt-lg q-pb-lg border">
             <div class="col-1"></div>
-            <div class="col-2 table__title text-center">Cantidad</div>
-            <div class="col-4 table__title">Producto</div>
-            <div class="col-3 table__title">Precio</div>
+            <div class="col-2 table__title text-center">{{ t('cart_col_qty') }}</div>
+            <div class="col-4 table__title">{{ t('cart_col_product') }}</div>
+            <div class="col-3 table__title">{{ t('cart_col_price') }}</div>
             <div class="col-2"></div>
           </div>
           <div
@@ -48,17 +48,10 @@
               ></q-btn>
             </div>
             <div class="col-4 table__product-title self-center q-pr-lg">
-              {{ product.nameItem }}
+              {{ locale === 'en-US' ? (product.nameItem_en || product.nameItem) : product.nameItem }}
             </div>
             <div class="col-3 self-center table__product-price">
-              {{
-                new Intl.NumberFormat("es-MX", {
-                  style: "currency",
-                  currency: "MXN",
-                  currencyDisplay: "symbol",
-                }).format(product.total)
-              }}
-              MXN
+              {{ formatPrice(product.total, product.totalUsd) }}
             </div>
             <div class="col-2 text-center self-center">
               <q-btn
@@ -70,50 +63,29 @@
               ></q-btn>
             </div>
           </div>
-          <h2>Total del carrito</h2>
+          <h2>{{ t('cart_summary_title') }}</h2>
           <div class="row table__row border">
-            <div class="col-6 table__info">Subtotal</div>
+            <div class="col-6 table__info">{{ t('cart_subtotal') }}</div>
             <div class="col-6 text-right table__price">
-              {{
-                new Intl.NumberFormat("es-MX", {
-                  style: "currency",
-                  currency: "MXN",
-                  currencyDisplay: "symbol",
-                }).format(subtotal)
-              }}
-              MXN
+              {{ formatPrice(subtotal, subtotalUsd) }}
             </div>
           </div>
           <div class="row table__row border">
-            <div class="col-6 table__info">Envío</div>
+            <div class="col-6 table__info">{{ t('cart_shipping') }}</div>
             <div class="col-6 text-right table__price">
-              {{
-                new Intl.NumberFormat("es-MX", {
-                  style: "currency",
-                  currency: "MXN",
-                  currencyDisplay: "symbol",
-                }).format(shipping)
-              }}
-              MXN
+              {{ formatPrice(shipping, shippingUsd) }}
             </div>
           </div>
           <div class="row table__row border">
-            <div class="col-6 table__info">Total</div>
+            <div class="col-6 table__info">{{ t('cart_total') }}</div>
             <div class="col-6 text-right table__price">
-              {{
-                new Intl.NumberFormat("es-MX", {
-                  style: "currency",
-                  currency: "MXN",
-                  currencyDisplay: "symbol",
-                }).format(total)
-              }}
-              MXN
+              {{ formatPrice(total, totalUsd) }}
             </div>
           </div>
 
           <section class="text-center q-mt-lg">
             <a class="product__btn" @click="purchase">
-              <span>Finalizar compra</span>
+              <span>{{ t('cart_checkout') }}</span>
             </a>
           </section>
         </div>
@@ -125,16 +97,36 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useQuasar } from "quasar";
+import { useI18n } from 'vue-i18n';
 import { apiAuth } from "../boot/axios";
 
+const { t, locale } = useI18n();
 const api = apiAuth();
 const products = ref<any[]>([]);
-const subtotal = ref("$0.00 MXN");
-const shipping = ref("$0.00 MXN");
-const total = ref("$0.00 MXN");
+const subtotal = ref<any>(0);
+const shipping = ref<any>(0);
+const total = ref<any>(0);
+const subtotalUsd = ref<any>(0);
+const shippingUsd = ref<any>(0);
+const totalUsd = ref<any>(0);
 const loadingCart = ref(true);
 
 const $q = useQuasar();
+
+function formatPrice(priceMxn: any, priceUsd: any) {
+  const isEn = locale.value === 'en-US';
+  const currency = isEn ? 'USD' : 'MXN';
+  const price = isEn ? (priceUsd ?? priceMxn) : priceMxn;
+  const numericPrice = typeof price === 'string' ? parseFloat(price) : price;
+  
+  const formatted = new Intl.NumberFormat(isEn ? 'en-US' : 'es-MX', {
+    style: "currency",
+    currency: currency,
+    currencyDisplay: "symbol",
+  }).format(numericPrice || 0);
+  
+  return `${formatted} ${currency}`;
+}
 
 async function getShoppingCart() {
   const dispatch = (event: string, detail?: object) => {
@@ -162,6 +154,9 @@ async function getShoppingCart() {
     subtotal.value = response.data.subTotal;
     shipping.value = response.data.deliveryCost;
     total.value = response.data.total;
+    subtotalUsd.value = response.data.subTotalUsd;
+    shippingUsd.value = response.data.deliveryCostUsd;
+    totalUsd.value = response.data.totalUsd;
     products.value = response.data.items;
 
     // Empujar evento al root pero con Maletín Inteligente para evitarle gastar red
@@ -243,7 +238,7 @@ async function purchase() {
   try {
     $q.loading.show();
     const data = {
-      currencyPurchase: "MXN",
+      currencyPurchase: locale.value === 'en-US' ? 'USD' : 'MXN',
       urlSuccess: "/profile",
       urlCancel: "string",
     };

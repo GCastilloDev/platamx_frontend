@@ -22,28 +22,38 @@
 
     <section class="product-card__description" v-if="!loading">
       <p class="product-card__price">
-        {{ converToCurrency(props.product.price) }}
+        {{ locale === 'en-US'
+          ? converToCurrency(props.product.price_usd ?? props.product.price, 'USD')
+          : converToCurrency(props.product.price, 'MXN') }}
       </p>
       <p class="product-card__title">
-        {{ props.product.name }}
+        {{ locale === 'en-US' ? (props.product.name_en || props.product.name) : props.product.name }}
       </p>
-      <p class="product-card__subtitle">{{ stripHTML(props.product.description) }}</p>
+      <p class="product-card__subtitle">{{ stripHTML(locale === 'en-US'
+        ? (props.product.description_en || props.product.description)
+        : props.product.description) }}</p>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRouter, useRoute } from "vue-router";
+import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
+const route = useRoute();
+const { locale } = useI18n();
 
 const props = defineProps<{
   loading: boolean;
   product: {
     id: number;
     name: string;
+    name_en?: string;
     description: string;
-    price: string;
+    description_en?: string;
+    price: string | number;
+    price_usd?: string | number;
     images?: [
       {
         url?: string;
@@ -52,12 +62,13 @@ const props = defineProps<{
   };
 }>();
 
-function converToCurrency(price) {
-  return new Intl.NumberFormat("es-MX", {
+function converToCurrency(price: string | number, currency: 'MXN' | 'USD' = 'MXN') {
+  const numericPrice = typeof price === 'string' ? parseFloat(price) : price;
+  return new Intl.NumberFormat(currency === 'USD' ? 'en-US' : 'es-MX', {
     style: "currency",
-    currency: "MXN",
+    currency,
     currencyDisplay: "code",
-  }).format(price);
+  }).format(numericPrice || 0);
 }
 
 function stripHTML(html?: string) {
@@ -66,24 +77,21 @@ function stripHTML(html?: string) {
   return html.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
 }
 
-function defineImage(product) {
+function defineImage(product: { images?: { url?: string }[] }) {
   const image =
     "https://res.cloudinary.com/dhils8jyq/image/upload/v1725562192/plata_generico_on9yy1.jpg";
 
-  console.log(product);
-
-  if (product.images.length > 0) return product.images[0].url;
+  if (product.images && product.images.length > 0) return product.images[0].url;
 
   return image;
 }
 
 function goToProduct() {
   const id = props.product.id;
+  const lang = route.params.lang || 'es';
   router.push({
     name: "product",
-    params: {
-      id,
-    },
+    params: { id, lang },
   });
 }
 </script>

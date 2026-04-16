@@ -8,27 +8,56 @@
       
       <!-- Estado de Error / Vacío -->
       <div v-else-if="!order" class="q-py-xl text-center">
-        <div class="text-h6 text-grey-8 font-switzer">Ops, no se pudo localizar este pedido.</div>
-        <q-btn flat class="q-mt-lg custom-btn" label="Regresar a mi perfil" @click="goBack" />
+        <div class="text-h6 text-grey-8 font-switzer">{{ t('order_detail_error_not_found') }}</div>
+        <q-btn flat class="q-mt-lg custom-btn" :label="t('order_detail_back_to_profile')" @click="goBack" />
       </div>
       
       <!-- Vista Principal del Pedido -->
       <div v-else class="order__wrapper">
-        <!-- Flecha de Regreso posicionada afuera del bloque central -->
-        <div class="back-button-wrapper">
-          <q-icon name="arrow_back" size="md" class="cursor-pointer icon-back" @click="goBack" />
-        </div>
-
         <div class="order__content">
-          <h1 class="order__title q-mb-xl">Fecha: {{ formatDate(order.datePurchase) }}</h1>
+          <!-- Cabecera Limpia (Flecha + Título de Orden) -->
+          <div class="row items-center q-mb-sm">
+            <q-icon name="arrow_back" size="sm" class="cursor-pointer icon-back q-mr-md" @click="goBack" />
+            <h1 class="order__title q-my-none">
+              {{ t('profile_table_order') }} {{ order.folio || '' }}
+            </h1>
+          </div>
+
+          <!-- Metadatos de la Orden (Fecha, Status, Tracking) -->
+          <div class="row items-center q-mb-xl q-pl-xl" style="padding-left: 44px; margin-bottom: 64px;">
+            <span class="text-grey-7 q-mr-md" style="font-family: 'Switzer-Variable', serif; font-weight: 500; font-size: 15px;">
+              {{ t('order_detail_date') }}: {{ formatDate(order.datePurchase) }}
+            </span>
+
+            <div v-if="order.shipment_status" class="row items-center">
+              <q-badge
+                outline
+                class="q-px-sm"
+                style="font-family: 'Switzer-Variable', serif; font-weight: 500; font-size: 12px; height: 22px; border-radius: 4px;"
+                :color="order.shipment_status === 'PENDING' ? 'orange' : (order.shipment_status === 'DELIVERED' ? 'blue' : 'green')"
+              >
+                {{ order.shipment_status === 'PENDING' ? t('profile_status_pending') : (order.shipment_status === 'DELIVERED' ? t('profile_status_delivered') : t('profile_status_shipped')) }}
+              </q-badge>
+              
+              <a 
+                v-if="order.tracking_url" 
+                :href="order.tracking_url" 
+                target="_blank" 
+                class="q-ml-md tracking-link"
+              >
+                {{ t('order_detail_track_package') }}
+                <q-icon name="open_in_new" size="14px" class="q-ml-xs"/>
+              </a>
+            </div>
+          </div>
 
           <!-- Tabla Transparente de Productos -->
         <div class="order__table q-mb-xl">
           <!-- Titulos de Tabla -->
           <div class="row q-pb-md order__header">
             <div class="col-2"></div>
-            <div class="col-6">Producto</div>
-            <div class="col-4 text-right">Precio</div>
+            <div class="col-6">{{ t('order_detail_product') }}</div>
+            <div class="col-4 text-right">{{ t('order_detail_price') }}</div>
           </div>
           
           <!-- Iteración Viva de Artículos -->
@@ -37,36 +66,36 @@
               <q-img :src="item.image" loading="lazy" class="order__image" />
             </div>
             <div class="col-6 self-center q-pl-sm order__product-name">
-              {{ item.productName }}
+              {{ locale === 'en-US' ? (item.productName_en || item.productName) : item.productName }}
             </div>
             <div class="col-4 self-center text-right order__cost">
-              {{ converToCurrency(item.total) }} MXN
+              {{ converToCurrency(order.payment_currency === 'USD' ? item.totalUsd : item.total, order.payment_currency) }} <span style="font-size: 14px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span>
             </div>
           </div>
         </div>
 
         <!-- Segmento Total y Resumen de Costos -->
         <div class="order__summary q-mt-xl">
-          <h2 class="order__summary-title q-mb-lg">Total del carrito</h2>
+          <h2 class="order__summary-title q-mb-lg">{{ t('cart_summary_title') }}</h2>
           
           <div class="row q-py-md order__summary-row">
-            <div class="col-6 summary__label">Subtotal</div>
-            <div class="col-6 text-right summary__value">{{ converToCurrency(order.subTotal) }} MXN</div>
+            <div class="col-6 summary__label">{{ t('cart_subtotal') }}</div>
+            <div class="col-6 text-right summary__value">{{ converToCurrency(order.payment_currency === 'USD' ? order.subTotalUsd : order.subTotal, order.payment_currency) }} <span style="font-size: 13px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span></div>
           </div>
           
           <div class="row q-py-md order__summary-row">
-            <div class="col-6 summary__label">Envío</div>
-            <div class="col-6 text-right summary__value">{{ converToCurrency(order.deliveryCost) }} MXN</div>
+            <div class="col-6 summary__label">{{ t('cart_shipping') }}</div>
+            <div class="col-6 text-right summary__value">{{ converToCurrency(order.payment_currency === 'USD' ? order.deliveryCostUsd : order.deliveryCost, order.payment_currency) }} <span style="font-size: 13px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span></div>
           </div>
           
           <div class="row q-py-md order__summary-row">
-            <div class="col-6 summary__label">Total</div>
-            <div class="col-6 text-right summary__value">{{ converToCurrency(order.total) }} MXN</div>
+            <div class="col-6 summary__label">{{ t('cart_total') }}</div>
+            <div class="col-6 text-right summary__value">{{ converToCurrency(order.payment_currency === 'USD' ? order.totalUsd : order.total, order.payment_currency) }} <span style="font-size: 13px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span></div>
           </div>
           
           <!-- Dirección de entrega adaptativa -->
           <div class="row q-py-lg order__summary-row" style="border-bottom: 1px solid #e3e4eb;">
-            <div class="col-3 summary__label">Dirección de entrega</div>
+            <div class="col-3 summary__label">{{ t('order_detail_address') }}</div>
             <div class="col-9 text-right summary__address">{{ order.deliveryAddress }}</div>
           </div>
         </div>
@@ -80,21 +109,23 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from 'vue-i18n';
 import { apiAuth } from "../boot/axios";
 
 // Instancias de Quasar 
 const route = useRoute();
 const router = useRouter();
+const { t, locale } = useI18n();
 
 // Variables Reactivas 
 const order = ref<any>(null);
 const loading = ref(true);
 
 // ---------------- Helpers Internacionalizados ----------------
-function converToCurrency(price: any) {
-  return new Intl.NumberFormat("es-MX", {
+function converToCurrency(price: any, currency: string = "MXN") {
+  return new Intl.NumberFormat(currency === "USD" ? "en-US" : "es-MX", {
     style: "currency",
-    currency: "MXN",
+    currency: currency || "MXN",
     currencyDisplay: "symbol",
   }).format(price || 0);
 }
@@ -143,12 +174,6 @@ onMounted(() => {
   position: relative;
 }
 
-.back-button-wrapper {
-  position: absolute;
-  left: 0;
-  top: 5px;
-}
-
 .order__content {
   max-width: 800px;
   margin: 0 auto;
@@ -162,12 +187,23 @@ onMounted(() => {
   opacity: 0.6;
 }
 
-.order__title {
-  font-family: "Switzer-Variable", serif; /* Usando tu genérico porque las fechas son muy geométricas */
-  font-weight: 700;
-  font-size: 36px;
+.tracking-link {
+  font-family: "Switzer-Variable", serif;
+  font-weight: 600;
+  font-size: 14px;
   color: #2F3033;
-  margin: 0;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+.tracking-link:hover {
+  color: #707279;
+}
+
+.order__title {
+  font-family: "Switzer-Variable", serif;
+  font-weight: 700;
+  font-size: 32px;
+  color: #2F3033;
   line-height: 1.2;
 }
 

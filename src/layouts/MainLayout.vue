@@ -2,7 +2,7 @@
   <q-layout view="lHh Lpr lFf">
     <section class="promotion">
       <p class="promotion__text">
-        Envío gratis 🔥 en compras mayores a $1000.00 MXN
+        {{ t('promotion_banner') }}
       </p>
     </section>
 
@@ -21,7 +21,7 @@
           v-model:model-value="searchQ"
           class="header-action__search--input"
           standout
-          label="Buscar en toda la tienda"
+          :label="t('search_placeholder')"
           @keyup.enter="search()"
         >
           <template v-slot:append>
@@ -35,6 +35,7 @@
         </q-input>
       </div>
       <div class="header-action__icons">
+        <language-selector />
         <div class="cursor-pointer relative-position" style="display: inline-flex;" @click="goToShoppingCart">
           <shop-bag class="icon__pointer" />
           <q-badge v-if="cartTotalItems > 0" color="red" rounded floating>{{ cartTotalItems }}</q-badge>
@@ -49,7 +50,7 @@
         v-for="(item, index) in menu"
         @click="goToSection(index)"
       >
-        {{ item.title }}
+        {{ locale === 'en-US' ? (item.title_en || item.title) : item.title }}
         <q-icon v-if="item.expand" name="expand_more"></q-icon>
       </span>
     </section>
@@ -61,7 +62,7 @@
 
   <section class="footer__container">
     <div>
-      <p class="footer__title">Contacto</p>
+      <p class="footer__title">{{ t('footer_contact') }}</p>
       <p class="footer__list">
         <phone class="icon__info" />
         <a href="https://wa.link/zydit9" target="”_blank”"> +52 81 1079 0972</a>
@@ -74,7 +75,7 @@
       </p>
     </div>
     <div>
-      <p class="footer__title">Búsquedas populares</p>
+      <p class="footer__title">{{ t('footer_popular') }}</p>
       <p class="footer__list">Dijes de zirconia para mujer</p>
       <p class="footer__list">Cadenas de plata</p>
       <p class="footer__list">Anillos de promesa</p>
@@ -82,7 +83,7 @@
       <p class="footer__list">Rosarios</p>
     </div>
     <div>
-      <p class="footer__title">Siguenos en:</p>
+      <p class="footer__title">{{ t('footer_follow') }}</p>
       <a href="https://www.facebook.com/PLATAMX21MX" target="”_blank”">
         <facebook
       /></a>
@@ -111,6 +112,7 @@
 <script lang="ts" setup>
 import axios from "axios";
 import { ref, onMounted } from "vue";
+import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 
@@ -126,15 +128,19 @@ import Email from "../components/icons/Email.vue";
 import Phone from "../components/icons/Phone.vue";
 import Login from "../components/Login.vue";
 import CreateAccount from "../components/CreateAccount.vue";
+import LanguageSelector from "../components/LanguageSelector.vue";
+import { globalCollections } from "../stores/globalCollections";
 
+const { t, locale } = useI18n();
 const $q = useQuasar();
 const loginButton = ref(null);
 const createAccountButton = ref(null);
 const loginForm = ref(null);
 const accountCreateForm = ref(null);
 
-const rules = validationRules();
+const route = useRoute();
 
+const rules = validationRules();
 const searchQ = ref("");
 const email = ref("");
 const password = ref("");
@@ -183,6 +189,12 @@ if (typeof window !== "undefined") {
   window.addEventListener("user-logout", () => {
     cartTotalItems.value = 0;
   });
+
+  // Sesión expirada: el interceptor de axios emite este evento ante un 401
+  window.addEventListener("auth-expired", () => {
+    cartTotalItems.value = 0;
+    dialogLogin.value = true;
+  });
 }
 
 function onLoginClose() {
@@ -205,7 +217,8 @@ const router = useRouter();
 const menu = ref([
   {
     id: -1,
-    title: "Inicio",
+    title: 'Inicio',
+    title_en: 'Home',
     expand: false,
   },
 ]);
@@ -228,12 +241,14 @@ function openDialogLogin() {
 
   router.push({
     name: "profile",
+    params: { lang: route.params.lang || 'es' },
   });
 }
 
 function goToShoppingCart() {
   router.push({
     name: "shopping-cart",
+    params: { lang: route.params.lang || 'es' },
   });
 }
 
@@ -243,7 +258,11 @@ function sessionExists() {
 
 function goToSection(index: number) {
   const idSection = menu.value[index].id;
-  const nameSection = menu.value[index].title;
+  const item = menu.value[index];
+  const nameSection = locale.value === 'en-US'
+    ? (item.title_en || item.title)
+    : item.title;
+  const lang = route.params.lang || 'es';
 
   if (idSection != -1) {
     router.push({
@@ -251,6 +270,7 @@ function goToSection(index: number) {
       params: {
         id: idSection,
         name: nameSection,
+        lang,
       },
     });
     return;
@@ -258,19 +278,20 @@ function goToSection(index: number) {
 
   router.push({
     name: "home",
+    params: { lang },
   });
 }
 
-async function getCollections() {
+function getCollections() {
   try {
-    const url =
-      "https://platamx-backend-1cvg.onrender.com/collections?page=1&items=25";
-    const { data: response } = await axios.get(url);
-
-    response.data.forEach((e: any) => {
+    // Vaciar todo excepto el item inicial ("Inicio") si es que Vue vuelve a montar
+    menu.value = menu.value.filter(m => m.id === -1);
+    
+    globalCollections.value.forEach((e: any) => {
       const item = {
         id: e.id,
-        title: e.name,
+        title: e.title,
+        title_en: e.title_en,
         expand: false,
       };
 
@@ -280,6 +301,7 @@ async function getCollections() {
     console.log(error);
   }
 }
+getCollections();
 
 function search() {
   router.push({

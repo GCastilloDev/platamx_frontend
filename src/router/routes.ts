@@ -1,13 +1,19 @@
 import { RouteRecordRaw } from "vue-router";
 
 const routes: RouteRecordRaw[] = [
+  // Redirect root to default language
   {
     path: "/",
+    redirect: "/es",
+  },
+
+  {
+    path: "/:lang(es|en)",
     component: () => import("layouts/MainLayout.vue"),
     children: [
       {
         name: "home",
-        path: "/",
+        path: "",
         component: () => import("pages/IndexPage.vue"),
       },
       {
@@ -52,3 +58,4 @@ const routes: RouteRecordRaw[] = [
 ];
 
 export default routes;
+

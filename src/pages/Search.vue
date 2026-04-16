@@ -1,7 +1,7 @@
 <template>
   <section class="search__container">
     <h2 class="search__title">
-      {{ total }} resultados para la búsqueda "{{ search }}"
+      {{ total }} {{ t('search_results') }} "{{ search }}"
     </h2>
 
     <!-- <div class="search__result">
@@ -22,7 +22,7 @@
           :product="product"
         />
       </div>
-      <p v-if="!loading && products.length == 0">Sin productos</p>
+      <p v-if="!loading && products.length == 0">{{ t('search_no_products') }}</p>
     </div>
     <div v-if="isNext" class="text-center" style="margin-top: 25px">
       <q-btn
@@ -33,7 +33,7 @@
         no-caps
         :loading="loadingBtn"
         size="lg"
-        label="Cargar más"
+        :label="t('search_load_more')"
       />
     </div>
   </section>
@@ -45,6 +45,9 @@ import ProductCard from "../components/ProductCard.vue";
 import axios from "axios";
 import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const route = useRoute();
 const search = ref("");

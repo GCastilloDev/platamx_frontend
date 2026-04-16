@@ -1,6 +1,6 @@
 <template>
   <section class="top-products__container">
-    <h2 class="top-products__title">Los mejores accesorios</h2>
+    <h2 class="top-products__title">{{ t('top_products_title') }}</h2>
     <section class="top-products__menu">
       <div
         v-for="(collection, index) in collections"
@@ -8,7 +8,7 @@
         :class="{ 'menu--item__selected': collection.selected }"
         @click="changeCollection(index)"
       >
-        <span>{{ collection.title }}</span>
+        <span>{{ locale === 'en-US' ? (collection.title_en || collection.title) : collection.title }}</span>
       </div>
     </section>
     <section class="top-products__container-card">
@@ -27,12 +27,17 @@
 <script setup lang="ts">
 import axios from "axios";
 import { ref } from "vue";
+import { useI18n } from 'vue-i18n';
 
 import ProductCard from "../components/ProductCard.vue";
+import { globalCollections } from "../stores/globalCollections";
+
+const { t, locale } = useI18n();
 
 type collection = {
   id: number;
   title: string;
+  title_en: string;
   selected: boolean;
 };
 
@@ -53,16 +58,14 @@ async function getProductsByCollection(collectionID: number) {
   }
 }
 
-async function getCollections() {
+function getCollections() {
   try {
-    const url =
-      "https://platamx-backend-1cvg.onrender.com/collections?page=1&items=25";
-    const { data: response } = await axios.get(url);
-
-    response.data.forEach((e: any) => {
+    collections.value = [];
+    globalCollections.value.forEach((e: any) => {
       const item = {
         id: e.id,
-        title: e.name,
+        title: e.title,
+        title_en: e.title_en,
         selected: false,
       };
 
@@ -70,9 +73,11 @@ async function getCollections() {
     });
 
     collections.value = collections.value.slice(0, 5);
-    collections.value[0].selected = true;
-    const collectionID = collections.value[0].id;
-    getProductsByCollection(collectionID);
+    if (collections.value.length > 0) {
+      collections.value[0].selected = true;
+      const collectionID = collections.value[0].id;
+      getProductsByCollection(collectionID);
+    }
   } catch (error) {
     console.log(error);
   }

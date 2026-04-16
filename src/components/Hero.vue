@@ -1,18 +1,15 @@
 <template>
   <section class="hero__container">
-    <div class="hero__signature"><h1>Artesanía de primera clase</h1></div>
-    <h2 class="hero__title">Anillo de placa con zirconia</h2>
-    <h2 class="hero__title">azul ajustable</h2>
+    <div class="hero__signature"><h1>{{ t('hero_badge') }}</h1></div>
+    <h2 class="hero__title">{{ t('hero_title1') }}</h2>
+    <h2 class="hero__title">{{ t('hero_title2') }}</h2>
     <div class="hero__message">
-      <h3>
-        Representa la elegancia y fuerza con zirconias color azul con un gran
-        contraste
-      </h3>
-      <h3>con nuestra plata fina.</h3>
+      <h3>{{ t('hero_desc1') }}</h3>
+      <h3>{{ t('hero_desc2') }}</h3>
     </div>
     <div class="hero__button">
       <button>
-        <span>Ver producto</span>
+        <span>{{ t('hero_cta') }}</span>
       </button>
     </div>
   </section>
@@ -33,8 +30,9 @@
   </section>
 </template>
 
-<script>
-export default {};
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 </script>
 
 <style lang="scss" scoped>

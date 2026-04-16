@@ -14,7 +14,7 @@
           :product="product"
         />
       </div>
-      <p v-if="!loading && products.length == 0">Sin productos</p>
+      <p v-if="!loading && products.length == 0">{{ t('collection_no_products') }}</p>
     </div>
     <div v-if="isNext" class="text-center" style="margin-top: 25px">
       <q-btn
@@ -25,7 +25,7 @@
         no-caps
         :loading="loadingBtn"
         size="lg"
-        label="Cargar más"
+        :label="t('collection_load_more')"
       />
     </div>
   </section>
@@ -36,6 +36,9 @@ import axios from "axios";
 import ProductCard from "../components/ProductCard.vue";
 import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const route = useRoute();
 const loading = ref(true);

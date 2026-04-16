@@ -12,16 +12,15 @@
       </q-card-section>
       <q-card-section>
         <q-banner v-if="isAddProductShow" class="text-white bg-red">
-          Para poder agregar un producto a su carrito debe iniciar sesión
-          primero.
+          {{ t('login_add_product_warning') }}
         </q-banner>
       </q-card-section>
       <q-card-section class="q-pt-none">
-        <div class="login__title">Inicio de sesión</div>
+        <div class="login__title">{{ t('login_title') }}</div>
       </q-card-section>
       <q-form ref="loginForm">
         <q-card-section>
-          <p class="input__title">Correo electrónico</p>
+          <p class="input__title">{{ t('login_email') }}</p>
           <q-input
             :autofocus="true"
             standout
@@ -34,7 +33,7 @@
           </q-input>
         </q-card-section>
         <q-card-section>
-          <p class="input__title">Contraseña</p>
+          <p class="input__title">{{ t('login_password') }}</p>
           <q-input
             :type="typeInputPassword"
             placeholder="•••••••"
@@ -55,14 +54,14 @@
 
       <q-card-actions align="center" style="margin-top: 10px">
         <span class="login__button" @click="loginValidate" ref="loginButton">
-          <span v-if="!loading">Iniciar Sesión</span>
+          <span v-if="!loading">{{ t('login_cta') }}</span>
           <q-spinner-tail v-if="loading" color="white" size="2em" />
         </span>
       </q-card-actions>
       <q-card-section>
         <p class="login__create-account">
-          ¿No tienes cuenta?
-          <span @click="openCreateAccount">Regístrate</span>
+          {{ t('login_no_account') }}
+          <span @click="openCreateAccount">{{ t('login_register_link') }}</span>
         </p>
       </q-card-section>
     </q-card>
@@ -73,9 +72,11 @@
 import { ref, watch } from "vue";
 import { useQuasar } from "quasar";
 import axios from "axios";
+import { useI18n } from 'vue-i18n';
 
 import validationRules from "../rules";
 
+const { t } = useI18n();
 const $q = useQuasar();
 const rules = validationRules();
 const email = ref("");
@@ -160,10 +161,10 @@ async function login() {
     saveToken(token);
     // dialogLogin.value = false;
     emit("close");
-    $q.notify("Sesión iniciada correctamente");
+    $q.notify(t('login_success'));
   } catch (error) {
     $q.notify({
-      message: "Usuario y/o contraseña incorrectos",
+      message: t('login_error'),
       color: "red",
     });
     console.log(error);
