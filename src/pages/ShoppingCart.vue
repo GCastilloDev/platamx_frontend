@@ -96,10 +96,13 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { useI18n } from 'vue-i18n';
 import { apiAuth } from "../boot/axios";
 
+const route = useRoute();
+const router = useRouter();
 const { t, locale } = useI18n();
 const api = apiAuth();
 const products = ref<any[]>([]);
@@ -237,6 +240,25 @@ async function deleteProduct(productID) {
 async function purchase() {
   try {
     $q.loading.show();
+
+    // 1. Validar que el usuario tenga una dirección antes de entrar en la pasarela de pago
+    const { data: profile } = await api.get("auth/profile");
+    const adr = profile.address;
+    if (!adr || !adr.street || !adr.city || !adr.state || !adr.zip) {
+      $q.loading.hide();
+      $q.notify({
+        message: locale.value === 'en-US' 
+          ? "You must register a shipping address to proceed." 
+          : "Para poder continuar, registra una dirección de envío en tu perfil.",
+        color: "warning",
+        icon: "warning",
+        position: "top"
+      });
+      const lang = locale.value === 'en-US' ? 'en' : 'es';
+      router.push(`/${lang}/profile?tab=account`);
+      return;
+    }
+
     const lang = locale.value === 'en-US' ? 'en' : 'es';
     const data = {
       currencyPurchase: locale.value === 'en-US' ? 'USD' : 'MXN',
