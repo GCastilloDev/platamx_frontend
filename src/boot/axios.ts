@@ -20,14 +20,22 @@ const apiNoAuth = axios.create({
 });
 
 const apiAuth = () => {
-  const localItem = LocalStorage.getItem('plataMX');
-  const token = localItem ? JSON.parse(localItem as string) : null;
   const baseURL = `https://platamx-backend-1cvg.onrender.com/`;
-  const headers = {
-    Authorization: `Bearer ${token?.token}`,
-  };
 
-  const http = axios.create({ baseURL, headers });
+  const http = axios.create({ baseURL });
+
+  // Interceptor para inyectar token siempre actualizado antes de cada petición
+  http.interceptors.request.use((config) => {
+    let rawToken = null;
+    if (typeof window !== 'undefined') {
+      rawToken = localStorage.getItem('plataMX');
+    }
+    const token = rawToken ? JSON.parse(rawToken) : null;
+    if (token && token.token) {
+      config.headers.Authorization = `Bearer ${token.token}`;
+    }
+    return config;
+  });
 
   // Interceptor: si el backend responde 401, sesión expirada → pedir re-login
   http.interceptors.response.use(

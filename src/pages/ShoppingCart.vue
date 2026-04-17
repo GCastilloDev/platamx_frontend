@@ -237,9 +237,10 @@ async function deleteProduct(productID) {
 async function purchase() {
   try {
     $q.loading.show();
+    const lang = locale.value === 'en-US' ? 'en' : 'es';
     const data = {
       currencyPurchase: locale.value === 'en-US' ? 'USD' : 'MXN',
-      urlSuccess: "/profile",
+      urlSuccess: `${lang}/profile?tab=purchases`,
       urlCancel: "string",
     };
 

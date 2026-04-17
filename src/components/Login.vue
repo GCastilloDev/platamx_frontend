@@ -166,6 +166,7 @@ async function login() {
     
     // dialogLogin.value = false;
     emit("close");
+    window.dispatchEvent(new CustomEvent("user-login"));
     $q.notify(t('login_success'));
   } catch (error) {
     $q.notify({

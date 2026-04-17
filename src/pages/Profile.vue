@@ -266,7 +266,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch, onMounted, onUnmounted } from "vue";
 import { useQuasar } from "quasar";
 import { apiAuth, apiNoAuth } from "../boot/axios";
 import validationRules from "../rules";
@@ -289,14 +289,44 @@ const userAddress = ref(null);
 const loadingProfile = ref(true);
 const loadingOrders = ref(false);
 
-if (route.query.tab === "purchases") {
-  tab.value = "purchases";
-  getOrders();
-} else {
-  getProfile();
+watch(() => route.query.tab, (newTab) => {
+  if (newTab === "purchases") {
+    tab.value = "purchases";
+    getOrders();
+  } else if (newTab === "account" || !newTab) {
+    tab.value = "account";
+    getProfile();
+  }
+});
+
+onMounted(() => {
+  if (route.query.tab === "purchases") {
+    tab.value = "purchases";
+    getOrders();
+  } else {
+    getProfile();
+  }
+  
+  window.addEventListener('user-login', handleLogin);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('user-login', handleLogin);
+});
+
+function handleLogin() {
+  if (tab.value === "purchases") {
+    getOrders();
+  } else if (tab.value === "account") {
+    getProfile();
+  }
 }
 
 async function tabEvent(event: string) {
+  if (event !== "exit" && route.query.tab !== event) {
+    router.replace({ query: { ...route.query, tab: event } });
+  }
+
   if (event === "account") {
     getProfile();
     return;
@@ -335,9 +365,10 @@ async function getProfile() {
     const { data: profile } = await auth.get("auth/profile");
     userProfile.value = profile;
     validateAddress();
-    loadingProfile.value = false;
   } catch (error) {
     console.log(error);
+  } finally {
+    loadingProfile.value = false;
   }
 }
 
