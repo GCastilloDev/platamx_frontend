@@ -46,6 +46,11 @@ const routes: RouteRecordRaw[] = [
         path: "order/:id",
         component: () => import("pages/OrderDetail.vue"),
       },
+      {
+        name: "reset-password",
+        path: "reset-password",
+        component: () => import("pages/ResetPassword.vue"),
+      },
     ],
   },
 
