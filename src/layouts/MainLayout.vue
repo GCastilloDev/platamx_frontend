@@ -99,12 +99,18 @@
       :open="dialogLogin"
       @close="onLoginClose"
       @createAccount="openCreateAccount"
+      @forgotPassword="openForgotPassword"
     />
 
     <CreateAccount
       :open="dialogCreateAccount"
       @close="dialogCreateAccount = false"
       @openLogin="openLogin"
+    />
+
+    <ForgotPassword
+      :open="dialogForgotPassword"
+      @close="dialogForgotPassword = false"
     />
   </section>
 </template>
@@ -128,6 +134,7 @@ import Email from "../components/icons/Email.vue";
 import Phone from "../components/icons/Phone.vue";
 import Login from "../components/Login.vue";
 import CreateAccount from "../components/CreateAccount.vue";
+import ForgotPassword from "../components/ForgotPassword.vue";
 import LanguageSelector from "../components/LanguageSelector.vue";
 import { globalCollections } from "../stores/globalCollections";
 
@@ -147,6 +154,7 @@ const password = ref("");
 const prueba = ref({});
 const dialogLogin = ref(false);
 const dialogCreateAccount = ref(false);
+const dialogForgotPassword = ref(false);
 const backdropFilter = ref("blur(5px) saturate(150%)");
 const cartTotalItems = ref(0);
 
@@ -231,6 +239,11 @@ function openLogin() {
 function openCreateAccount() {
   dialogLogin.value = false;
   dialogCreateAccount.value = true;
+}
+
+function openForgotPassword() {
+  dialogLogin.value = false;
+  dialogForgotPassword.value = true;
 }
 
 function openDialogLogin() {

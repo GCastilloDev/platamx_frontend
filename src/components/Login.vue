@@ -51,6 +51,12 @@
           </q-input>
         </q-card-section>
 
+        <q-card-section class="q-pt-none">
+          <p class="forgot-password" @click="emit('forgotPassword')">
+            {{ t('forgot_password_link') }}
+          </p>
+        </q-card-section>
+
         <q-card-actions align="center" style="margin-top: 10px">
           <button class="login__button" type="submit" style="outline: none; border: none; font-family: 'Switzer-Variable', Switzer, serif; width: auto; padding: 0 32px;" :disabled="loading" ref="loginButton">
             <span v-if="!loading">{{ t('login_cta') }}</span>
@@ -91,7 +97,7 @@ const loading = ref(false);
 const loginButton = ref(null);
 const isAddProductShow = ref(false);
 
-const emit = defineEmits(["close", "createAccount"]);
+const emit = defineEmits(["close", "createAccount", "forgotPassword"]);
 const props = defineProps<{
   open: boolean;
   isAddProduct?: boolean;
@@ -187,4 +193,14 @@ function saveToken(token: string) {
   localStorage.setItem("plataMX", JSON.stringify(data));
 }
 </script>
-<style scoped></style>
+<style scoped>
+.forgot-password {
+  cursor: pointer;
+  font-size: 14px;
+  color: #2f3033;
+  text-decoration: underline;
+  text-align: right;
+  margin: 0;
+  font-family: 'Switzer-Variable', Switzer, serif;
+}
+</style>

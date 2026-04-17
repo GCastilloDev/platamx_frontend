@@ -2,20 +2,20 @@
   <q-page class="reset-wrapper q-pa-md">
     <div class="row justify-center items-center full-height full-width q-pt-xl">
       <div class="reset-container">
-        <h1 class="reset-title">{{ locale === 'en-US' ? 'Reset your password' : 'Restablecer contraseña' }}</h1>
+        <h1 class="reset-title">{{ t('reset_title') }}</h1>
         <p class="reset-subtitle q-mb-lg">
-          {{ locale === 'en-US' ? 'Enter a new password for your account. Please make sure it meets our security requirements.' : 'Ingresa una nueva contraseña para tu cuenta. Por favor asegúrate de que cumpla con los requisitos de seguridad.' }}
+          {{ t('reset_subtitle') }}
         </p>
 
-        <q-form @submit="resetPassword" class="q-gutter-md">
+        <q-form @submit="resetPassword">
           <q-input
             v-model="password"
             :rules="rules.password"
             :type="showPassword ? 'text' : 'password'"
-            :label="locale === 'en-US' ? 'New Password' : 'Nueva contraseña'"
+            :label="t('reset_password_label')"
             outlined
             color="black"
-            lazy-rules
+            class="q-mb-xl"
           >
             <template v-slot:append>
               <q-icon
@@ -30,10 +30,10 @@
             v-model="confirmPassword"
             :rules="rules.confirmPassword(password)"
             :type="showConfirm ? 'text' : 'password'"
-            :label="locale === 'en-US' ? 'Confirm Password' : 'Confirmar contraseña'"
+            :label="t('reset_confirm_label')"
             outlined
             color="black"
-            lazy-rules
+            class="q-mb-lg"
           >
             <template v-slot:append>
               <q-icon
@@ -48,7 +48,7 @@
             <q-btn
               type="submit"
               class="reset-btn full-width"
-              :label="locale === 'en-US' ? 'Save Password' : 'Guardar Contraseña'"
+              :label="t('reset_cta')"
               :loading="loading"
               unelevated
             />
@@ -68,7 +68,7 @@ import { apiNoAuth } from "../boot/axios";
 import validationRules from "../rules";
 import { getBackendError } from "../utils/error";
 
-const { locale, t } = useI18n();
+const { t, locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const $q = useQuasar();
@@ -88,7 +88,7 @@ async function resetPassword() {
   if (!token) {
     $q.notify({
       color: 'negative',
-      message: locale.value === 'en-US' ? 'Invalid or missing token.' : 'Token inválido o faltante.',
+      message: t('reset_token_error'),
       icon: 'error'
     });
     return;
@@ -96,17 +96,21 @@ async function resetPassword() {
 
   try {
     loading.value = true;
-    const url = "auth/reset-password";
+    const url = "auth/change/password";
     const data = {
-      token: token,
-      newPassword: password.value,
+      password: password.value,
+      password_comfirm: confirmPassword.value,
     };
     
-    await apiNoAuth.post(url, data);
+    await apiNoAuth.post(url, data, {
+      headers: {
+        'x-token-recovery': token
+      }
+    });
 
     $q.notify({
       color: 'positive',
-      message: locale.value === 'en-US' ? 'Password updated successfully. You can now login.' : 'Contraseña actualizada con éxito. Ya puedes iniciar sesión.',
+      message: t('reset_success'),
       icon: 'check'
     });
     
@@ -115,7 +119,7 @@ async function resetPassword() {
   } catch (error) {
     $q.notify({
       color: "negative",
-      message: getBackendError(error, locale.value === 'en-US' ? 'Error resetting password' : 'Error al restablecer la contraseña'),
+      message: getBackendError(error, t('reset_error')),
       icon: "error"
     });
     console.error(error);

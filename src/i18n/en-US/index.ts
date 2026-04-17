@@ -103,6 +103,13 @@ export default {
   profile_address_saved: 'Address updated successfully',
   profile_save_error: 'Oops! Something went wrong',
   profile_name_change_warning: 'Please add a shipping address before changing your name.',
+  profile_security: 'Security',
+  profile_password_label: 'Password',
+  profile_old_password: 'Current Password',
+  profile_new_password: 'New Password',
+  profile_confirm_password: 'Confirm New Password',
+  profile_password_saved: 'Password updated successfully',
+  profile_save_password: 'Update Password',
   profile_orders_empty: 'No orders yet',
   profile_table_order: 'Order',
   profile_table_date: 'Date',
@@ -122,10 +129,22 @@ export default {
   order_detail_address: 'Delivery address',
   order_detail_track_package: 'Track package',
 
-  // Language selector
-  lang: {
-    es: 'ES',
-    en: 'EN',
-  },
-};
+  // Reset Password
+  reset_title: 'Reset your password',
+  reset_subtitle: 'Enter a new password for your account. Please make sure it meets our security requirements.',
+  reset_password_label: 'New Password',
+  reset_confirm_label: 'Confirm Password',
+  reset_cta: 'Save Password',
+  reset_success: 'Password updated successfully. You can now login.',
+  reset_error: 'Error resetting password',
+  reset_token_error: 'Invalid or missing token.',
 
+  // Forgot Password
+  forgot_password_link: 'Forgot your password?',
+  forgot_title: 'Recover password',
+  forgot_subtitle: 'Enter your email address and we will send you a link to reset your password.',
+  forgot_email_label: 'Email address',
+  forgot_cta: 'Send link',
+  forgot_success: 'If the email is registered, you will receive a link shortly.',
+  forgot_error: 'Error requesting password recovery',
+};

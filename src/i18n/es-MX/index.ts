@@ -103,6 +103,13 @@ export default {
   profile_address_saved: 'Dirección actualizada correctamente',
   profile_save_error: '¡Oops! Ocurrió un error al guardar',
   profile_name_change_warning: 'Para poder cambiar tu nombre, primero debes registrar una dirección de envío.',
+  profile_security: 'Seguridad',
+  profile_password_label: 'Contraseña',
+  profile_old_password: 'Contraseña actual',
+  profile_new_password: 'Nueva contraseña',
+  profile_confirm_password: 'Confirmar nueva contraseña',
+  profile_password_saved: 'Contraseña actualizada correctamente',
+  profile_save_password: 'Actualizar contraseña',
   profile_orders_empty: 'Sin compras',
   profile_table_order: 'ID del pedido',
   profile_table_date: 'Fecha',
@@ -122,10 +129,22 @@ export default {
   order_detail_address: 'Dirección de entrega',
   order_detail_track_package: 'Rastrear paquete',
 
-  // Language selector
-  lang: {
-    es: 'ES',
-    en: 'EN',
-  },
-};
+  // Reset Password
+  reset_title: 'Restablecer contraseña',
+  reset_subtitle: 'Ingresa una nueva contraseña para tu cuenta. Por favor asegúrate de que cumpla con los requisitos de seguridad.',
+  reset_password_label: 'Nueva contraseña',
+  reset_confirm_label: 'Confirmar contraseña',
+  reset_cta: 'Guardar Contraseña',
+  reset_success: 'Contraseña actualizada con éxito. Ya puedes iniciar sesión.',
+  reset_error: 'Error al restablecer la contraseña',
+  reset_token_error: 'Token inválido o faltante.',
 
+  // Forgot Password
+  forgot_password_link: '¿Olvidaste tu contraseña?',
+  forgot_title: 'Recuperar contraseña',
+  forgot_subtitle: 'Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.',
+  forgot_email_label: 'Correo electrónico',
+  forgot_cta: 'Enviar enlace',
+  forgot_success: 'Si el correo está registrado, recibirás un enlace en breve.',
+  forgot_error: 'Error al solicitar la recuperación de contraseña',
+};

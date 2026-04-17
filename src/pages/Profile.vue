@@ -166,6 +166,105 @@
                 </q-card>
               </div>
             </section>
+
+            <section class="row q-mb-lg items-start">
+              <div class="col-12 col-md-3 profile__title q-mt-md">
+                {{ t('profile_password_label') || 'Contraseña' }}
+              </div>
+              <div class="col-12 col-md-7">
+                <q-card flat bordered class="rounded-borders">
+                  <q-card-section v-if="loadingProfile">
+                    <q-skeleton style="width: 100%" type="text" />
+                  </q-card-section>
+                  <transition name="elegant-fade" mode="out-in">
+                    <q-card-section v-if="!loadingProfile && !isEditingPassword" key="readPass" class="q-pa-lg q-py-xl">
+                      <div class="row justify-between items-center">
+                        <div class="col-8 profile-card-content">
+                          ••••••••••••
+                        </div>
+                        <div class="col-auto text-right">
+                          <span class="profile-card-link cursor-pointer" @click="openPasswordModal">{{ t('profile_change') }}</span>
+                        </div>
+                      </div>
+                    </q-card-section>
+
+                    <q-card-section v-else-if="!loadingProfile && isEditingPassword" key="editPass" class="q-pa-lg">
+                      <q-form ref="passwordForm" @submit="savePassword">
+                        
+                        <p class="input__title q-mb-sm">{{ t('profile_old_password') }}</p>
+                        <q-input 
+                          outlined 
+                          v-model="formPassword.old_password" 
+                          :type="showOldPass ? 'text' : 'password'" 
+                          :rules="rules.required" 
+                          class="q-mb-md custom-input-border"
+                        >
+                          <template v-slot:append>
+                            <q-icon
+                              :name="showOldPass ? 'visibility_off' : 'visibility'"
+                              class="cursor-pointer"
+                              @click="showOldPass = !showOldPass"
+                            />
+                          </template>
+                        </q-input>
+
+                        <p class="input__title q-mb-sm">{{ t('profile_new_password') }}</p>
+                        <q-input 
+                          outlined 
+                          v-model="formPassword.new_password" 
+                          :type="showNewPass ? 'text' : 'password'" 
+                          :rules="rules.password" 
+                          class="q-mb-md custom-input-border"
+                        >
+                          <template v-slot:append>
+                            <q-icon
+                              :name="showNewPass ? 'visibility_off' : 'visibility'"
+                              class="cursor-pointer"
+                              @click="showNewPass = !showNewPass"
+                            />
+                          </template>
+                        </q-input>
+
+                        <p class="input__title q-mb-sm">{{ t('profile_confirm_password') }}</p>
+                        <q-input 
+                          outlined 
+                          v-model="formPassword.comfirm_password" 
+                          :type="showConfirmPass ? 'text' : 'password'" 
+                          :rules="rules.confirmPassword(formPassword.new_password)" 
+                          class="q-mb-lg custom-input-border"
+                        >
+                          <template v-slot:append>
+                            <q-icon
+                              :name="showConfirmPass ? 'visibility_off' : 'visibility'"
+                              class="cursor-pointer"
+                              @click="showConfirmPass = !showConfirmPass"
+                            />
+                          </template>
+                        </q-input>
+                        
+                        <div class="row q-mt-lg items-center">
+                          <button
+                            class="login__button"
+                            type="submit"
+                            style="outline: none; border: none; font-family: 'Switzer-Variable', Switzer, serif; width: auto; padding: 0 32px;"
+                            :disabled="loadingSavePassword"
+                          >
+                            <span v-if="!loadingSavePassword">{{ t('profile_save_password') || t('profile_save') }}</span>
+                            <q-spinner-tail v-if="loadingSavePassword" color="white" size="20px" />
+                          </button>
+                          <span
+                            class="btn-cancel-form q-ml-xl cursor-pointer"
+                            @click="closePasswordModal"
+                          >
+                            {{ t('profile_cancel') }}
+                          </span>
+                        </div>
+                      </q-form>
+                    </q-card-section>
+                  </transition>
+                </q-card>
+              </div>
+            </section>
           </q-tab-panel>
 
           <q-tab-panel name="purchases">
@@ -410,6 +509,17 @@ const isEditingName = ref(false);
 const formName = ref("");
 const loadingSaveName = ref(false);
 
+const isEditingPassword = ref(false);
+const loadingSavePassword = ref(false);
+const showOldPass = ref(false);
+const showNewPass = ref(false);
+const showConfirmPass = ref(false);
+const formPassword = ref({
+  old_password: "",
+  new_password: "",
+  comfirm_password: "",
+});
+
 const formAddress = ref({
   street: "",
   city: "",
@@ -527,6 +637,45 @@ async function saveAddress() {
     });
   } finally {
     loadingSaveAddress.value = false;
+  }
+}
+
+function openPasswordModal() {
+  formPassword.value = {
+    old_password: "",
+    new_password: "",
+    comfirm_password: "",
+  };
+  isEditingPassword.value = true;
+}
+
+function closePasswordModal() {
+  isEditingPassword.value = false;
+}
+
+async function savePassword() {
+  try {
+    loadingSavePassword.value = true;
+    const url = "users/update/password";
+    
+    await auth.patch(url, formPassword.value);
+
+    $q.notify({
+      message: t('profile_password_saved'),
+      color: "positive",
+      icon: "check"
+    });
+
+    isEditingPassword.value = false;
+  } catch (error) {
+    console.log(error);
+    $q.notify({
+      message: getBackendError(error, t('profile_password_error') || t('profile_save_error')),
+      color: "negative",
+      icon: "error"
+    });
+  } finally {
+    loadingSavePassword.value = false;
   }
 }
 </script>
