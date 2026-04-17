@@ -107,7 +107,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from 'vue-i18n';
 import { apiAuth } from "../boot/axios";
@@ -153,13 +153,17 @@ async function fetchOrder() {
 }
 
 function goBack() {
-  // En lugar de window.history.back(), inyectamos el ruteo hacia el Tab correcto por seguridad.
   router.push({ name: 'profile', query: { tab: 'purchases' } });
 }
 
 // Inicialización de Pantalla
 onMounted(() => {
   fetchOrder();
+  window.addEventListener('user-login', fetchOrder);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('user-login', fetchOrder);
 });
 </script>
 
