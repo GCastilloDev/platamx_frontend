@@ -8,20 +8,20 @@ const validationRules = () => ({
   ],
   password: [
     (v) =>
-      /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/.test(
+      /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[$#@_-])(?!.* ).{8,16}$/.test(
         v
       ) ||
-      "Contraseña con formato incorrecto, la contraseña debe ser de almenos 8 caracteres, incluyendo al menos un numero, mayuscula, minuscula y un caracter especial",
+      "Contraseña con formato incorrecto, la contraseña debe ser de entre 8 y 16 caracteres, incluyendo al menos un numero, mayuscula, minuscula y un caracter especial ($#@_-)",
   ],
   confirmPassword: (password) => {
     return [
       (v) => v === password || "La contraseñas deben ser iguales",
       (v) => v.length === password.length || "La contraseñas deben ser iguales",
       (v) =>
-        /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/.test(
+        /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[$#@_-])(?!.* ).{8,16}$/.test(
           v
         ) ||
-        "Contraseña con formato incorrecto, la contraseña debe ser de almenos 8 caracteres, incluyendo al menos un numero, mayuscula, minuscula y un caracter especial",
+        "Contraseña con formato incorrecto, la contraseña debe ser de entre 8 y 16 caracteres, incluyendo al menos un numero, mayuscula, minuscula y un caracter especial ($#@_-)",
     ];
   },
   required: [(v) => !!v || "Campo requerido"],

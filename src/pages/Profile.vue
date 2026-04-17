@@ -270,6 +270,7 @@ import { ref } from "vue";
 import { useQuasar } from "quasar";
 import { apiAuth, apiNoAuth } from "../boot/axios";
 import validationRules from "../rules";
+import { getBackendError } from "../utils/error";
 import { useI18n } from 'vue-i18n';
 
 import { useRouter, useRoute } from "vue-router";
@@ -431,7 +432,7 @@ async function saveName() {
   } catch (error) {
     console.log(error);
     $q.notify({
-      message: "¡Oops! Ocurrió un error al guardar",
+      message: getBackendError(error, "¡Oops! Ocurrió un error al guardar"),
       color: "negative",
     });
   } finally {
@@ -490,7 +491,7 @@ async function saveAddress() {
   } catch (error) {
     console.log(error);
     $q.notify({
-      message: t('profile_save_error'),
+      message: getBackendError(error, t('profile_save_error')),
       color: "negative",
     });
   } finally {

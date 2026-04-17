@@ -17,7 +17,7 @@
       <q-card-section class="q-pt-none">
         <div class="login__title">{{ t('register_title') }}</div>
       </q-card-section>
-      <q-form ref="accountCreateForm">
+      <q-form ref="accountCreateForm" @submit="createAccountValidate">
         <q-card-section>
           <p class="input__title">{{ t('register_name') }}</p>
           <q-input
@@ -80,18 +80,20 @@
             </template>
           </q-input>
         </q-card-section>
-      </q-form>
 
-      <q-card-actions align="center">
-        <span
-          class="login__button"
-          @click="createAccountValidate"
-          ref="createAccountButton"
-        >
-          <span v-if="!loading">{{ t('register_cta') }}</span>
-          <q-spinner-tail v-if="loading" color="white" size="2em" />
-        </span>
-      </q-card-actions>
+        <q-card-actions align="center">
+          <button
+            class="login__button"
+            type="submit"
+            style="outline: none; border: none; font-family: 'Switzer-Variable', Switzer, serif; width: auto; padding: 0 32px;"
+            :disabled="loading"
+            ref="createAccountButton"
+          >
+            <span v-if="!loading">{{ t('register_cta') }}</span>
+            <q-spinner-tail v-if="loading" color="white" size="2em" />
+          </button>
+        </q-card-actions>
+      </q-form>
     </q-card>
   </q-dialog>
 </template>
@@ -103,6 +105,7 @@ import axios from "axios";
 import { useI18n } from 'vue-i18n';
 
 import validationRules from "../rules";
+import { getBackendError } from "../utils/error";
 
 const { t } = useI18n();
 const rules = validationRules();
@@ -191,20 +194,23 @@ async function createAccount() {
     const url = "https://platamx-backend-1cvg.onrender.com/users";
 
     await axios.post(url, user.value);
+
+    for (const property in user.value) {
+      user.value[property as keyof typeof user.value] = "";
+    }
+
     $q.notify(t('register_success'));
     emit("openLogin");
     // dialogCreateAccount.value = false;
     // dialogLogin.value = true;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+    const parsedMsg = getBackendError(error, t('register_error'));
     $q.notify({
-      message: t('register_error'),
+      message: parsedMsg,
       color: "red",
     });
   } finally {
-    for (const property in user.value) {
-      user.value[property] = "";
-    }
     createAccountButton.value?.removeAttribute("disabled");
     loading.value = false;
   }

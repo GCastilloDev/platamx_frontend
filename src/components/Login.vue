@@ -18,7 +18,7 @@
       <q-card-section class="q-pt-none">
         <div class="login__title">{{ t('login_title') }}</div>
       </q-card-section>
-      <q-form ref="loginForm">
+      <q-form ref="loginForm" @submit="loginValidate">
         <q-card-section>
           <p class="input__title">{{ t('login_email') }}</p>
           <q-input
@@ -50,14 +50,14 @@
             </template>
           </q-input>
         </q-card-section>
-      </q-form>
 
-      <q-card-actions align="center" style="margin-top: 10px">
-        <span class="login__button" @click="loginValidate" ref="loginButton">
-          <span v-if="!loading">{{ t('login_cta') }}</span>
-          <q-spinner-tail v-if="loading" color="white" size="2em" />
-        </span>
-      </q-card-actions>
+        <q-card-actions align="center" style="margin-top: 10px">
+          <button class="login__button" type="submit" style="outline: none; border: none; font-family: 'Switzer-Variable', Switzer, serif; width: auto; padding: 0 32px;" :disabled="loading" ref="loginButton">
+            <span v-if="!loading">{{ t('login_cta') }}</span>
+            <q-spinner-tail v-if="loading" color="white" size="2em" />
+          </button>
+        </q-card-actions>
+      </q-form>
       <q-card-section>
         <p class="login__create-account">
           {{ t('login_no_account') }}
@@ -75,6 +75,7 @@ import axios from "axios";
 import { useI18n } from 'vue-i18n';
 
 import validationRules from "../rules";
+import { getBackendError } from "../utils/error";
 
 const { t } = useI18n();
 const $q = useQuasar();
@@ -159,18 +160,20 @@ async function login() {
     const { data: response } = await axios.post(url, data);
     const token = response.data.access_token;
     saveToken(token);
+    
+    email.value = "";
+    password.value = "";
+    
     // dialogLogin.value = false;
     emit("close");
     $q.notify(t('login_success'));
   } catch (error) {
     $q.notify({
-      message: t('login_error'),
+      message: getBackendError(error, t('login_error')),
       color: "red",
     });
     console.log(error);
   } finally {
-    email.value = "";
-    password.value = "";
     loginButton.value?.removeAttribute("disabled");
     loading.value = false;
   }

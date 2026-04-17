@@ -160,6 +160,7 @@ import { useI18n } from 'vue-i18n';
 import Login from "../components/Login.vue";
 import CreateAccount from "../components/CreateAccount.vue";
 import { apiAuth } from "../boot/axios";
+import { getBackendError } from "../utils/error";
 
 const { t, locale } = useI18n();
 const $q = useQuasar();
@@ -264,6 +265,10 @@ async function postProduct() {
     if (typeof window !== "undefined")
       window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -1 } }));
     console.log(error);
+    $q.notify({
+      message: getBackendError(error, "Ocurrió un error al agregar el producto al carrito."),
+      color: "negative",
+    });
   } finally {
     addProductButton.value?.removeAttribute("disabled");
     loadingBtn.value = false;

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <title>Confirmación de Pedido</title>
+  
+  <!-- Font import (Playfair Display) -->
+  <style type="text/css">
+    @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap");
+
+    /* Reset global */
+    body {
+      margin: 0;
+      padding: 0;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      background-color: #fcfcfc;
+    }
+    table, td {
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+    img {
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+      -ms-interpolation-mode: bicubic;
+    }
+    a {
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body width="100%" style="margin: 0; padding: 0 !important; background-color: #fcfcfc; mso-line-height-rule: exactly;">
+  <center style="width: 100%; background-color: #fcfcfc;">
+    
+    <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#fcfcfc">
+      <tr>
+        <td align="center" valign="top">
+          
+          <table width="600" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; Margin: 0 auto; background-color: #ffffff; border: 1px solid #eeeeee;">
+            
+            <tr>
+              <td height="40" style="font-size: 40px; line-height: 40px;">&nbsp;</td>
+            </tr>
+
+            <!-- Header / Logo -->
+            <tr>
+              <td align="center" style="padding: 0 40px;">
+                <img src="https://platamx.onrender.com/assets/plata_mx_logo.c03376c5.png" alt="Plata MX" width="150" style="display: block; font-family: 'Playfair Display', serif; color: #1d1d1d; font-size: 24px; font-weight: bold;">
+              </td>
+            </tr>
+
+            <tr>
+              <td height="40" style="font-size: 40px; line-height: 40px;">&nbsp;</td>
+            </tr>
+
+            <!-- Título Principal -->
+            <tr>
+              <td align="center" style="padding: 0 40px;">
+                <h1 style="margin: 0; font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 500; color: #1d1d1d; line-height: 40px; text-align: center;">
+                  ¡Tu pedido está confirmado!
+                </h1>
+              </td>
+            </tr>
+
+            <tr>
+              <td height="24" style="font-size: 24px; line-height: 24px;">&nbsp;</td>
+            </tr>
+
+            <!-- Mensaje de éxito -->
+            <tr>
+              <td style="padding: 0 40px;">
+                <p style="margin: 0; font-family: Arial, sans-serif; font-size: 16px; color: #707279; line-height: 26px; text-align: center;">
+                  Hola <strong>{{user_name}}</strong>,<br><br>
+                  Hemos recibido tu pedido <strong>#{{order_id}}</strong> y tu pago se ha procesado con éxito. Pronto comenzaremos a prepararlo para su envío.
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td height="32" style="font-size: 32px; line-height: 32px;">&nbsp;</td>
+            </tr>
+
+            <!-- Resumen de Pedido -->
+            <tr>
+              <td style="padding: 0 40px;">
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #fcfcfc; border-radius: 8px; padding: 24px;">
+                  <tr>
+                    <td style="font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; color: #1d1d1d; padding-bottom: 12px; border-bottom: 1px solid #eeeeee;">
+                      Detalles de tu compra
+                    </td>
+                    <td align="right" style="font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; color: #1d1d1d; padding-bottom: 12px; border-bottom: 1px solid #eeeeee;">
+                      Total
+                    </td>
+                  </tr>
+                  
+                  <!-- Iterador de productos (Mockup) -->
+                  <tr>
+                    <td style="font-family: Arial, sans-serif; font-size: 14px; color: #707279; padding: 16px 0 8px 0;">
+                      {{item_quantity}}x {{item_name}}
+                    </td>
+                    <td align="right" style="font-family: Arial, sans-serif; font-size: 14px; color: #1d1d1d; padding: 16px 0 8px 0;">
+                      ${{item_price}}
+                    </td>
+                  </tr>
+                  
+                  <!-- Espacio o siguiente producto -->
+                  <tr>
+                    <td colspan="2" style="border-bottom: 1px solid #eeeeee; padding-bottom: 16px;"></td>
+                  </tr>
+
+                  <!-- Total -->
+                  <tr>
+                    <td style="font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #1d1d1d; padding-top: 16px;">
+                      Gran Total
+                    </td>
+                    <td align="right" style="font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #26a69a; padding-top: 16px;">
+                      ${{order_total}}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td height="36" style="font-size: 36px; line-height: 36px;">&nbsp;</td>
+            </tr>
+
+            <!-- CTA -->
+            <tr>
+              <td align="center" style="padding: 0 40px;">
+                <table border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td align="center" bgcolor="#1d1d1d" style="border-radius: 4px;">
+                      <a href="{{order_url}}" target="_blank" style="font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; color: #fcfcfc; text-decoration: none; background-color: #1d1d1d; border: 1px solid #1d1d1d; border-radius: 4px; padding: 14px 32px; display: inline-block;">
+                        Ver Detalles del Pedido
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td height="36" style="font-size: 36px; line-height: 36px;">&nbsp;</td>
+            </tr>
+
+            <tr>
+              <td style="padding: 0 40px;">
+                <p style="margin: 0; font-family: Arial, sans-serif; font-size: 13px; color: #707279; line-height: 20px; text-align: center;">
+                  Te enviaremos otro correo en cuanto tu pedido vaya en camino.<br>
+                  Si tienes alguna duda, puedes responder directamente a este correo.
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td height="40" style="font-size: 40px; line-height: 40px;">&nbsp;</td>
+            </tr>
+
+            <!-- Footer Divider -->
+            <tr>
+              <td align="center">
+                <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="border-top: 1px solid #eeeeee;">&nbsp;</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Footer Contenido -->
+            <tr>
+              <td align="center" style="padding: 20px 40px 40px 40px;">
+                <p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 16px; color: #1d1d1d; font-weight: bold;">
+                  Plata MX
+                </p>
+                <p style="margin: 8px 0 0 0; font-family: Arial, sans-serif; font-size: 12px; color: #707279; line-height: 18px;">
+                  © 2026 Plata MX. Todos los derechos reservados.<br>
+                  Gracias por tu preferencia.
+                </p>
+              </td>
+            </tr>
+            
+          </table>
+          
+          <table width="600" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%; Margin: 0 auto;">
+            <tr>
+              <td height="40" style="font-size: 40px; line-height: 40px;">&nbsp;</td>
+            </tr>
+          </table>
+
+        </td>
+      </tr>
+    </table>
+    
+  </center>
+</body>
+</html>
