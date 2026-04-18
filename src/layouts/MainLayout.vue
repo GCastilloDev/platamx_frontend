@@ -185,7 +185,9 @@ async function fetchCartItems() {
   }
   try {
     const { data } = await apiAuth().get("shopping-cart/user");
-    cartStore.setTotal(parseInt(data.data.totalItems, 10) || 0);
+    const items = data.data?.items ?? [];
+    const total = items.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0);
+    cartStore.setTotal(total);
   } catch (error) {
     console.log("Error trayendo carrito:", error);
     cartStore.setTotal(0);

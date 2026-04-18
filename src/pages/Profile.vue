@@ -372,8 +372,8 @@ import { getBackendError } from "../utils/error";
 import { useI18n } from 'vue-i18n';
 
 import { useRouter, useRoute } from "vue-router";
-import { useAuthStore } from "../stores/auth";
-import { useCartStore } from "../stores/cart";
+import { useAuth } from "../composables/useAuth";
+import { useCart } from "../composables/useCart";
 
 const { t, locale } = useI18n();
 const rules = validationRules(t);
@@ -381,8 +381,8 @@ const $q = useQuasar();
 const router = useRouter();
 const route = useRoute();
 const auth = apiAuth();
-const authStore = useAuthStore();
-const cartStore = useCartStore();
+const { logout: authLogout, onLogin } = useAuth();
+const { reset: cartReset } = useCart();
 const tab = ref("account");
 const splitterModel = ref("30");
 const userProfile = ref<any>({});
@@ -410,9 +410,7 @@ onMounted(() => {
   }
 });
 
-watch(() => authStore.isLoggedIn, (loggedIn) => {
-  if (loggedIn) handleLogin();
-});
+onLogin(handleLogin);
 
 function handleLogin() {
   if (tab.value === "purchases") {
@@ -438,8 +436,8 @@ async function tabEvent(event: string) {
   }
 
   if (event === "exit") {
-    authStore.logout();
-    cartStore.reset();
+    authLogout();
+    cartReset();
     router.push({
       name: "home",
     });

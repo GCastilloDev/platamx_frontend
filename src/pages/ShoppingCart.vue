@@ -95,20 +95,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { useI18n } from 'vue-i18n';
 import { apiAuth } from "../boot/axios";
-import { useCartStore } from "../stores/cart";
-import { useAuthStore } from "../stores/auth";
+import { useCart } from "../composables/useCart";
+import { useAuth } from "../composables/useAuth";
 
 const route = useRoute();
 const router = useRouter();
 const { t, locale } = useI18n();
 const api = apiAuth();
-const cartStore = useCartStore();
-const authStore = useAuthStore();
+const cartStore = useCart();
+const { onLogin } = useAuth();
 const products = ref<any[]>([]);
 const subtotal = ref<any>(0);
 const shipping = ref<any>(0);
@@ -157,7 +157,8 @@ async function getShoppingCart() {
     shippingUsd.value = response.data.deliveryCostUsd;
     totalUsd.value = response.data.totalUsd;
     products.value = response.data.items;
-    cartStore.setTotal(response.data.totalItems);
+    const cartCount = response.data.items.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0);
+    cartStore.setTotal(cartCount);
   } catch (error) {
     console.log(error);
   } finally {
@@ -269,9 +270,7 @@ onMounted(() => {
   getShoppingCart();
 });
 
-watch(() => authStore.isLoggedIn, (loggedIn) => {
-  if (loggedIn) getShoppingCart();
-});
+onLogin(getShoppingCart);
 </script>
 
 <style scoped>

@@ -107,17 +107,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from 'vue-i18n';
 import { apiAuth } from "../boot/axios";
-import { useAuthStore } from "../stores/auth";
+import { useAuth } from "../composables/useAuth";
 
 // Instancias de Quasar
 const route = useRoute();
 const router = useRouter();
 const { t, locale } = useI18n();
-const authStore = useAuthStore();
+const { onLogin } = useAuth();
 
 // Variables Reactivas 
 const order = ref<any>(null);
@@ -163,9 +163,7 @@ onMounted(() => {
   fetchOrder();
 });
 
-watch(() => authStore.isLoggedIn, (loggedIn) => {
-  if (loggedIn) fetchOrder();
-});
+onLogin(fetchOrder);
 </script>
 
 <style scoped>
