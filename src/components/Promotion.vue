@@ -1,6 +1,9 @@
 <template>
   <section class="promotion__container">
-    <img class="promotion__img" src="../assets/images/promocion.jpg" alt="" loading="lazy" />
+    <picture>
+      <source srcset="../assets/images/promocion.webp" type="image/webp" />
+      <img class="promotion__img" src="../assets/images/promocion.jpg" alt="" loading="lazy" />
+    </picture>
     <h2 class="promotion__title">
       {{ t('promo_title') }}
     </h2>
