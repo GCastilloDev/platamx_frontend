@@ -149,6 +149,9 @@ export default {
   val_phone_format: 'Phone must be exactly 10 digits',
   val_max_200: 'Text exceeds 200 characters',
 
+  // Cart
+  cart_no_address: 'Please add a shipping address to your profile before checking out.',
+
   // Forgot Password
   forgot_password_link: 'Forgot your password?',
   forgot_title: 'Recover password',

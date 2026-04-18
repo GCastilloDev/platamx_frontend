@@ -149,6 +149,9 @@ export default {
   val_phone_format: 'El teléfono debe tener exactamente 10 números',
   val_max_200: 'El texto excede los 200 caracteres permitidos',
 
+  // Cart
+  cart_no_address: 'Para continuar, registra una dirección de envío en tu perfil.',
+
   // Forgot Password
   forgot_password_link: '¿Olvidaste tu contraseña?',
   forgot_title: 'Recuperar contraseña',

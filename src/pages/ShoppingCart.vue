@@ -28,7 +28,7 @@
               <img class="product__image" :src="product.imageUrl" alt="" />
             </div>
             <div
-              class="col-2 self-center justify-center table__product-title prueba product-item-qty"
+              class="col-2 self-center justify-center table__product-title qty-controls product-item-qty"
             >
               <q-btn
                 flat
@@ -221,9 +221,7 @@ async function purchase() {
     if (!adr || !adr.street || !adr.city || !adr.state || !adr.zip) {
       $q.loading.hide();
       $q.notify({
-        message: locale.value === 'en-US' 
-          ? "You must register a shipping address to proceed." 
-          : "Para poder continuar, registra una dirección de envío en tu perfil.",
+        message: t('cart_no_address'),
         color: "warning",
         icon: "warning",
         position: "top"
@@ -366,7 +364,7 @@ h2 {
   color: #2f3033;
 }
 
-.prueba {
+.qty-controls {
   display: flex;
   justify-content: center;
   align-items: center;

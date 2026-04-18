@@ -20,7 +20,7 @@
       </div>
       <div class="header-action__search">
         <q-input
-          :ref="(el) => (prueba['prueba'] = el)"
+          :ref="(el) => (searchInputRef['searchInputRef'] = el)"
           v-model:model-value="searchQ"
           class="header-action__search--input"
           standout
@@ -160,7 +160,7 @@ const route = useRoute();
 const router = useRouter();
 const isMenuOpen = ref(false);
 const searchQ = ref("");
-const prueba = ref({});
+const searchInputRef = ref({});
 const dialogLogin = ref(false);
 const dialogCreateAccount = ref(false);
 const dialogForgotPassword = ref(false);
@@ -259,7 +259,7 @@ function goToSection(index: number) {
 function search() {
   router.push({ name: "search", query: { q: searchQ.value } });
   searchQ.value = "";
-  prueba.value.prueba.blur();
+  searchInputRef.value.searchInputRef.blur();
 }
 </script>
 
