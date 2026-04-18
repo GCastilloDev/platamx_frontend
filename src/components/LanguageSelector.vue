@@ -48,25 +48,23 @@ function setLang(lang: 'es' | 'en') {
 
 .lang-selector__item {
   cursor: pointer;
-  color: #2d2e36;
-  opacity: 0.45;
-  transition: opacity 0.2s ease, font-weight 0.15s ease;
+  color: #767676;
+  transition: color 0.2s ease, font-weight 0.15s ease;
   padding: 2px 0;
 }
 
 .lang-selector__item:hover {
-  opacity: 0.75;
+  color: #4f4f4f;
 }
 
 .lang-selector__item--active {
-  opacity: 1;
+  color: #2d2e36;
   font-weight: 700;
   border-bottom: 1.5px solid #2d2e36;
 }
 
 .lang-selector__divider {
-  color: #2d2e36;
-  opacity: 0.25;
+  color: #b0b0b5;
   font-weight: 300;
   font-size: 11px;
 }
