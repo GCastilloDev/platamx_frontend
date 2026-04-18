@@ -140,9 +140,20 @@
   </section>
 </template>
 
+<script lang="ts">
+import { useCurrentProductStore } from '../stores/currentProduct';
+
+export default {
+  async preFetch({ store, currentRoute }) {
+    const productStore = useCurrentProductStore(store);
+    await productStore.fetchProduct(currentRoute.params.id as string);
+  }
+}
+</script>
+
 <script setup lang="ts">
-import { ref } from "vue";
-import axios from "axios";
+import { ref, watchEffect } from "vue";
+import { storeToRefs } from "pinia";
 import { useQuasar, useMeta } from "quasar";
 import { useRoute } from "vue-router";
 import { useI18n } from 'vue-i18n';
@@ -151,11 +162,10 @@ import Login from "../components/Login.vue";
 import CreateAccount from "../components/CreateAccount.vue";
 import { apiAuth } from "../boot/axios";
 import { getBackendError } from "../utils/error";
-import { API_BASE_URL } from "../constants/api";
 import { useAuth } from "../composables/useAuth";
 import { useCart } from "../composables/useCart";
+import { getCloudinaryUrl } from "../utils/cloudinary";
 import { formatCurrency } from "../utils/currency";
-import type { Product } from "../types";
 
 const { t, locale } = useI18n();
 const $q = useQuasar();
@@ -165,71 +175,43 @@ const { isLoggedIn } = useAuth();
 const cartStore = useCart();
 
 const route = useRoute();
-const loading = ref(true);
+const productStore = useCurrentProductStore();
+const { product, loading, error } = storeToRefs(productStore);
+
 const loadingBtn = ref(false);
 const fullscreen = ref(false);
 const openLogin = ref(false);
 const openCreateAccount = ref(false);
 const isAddProduct = ref(false);
-const addProductButton = ref(null);
+const addProductButton = ref<any>(null);
 
-const product = ref<Product>({
-  collections: [{ description: "Colección de dijes", id: 2, name: "Anillos" }],
-  name: "Arracadas Huggies",
-  price: "8599",
-  variants: [],
-  description:
-    "Arracadas de plata 14k con zirconias Las arracadas siempre serán unas excelentes aliadas de las mujeres. No importa si el maquillaje es escaso o no se llevan más accesorios. Cuando las arracadas están presentes, el rostro de cualquier dama adquiere brillo y glamour. Adquiere estas arracadas de oro blanco y vístete para triunfar.",
-  images: [
-    {
-      id: 58,
-      file_name: "87_vuknuc",
-      url: "http://res.cloudinary.com/dhils8jyq/image/upload/v1725327519/87_vuknuc.jpg",
-    },
-    {
-      id: 59,
-      file_name: "86_qlwdgo",
-      url: "http://res.cloudinary.com/dhils8jyq/image/upload/v1725327519/86_qlwdgo.jpg",
-    },
-  ],
+const slide = ref(product.value?.images?.[0]?.file_name || "default");
+const selectedVariant = ref<any>(product.value?.variants?.[0]?.id || null);
+
+// If the product changes (e.g. CSR navigation), update defaults
+watchEffect(() => {
+  if (product.value) {
+    if (!slide.value || slide.value === 'default') {
+       slide.value = product.value.images?.[0]?.file_name || "default";
+    }
+    if (!selectedVariant.value && product.value.variants && product.value.variants.length > 0) {
+       selectedVariant.value = product.value.variants[0].id;
+    }
+  }
 });
 
-const slide = ref("87_vuknuc");
-const selectedVariant = ref<any>(null);
-
-async function getProduct() {
-  try {
-    loading.value = true;
-    const idProduct = route.params.id;
-    const url = `${API_BASE_URL}/products/${idProduct}`;
-
-    const { data: response } = await axios.get(url);
-    if (response.data.images.length === 0) {
-      response.data.images.push({
-        id: 0,
-        file_name: "default",
-        url: "https://res.cloudinary.com/dhils8jyq/image/upload/v1725562192/plata_generico_on9yy1.jpg",
-      });
-    }
-    slide.value = response.data.images[0].file_name;
-    product.value = response.data;
-    
-    // Auto-seleccionar la primera variante si existen para no mandar nulos al carrito
-    if (product.value.variants && product.value.variants.length > 0) {
-      selectedVariant.value = product.value.variants[0].id;
-    }
-    
-    loading.value = false;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 useMeta(() => {
+  if (!product.value) return { title: 'Plata MX' };
+  
   const productName = locale.value === 'en-US' ? (product.value.name_en || product.value.name) : product.value.name;
   const productDesc = locale.value === 'en-US' ? (product.value.description_en || product.value.description) : product.value.description;
   const cleanDesc = productDesc ? productDesc.replace(/<[^>]*>?/gm, '').substring(0, 160) : '';
-  const firstImage = product.value.images && product.value.images.length > 0 ? product.value.images[0].url : 'icons/favicon-128x128.png';
+  const firstImage = product.value.images && product.value.images.length > 0 ? product.value.images[0].url : '';
+  
+  // Apply Cloudinary crop transformation for social media sharing
+  const ogImageUrl = firstImage && firstImage.includes("cloudinary.com") 
+    ? getCloudinaryUrl(firstImage, "w_1200,h_630,c_fill,f_auto,q_auto")
+    : firstImage || 'icons/favicon-128x128.png';
 
   return {
     title: productName ? `${productName} | Plata MX` : 'Plata MX',
@@ -237,48 +219,46 @@ useMeta(() => {
       description: { name: 'description', content: cleanDesc },
       ogTitle:     { property: 'og:title', content: productName },
       ogDesc:      { property: 'og:description', content: cleanDesc },
-      ogImage:     { property: 'og:image', content: firstImage },
+      ogImage:     { property: 'og:image', content: ogImageUrl },
+      ogImageWidth:{ property: 'og:image:width', content: '1200' },
+      ogImageHeight:{ property: 'og:image:height', content: '630' },
+      twCard:      { name: 'twitter:card', content: 'summary_large_image' },
       twTitle:     { name: 'twitter:title', content: productName },
       twDesc:      { name: 'twitter:description', content: cleanDesc },
-      twImage:     { name: 'twitter:image', content: firstImage }
+      twImage:     { name: 'twitter:image', content: ogImageUrl }
     }
   };
 });
 
 function addProduct() {
   loadingBtn.value = true;
-
   if (!isLoggedIn.value) {
     loadingBtn.value = false;
     isAddProduct.value = true;
     openLogin.value = true;
     return;
   }
-
   postProduct();
 }
 
 async function postProduct() {
+  if (!product.value) return;
+  
   try {
     addProductButton.value?.setAttribute("disabled", "");
     cartStore.addDelta(1);
-
     const item = {
       productId: product.value.id,
       variantId: selectedVariant.value || 0,
       quantity: 1,
     };
-
     await api.post("/shopping-cart", item);
-    $q.notify({
-      message: t('product_added_ok'),
-      color: "green",
-    });
-  } catch (error) {
+    $q.notify({ message: t('product_added_ok'), color: "green" });
+  } catch (err) {
     cartStore.addDelta(-1);
-    console.log(error);
+    console.log(err);
     $q.notify({
-      message: getBackendError(error, "Ocurrió un error al agregar el producto al carrito."),
+      message: getBackendError(err, "Ocurrió un error al agregar el producto al carrito."),
       color: "negative",
     });
   } finally {
@@ -302,8 +282,6 @@ function createAccountOpen() {
   closeLogin();
   openCreateAccount.value = true;
 }
-
-getProduct();
 </script>
 
 <style scoped>

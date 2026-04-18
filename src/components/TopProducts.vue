@@ -26,12 +26,13 @@
 
 <script setup lang="ts">
 import axios from "axios";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
+import { useCollectionsStore } from "../stores/globalCollections";
+import { storeToRefs } from "pinia";
 import { useI18n } from 'vue-i18n';
 import { API_BASE_URL } from "../constants/api";
 
 import ProductCard from "../components/ProductCard.vue";
-import { globalCollections } from "../stores/globalCollections";
 
 const { t, locale } = useI18n();
 
@@ -59,30 +60,23 @@ async function getProductsByCollection(collectionID: number) {
   }
 }
 
-function getCollections() {
-  try {
-    collections.value = [];
-    globalCollections.value.forEach((e: any) => {
-      const item = {
-        id: e.id,
-        title: e.title,
-        title_en: e.title_en,
-        selected: false,
-      };
+const collectionsStore = useCollectionsStore();
+const { collections: storeCollections } = storeToRefs(collectionsStore);
 
-      collections.value.push(item);
-    });
-
-    collections.value = collections.value.slice(0, 5);
+watchEffect(() => {
+  if (storeCollections.value.length > 0 && collections.value.length === 0) {
+    collections.value = storeCollections.value.slice(0, 5).map((e: any, idx: number) => ({
+      id: e.id,
+      title: e.title,
+      title_en: e.title_en,
+      selected: idx === 0,
+    }));
+    
     if (collections.value.length > 0) {
-      collections.value[0].selected = true;
-      const collectionID = collections.value[0].id;
-      getProductsByCollection(collectionID);
+      getProductsByCollection(collections.value[0].id);
     }
-  } catch (error) {
-    console.log(error);
   }
-}
+});
 
 async function changeCollection(index: number) {
   try {
@@ -99,7 +93,7 @@ async function changeCollection(index: number) {
   }
 }
 
-getCollections();
+
 </script>
 
 <style scoped>

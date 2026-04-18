@@ -119,7 +119,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from "vue-router";
 import { useQuasar, useMeta } from "quasar";
@@ -139,12 +139,16 @@ import Login from "../components/Login.vue";
 import CreateAccount from "../components/CreateAccount.vue";
 import ForgotPassword from "../components/ForgotPassword.vue";
 import LanguageSelector from "../components/LanguageSelector.vue";
-import { globalCollections } from "../stores/globalCollections";
+import { useCollectionsStore } from "../stores/globalCollections";
+import { storeToRefs } from "pinia";
 
 const { t, locale } = useI18n();
 const $q = useQuasar();
 const { isLoggedIn, init: initAuth, logout } = useAuth();
 const { totalItems, setTotal, reset: resetCart } = useCart();
+
+const collectionsStore = useCollectionsStore();
+const { collections } = storeToRefs(collectionsStore);
 
 useMeta(() => {
   return {
@@ -165,21 +169,13 @@ const dialogLogin = ref(false);
 const dialogCreateAccount = ref(false);
 const dialogForgotPassword = ref(false);
 
-const menu = ref([
-  { id: -1, title: 'Inicio', title_en: 'Home', expand: false },
-]);
-
-function getCollections() {
-  try {
-    menu.value = menu.value.filter(m => m.id === -1);
-    globalCollections.value.forEach((e: any) => {
-      menu.value.push({ id: e.id, title: e.title, title_en: e.title_en, expand: false });
-    });
-  } catch (error) {
-    console.log(error);
-  }
-}
-getCollections();
+const menu = computed(() => {
+  const items = [{ id: -1, title: 'Inicio', title_en: 'Home', expand: false }];
+  collections.value.forEach((e: any) => {
+    items.push({ id: e.id, title: e.title, title_en: e.title_en, expand: false });
+  });
+  return items;
+});
 
 async function fetchCartItems() {
   if (typeof window === "undefined") return;
