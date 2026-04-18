@@ -95,16 +95,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { useI18n } from 'vue-i18n';
 import { apiAuth } from "../boot/axios";
+import { useCartStore } from "../stores/cart";
+import { useAuthStore } from "../stores/auth";
 
 const route = useRoute();
 const router = useRouter();
 const { t, locale } = useI18n();
 const api = apiAuth();
+const cartStore = useCartStore();
+const authStore = useAuthStore();
 const products = ref<any[]>([]);
 const subtotal = ref<any>(0);
 const shipping = ref<any>(0);
@@ -132,13 +136,6 @@ function formatPrice(priceMxn: any, priceUsd: any) {
 }
 
 async function getShoppingCart() {
-  const dispatch = (event: string, detail?: object) => {
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(
-        new CustomEvent(event, detail ? { detail } : undefined),
-      );
-    }
-  };
   try {
     loadingCart.value = true;
     const { data: response } = await api.get("/shopping-cart/user");
@@ -149,8 +146,7 @@ async function getShoppingCart() {
       shipping.value = 0;
       total.value = 0;
       products.value = [];
-
-      dispatch("cart-updated", { totalItems: 0 });
+      cartStore.setTotal(0);
       return;
     }
 
@@ -161,9 +157,7 @@ async function getShoppingCart() {
     shippingUsd.value = response.data.deliveryCostUsd;
     totalUsd.value = response.data.totalUsd;
     products.value = response.data.items;
-
-    // Empujar evento al root pero con Maletín Inteligente para evitarle gastar red
-    dispatch("cart-updated", { totalItems: response.data.totalItems });
+    cartStore.setTotal(response.data.totalItems);
   } catch (error) {
     console.log(error);
   } finally {
@@ -184,10 +178,7 @@ async function updateProduct(index, action) {
 
   // Engaño visual
   products.value[index].quantity = quantity;
-  if (typeof window !== "undefined")
-    window.dispatchEvent(
-      new CustomEvent("cart-optimistic", { detail: { delta } }),
-    );
+  cartStore.addDelta(delta);
 
   try {
     $q.loading.show();
@@ -195,10 +186,7 @@ async function updateProduct(index, action) {
     await getShoppingCart();
   } catch (error) {
     products.value[index].quantity = previousQuantity;
-    if (typeof window !== "undefined")
-      window.dispatchEvent(
-        new CustomEvent("cart-optimistic", { detail: { delta: -delta } }),
-      );
+    cartStore.addDelta(-delta);
     console.log(error);
   } finally {
     $q.loading.hide();
@@ -216,10 +204,7 @@ async function deleteProduct(productID) {
 
   // Engaño visual
   products.value.splice(prodIndex, 1);
-  if (typeof window !== "undefined")
-    window.dispatchEvent(
-      new CustomEvent("cart-optimistic", { detail: { delta } }),
-    );
+  cartStore.addDelta(delta);
 
   try {
     $q.loading.show();
@@ -227,10 +212,7 @@ async function deleteProduct(productID) {
     await getShoppingCart();
   } catch (error) {
     products.value.splice(prodIndex, 0, prevProd);
-    if (typeof window !== "undefined")
-      window.dispatchEvent(
-        new CustomEvent("cart-optimistic", { detail: { delta: -delta } }),
-      );
+    cartStore.addDelta(-delta);
     console.log(error);
   } finally {
     $q.loading.hide();
@@ -285,11 +267,10 @@ async function purchase() {
 
 onMounted(() => {
   getShoppingCart();
-  window.addEventListener('user-login', getShoppingCart);
 });
 
-onUnmounted(() => {
-  window.removeEventListener('user-login', getShoppingCart);
+watch(() => authStore.isLoggedIn, (loggedIn) => {
+  if (loggedIn) getShoppingCart();
 });
 </script>
 

@@ -162,11 +162,15 @@ import CreateAccount from "../components/CreateAccount.vue";
 import { apiAuth } from "../boot/axios";
 import { getBackendError } from "../utils/error";
 import { API_BASE_URL } from "../constants/api";
+import { useAuthStore } from "../stores/auth";
+import { useCartStore } from "../stores/cart";
 
 const { t, locale } = useI18n();
 const $q = useQuasar();
 
 const api = apiAuth();
+const authStore = useAuthStore();
+const cartStore = useCartStore();
 
 const route = useRoute();
 const loading = ref(true);
@@ -251,9 +255,8 @@ useMeta(() => {
 
 function addProduct() {
   loadingBtn.value = true;
-  const existSession = localStorage.plataMX;
 
-  if (existSession === undefined) {
+  if (!authStore.isLoggedIn) {
     loadingBtn.value = false;
     isAddProduct.value = true;
     openLogin.value = true;
@@ -266,8 +269,7 @@ function addProduct() {
 async function postProduct() {
   try {
     addProductButton.value?.setAttribute("disabled", "");
-    if (typeof window !== "undefined")
-      window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: 1 } }));
+    cartStore.addDelta(1);
 
     const item = {
       productId: product.value.id,
@@ -280,11 +282,8 @@ async function postProduct() {
       message: t('product_added_ok'),
       color: "green",
     });
-    if (typeof window !== "undefined")
-      window.dispatchEvent(new CustomEvent("cart-updated"));
   } catch (error) {
-    if (typeof window !== "undefined")
-      window.dispatchEvent(new CustomEvent("cart-optimistic", { detail: { delta: -1 } }));
+    cartStore.addDelta(-1);
     console.log(error);
     $q.notify({
       message: getBackendError(error, "Ocurrió un error al agregar el producto al carrito."),

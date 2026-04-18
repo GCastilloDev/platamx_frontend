@@ -41,7 +41,7 @@
         <language-selector />
         <div class="cursor-pointer relative-position" style="display: inline-flex;" @click="goToShoppingCart">
           <shop-bag class="icon__pointer" />
-          <q-badge v-if="cartTotalItems > 0" color="red" rounded floating>{{ cartTotalItems }}</q-badge>
+          <q-badge v-if="cartStore.totalItems > 0" color="red" rounded floating>{{ cartStore.totalItems }}</q-badge>
         </div>
         <account class="icon__pointer" @click="openDialogLogin" />
       </div>
@@ -128,6 +128,8 @@ import { useQuasar, useMeta } from "quasar";
 import validationRules from "../rules";
 import { apiAuth } from "../boot/axios";
 import { API_BASE_URL } from "../constants/api";
+import { useAuthStore } from "../stores/auth";
+import { useCartStore } from "../stores/cart";
 
 import ShopBag from "../components/icons/ShopBag.vue";
 import Account from "../components/icons/Account.vue";
@@ -144,6 +146,8 @@ import { globalCollections } from "../stores/globalCollections";
 
 const { t, locale } = useI18n();
 const $q = useQuasar();
+const authStore = useAuthStore();
+const cartStore = useCartStore();
 
 useMeta(() => {
   return {
@@ -172,51 +176,33 @@ const dialogLogin = ref(false);
 const dialogCreateAccount = ref(false);
 const dialogForgotPassword = ref(false);
 const backdropFilter = ref("blur(5px) saturate(150%)");
-const cartTotalItems = ref(0);
 
 async function fetchCartItems() {
   if (typeof window === "undefined") return;
-  if (!localStorage.plataMX) {
-    cartTotalItems.value = 0;
+  if (!authStore.isLoggedIn) {
+    cartStore.setTotal(0);
     return;
   }
   try {
     const { data } = await apiAuth().get("shopping-cart/user");
-    cartTotalItems.value = parseInt(data.data.totalItems, 10) || 0;
+    cartStore.setTotal(parseInt(data.data.totalItems, 10) || 0);
   } catch (error) {
     console.log("Error trayendo carrito:", error);
-    cartTotalItems.value = 0;
+    cartStore.setTotal(0);
   }
 }
 
 // Solo ejecutar en el cliente, NUNCA en Node SSR
 onMounted(() => {
+  authStore.init();
   fetchCartItems();
 });
 
-// Eventos de Windows para comunicación limpia entre componentes 
+// Sesión expirada: el interceptor de axios emite este evento ante un 401
 if (typeof window !== "undefined") {
-  window.addEventListener("cart-updated", (event: any) => {
-    if (event.detail && event.detail.totalItems !== undefined) {
-      cartTotalItems.value = parseInt(event.detail.totalItems, 10) || 0;
-    } else {
-      fetchCartItems();
-    }
-  });
-
-  window.addEventListener("cart-optimistic", (event: any) => {
-    if (event.detail && event.detail.delta !== undefined) {
-      cartTotalItems.value = Math.max(0, cartTotalItems.value + event.detail.delta);
-    }
-  });
-
-  window.addEventListener("user-logout", () => {
-    cartTotalItems.value = 0;
-  });
-
-  // Sesión expirada: el interceptor de axios emite este evento ante un 401
   window.addEventListener("auth-expired", () => {
-    cartTotalItems.value = 0;
+    authStore.logout();
+    cartStore.reset();
     dialogLogin.value = true;
   });
 }
@@ -263,7 +249,7 @@ function openForgotPassword() {
 }
 
 function openDialogLogin() {
-  if (!sessionExists()) {
+  if (!authStore.isLoggedIn) {
     dialogLogin.value = true;
     return;
   }
@@ -279,10 +265,6 @@ function goToShoppingCart() {
     name: "shopping-cart",
     params: { lang: route.params.lang || 'es' },
   });
-}
-
-function sessionExists() {
-  return localStorage.plataMX !== undefined;
 }
 
 function goToSection(index: number) {

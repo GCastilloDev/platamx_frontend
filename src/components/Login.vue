@@ -83,9 +83,11 @@ import { useI18n } from 'vue-i18n';
 import validationRules from "../rules";
 import { API_BASE_URL } from "../constants/api";
 import { getBackendError } from "../utils/error";
+import { useAuthStore } from "../stores/auth";
 
 const { t } = useI18n();
 const $q = useQuasar();
+const authStore = useAuthStore();
 const rules = validationRules(t);
 const email = ref("");
 const password = ref("");
@@ -166,14 +168,13 @@ async function login() {
     };
     const { data: response } = await axios.post(url, data);
     const token = response.data.access_token;
-    saveToken(token);
-    
+    authStore.saveToken(token);
+
     email.value = "";
     password.value = "";
-    
+
     // dialogLogin.value = false;
     emit("close");
-    window.dispatchEvent(new CustomEvent("user-login"));
     $q.notify(t('login_success'));
   } catch (error) {
     $q.notify({
@@ -187,12 +188,6 @@ async function login() {
   }
 }
 
-function saveToken(token: string) {
-  const data = {
-    token,
-  };
-  localStorage.setItem("plataMX", JSON.stringify(data));
-}
 </script>
 <style scoped>
 .forgot-password {
