@@ -1,6 +1,6 @@
 <template>
   <section class="container">
-    <h2 class="title">{{ t('cart_title') }}</h2>
+    <h2 class="title">{{ t("cart_title") }}</h2>
 
     <!-- Estado de carga inicial -->
     <div v-if="loadingCart" class="text-center q-py-xl">
@@ -9,15 +9,17 @@
 
     <template v-else>
       <div class="text-center text-h5" v-if="products.length == 0">
-        {{ t('cart_empty') }}
+        {{ t("cart_empty") }}
       </div>
       <div class="products__cart">
         <div class="products__container" v-if="products.length > 0">
           <div class="row q-pt-lg q-pb-lg border cart-header-row">
             <div class="col-1"></div>
-            <div class="col-2 table__title text-center">{{ t('cart_col_qty') }}</div>
-            <div class="col-4 table__title">{{ t('cart_col_product') }}</div>
-            <div class="col-3 table__title">{{ t('cart_col_price') }}</div>
+            <div class="col-2 table__title text-center">
+              {{ t("cart_col_qty") }}
+            </div>
+            <div class="col-4 table__title">{{ t("cart_col_product") }}</div>
+            <div class="col-3 table__title">{{ t("cart_col_price") }}</div>
             <div class="col-2"></div>
           </div>
           <div
@@ -47,10 +49,18 @@
                 @click="updateProduct(index, 'add')"
               ></q-btn>
             </div>
-            <div class="col-4 table__product-title self-center q-pr-lg product-item-title">
-              {{ locale === 'en-US' ? (product.nameItem_en || product.nameItem) : product.nameItem }}
+            <div
+              class="col-4 table__product-title self-center q-pr-lg product-item-title"
+            >
+              {{
+                locale === "en-US"
+                  ? product.nameItem_en || product.nameItem
+                  : product.nameItem
+              }}
             </div>
-            <div class="col-3 self-center table__product-price product-item-price">
+            <div
+              class="col-3 self-center table__product-price product-item-price"
+            >
               {{ formatPrice(product.total, product.totalUsd) }}
             </div>
             <div class="col-2 text-center self-center product-item-delete">
@@ -63,21 +73,21 @@
               ></q-btn>
             </div>
           </div>
-          <h2>{{ t('cart_summary_title') }}</h2>
+          <h2>{{ t("cart_summary_title") }}</h2>
           <div class="row table__row border">
-            <div class="col-6 table__info">{{ t('cart_subtotal') }}</div>
+            <div class="col-6 table__info">{{ t("cart_subtotal") }}</div>
             <div class="col-6 text-right table__price">
               {{ formatPrice(subtotal, subtotalUsd) }}
             </div>
           </div>
           <div class="row table__row border">
-            <div class="col-6 table__info">{{ t('cart_shipping') }}</div>
+            <div class="col-6 table__info">{{ t("cart_shipping") }}</div>
             <div class="col-6 text-right table__price">
               {{ formatPrice(shipping, shippingUsd) }}
             </div>
           </div>
           <div class="row table__row border">
-            <div class="col-6 table__info">{{ t('cart_total') }}</div>
+            <div class="col-6 table__info">{{ t("cart_total") }}</div>
             <div class="col-6 text-right table__price">
               {{ formatPrice(total, totalUsd) }}
             </div>
@@ -85,7 +95,7 @@
 
           <section class="text-center q-mt-lg">
             <a class="product__btn" @click="purchase">
-              <span>{{ t('cart_checkout') }}</span>
+              <span>{{ t("cart_checkout") }}</span>
             </a>
           </section>
         </div>
@@ -98,7 +108,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useQuasar } from "quasar";
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 import { apiAuth } from "../boot/axios";
 import { useCart } from "../composables/useCart";
 import { useAuth } from "../composables/useAuth";
@@ -123,7 +133,7 @@ const loadingCart = ref(true);
 const $q = useQuasar();
 
 function formatPrice(priceMxn: number, priceUsd: number) {
-  return formatBilingual(priceMxn, priceUsd, locale.value === 'en-US');
+  return formatBilingual(priceMxn, priceUsd, locale.value === "en-US");
 }
 
 async function getShoppingCart() {
@@ -148,7 +158,10 @@ async function getShoppingCart() {
     shippingUsd.value = response.data.deliveryCostUsd;
     totalUsd.value = response.data.totalUsd;
     products.value = response.data.items;
-    const cartCount = response.data.items.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0);
+    const cartCount = response.data.items.reduce(
+      (sum: number, item: any) => sum + (item.quantity || 0),
+      0,
+    );
     cartStore.setTotal(cartCount);
   } catch (error) {
     console.log(error);
@@ -221,21 +234,21 @@ async function purchase() {
     if (!adr || !adr.street || !adr.city || !adr.state || !adr.zip) {
       $q.loading.hide();
       $q.notify({
-        message: t('cart_no_address'),
+        message: t("cart_no_address"),
         color: "warning",
         icon: "warning",
-        position: "top"
+        position: "top",
       });
-      const lang = locale.value === 'en-US' ? 'en' : 'es';
+      const lang = locale.value === "en-US" ? "en" : "es";
       router.push(`/${lang}/profile?tab=account`);
       return;
     }
 
-    const lang = locale.value === 'en-US' ? 'en' : 'es';
+    const lang = locale.value === "en-US" ? "en" : "es";
     const data = {
-      currencyPurchase: locale.value === 'en-US' ? 'USD' : 'MXN',
-      urlSuccess: `${lang}/profile?tab=purchases`,
-      urlCancel: "string",
+      currencyPurchase: locale.value === "en-US" ? "USD" : "MXN",
+      urlSuccess: `/${lang}/profile?tab=purchases`,
+      urlCancel: "www.google.com",
     };
 
     const { data: response } = await api.post(
