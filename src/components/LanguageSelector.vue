@@ -70,43 +70,12 @@ function setLang(lang: 'es' | 'en') {
   font-weight: 300;
   font-size: 11px;
 }
-</style>
 
-
-<style scoped>
-.lang-selector {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.8px;
-  line-height: 1;
-  user-select: none;
-}
-
-.lang-selector__item {
-  cursor: pointer;
-  color: #2d2e36;
-  opacity: 0.45;
-  transition: opacity 0.2s ease, font-weight 0.15s ease;
-  padding: 2px 0;
-}
-
-.lang-selector__item:hover {
-  opacity: 0.75;
-}
-
-.lang-selector__item--active {
-  opacity: 1;
-  font-weight: 700;
-  border-bottom: 1.5px solid #2d2e36;
-}
-
-.lang-selector__divider {
-  color: #2d2e36;
-  opacity: 0.25;
-  font-weight: 300;
-  font-size: 11px;
+@media (max-width: 1024px) {
+  .lang-selector {
+    gap: 4px;
+    font-size: 11.5px;
+    letter-spacing: 0px;
+  }
 }
 </style>
