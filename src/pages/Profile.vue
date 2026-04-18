@@ -104,7 +104,7 @@
                     <q-card-section v-if="!loadingProfile && !isEditingAddress" key="read" class="q-pa-lg q-py-xl">
                     <div class="row justify-between items-center">
                       <div class="col-8 profile-card-content">
-                        <span v-if="userAddress !== null">
+                        <span v-if="userProfile.address">
                           {{
                             userProfile.address.street ||
                             userProfile.address.streat
@@ -119,7 +119,7 @@
                           class="profile-card-link cursor-pointer"
                           @click="openAddressModal"
                         >
-                          {{ userAddress !== null ? t('profile_change') : t('profile_add') }}
+                          {{ userProfile.address ? t('profile_change') : t('profile_add') }}
                         </span>
                       </div>
                     </div>
@@ -428,11 +428,12 @@ async function tabEvent(event: string) {
 
 function validateAddress() {
   userAddress.value = null;
-  const address = userProfile.value.address;
+  const address = userProfile.value?.address;
+  if (!address) return;
+  
   let countProperties = 0;
-
   for (const property in address) {
-    if (address[property] !== null) countProperties += 1;
+    if (address[property] !== null && address[property] !== "") countProperties += 1;
   }
 
   if (countProperties > 0) userAddress.value = address;
@@ -505,7 +506,7 @@ const formAddress = ref({
 });
 
 function attemptChangeName() {
-  if (userAddress.value === null) {
+  if (!userProfile.value.address) {
     $q.notify({
       message:
         t('profile_name_change_warning'),

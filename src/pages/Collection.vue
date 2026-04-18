@@ -7,7 +7,7 @@
     </div> -->
 
     <div class="row items-stretch items-center q-col-gutter-lg">
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3 flex flex-center" v-for="product in products">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 flex flex-center" v-for="(product, idx) in products" :key="product ? product.id : idx">
         <ProductCard
           class="search__result_item"
           :loading="loading"
@@ -97,7 +97,9 @@ watch(
   }
 );
 
-init();
+onMounted(() => {
+  init();
+});
 </script>
 
 <style lang="scss" scoped>

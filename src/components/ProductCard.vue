@@ -13,28 +13,29 @@
         />
       </q-card-section>
     </q-card>
-    <q-img
-      class="product-card__image"
-      :src="getCloudinaryUrl(defineImage(props.product), 'f_auto,q_auto')"
-      :placeholder-src="getCloudinaryUrl(defineImage(props.product), 'w_50,e_blur:1000,f_auto,q_auto')"
-      spinner-color="grey"
-      alt=""
-      v-if="!loading"
-    />
+    <template v-if="!loading && product">
+      <q-img
+        class="product-card__image"
+        :src="getCloudinaryUrl(defineImage(props.product), 'f_auto,q_auto')"
+        :placeholder-src="getCloudinaryUrl(defineImage(props.product), 'w_50,e_blur:1000,f_auto,q_auto')"
+        spinner-color="grey"
+        alt=""
+      />
 
-    <section class="product-card__description" v-if="!loading">
-      <p class="product-card__price">
-        {{ locale === 'en-US'
-          ? converToCurrency(props.product.price_usd ?? props.product.price, 'USD')
-          : converToCurrency(props.product.price, 'MXN') }}
-      </p>
-      <p class="product-card__title">
-        {{ locale === 'en-US' ? (props.product.name_en || props.product.name) : props.product.name }}
-      </p>
-      <p class="product-card__subtitle">{{ stripHTML(locale === 'en-US'
-        ? (props.product.description_en || props.product.description)
-        : props.product.description) }}</p>
-    </section>
+      <section class="product-card__description">
+        <p class="product-card__price">
+          {{ locale === 'en-US'
+            ? converToCurrency(props.product.price_usd ?? props.product.price, 'USD')
+            : converToCurrency(props.product.price, 'MXN') }}
+        </p>
+        <p class="product-card__title">
+          {{ locale === 'en-US' ? (props.product.name_en || props.product.name) : props.product.name }}
+        </p>
+        <p class="product-card__subtitle">{{ stripHTML(locale === 'en-US'
+          ? (props.product.description_en || props.product.description)
+          : props.product.description) }}</p>
+      </section>
+    </template>
   </div>
 </template>
 
@@ -50,7 +51,7 @@ const { locale } = useI18n();
 
 const props = defineProps<{
   loading: boolean;
-  product: {
+  product?: {
     id: number;
     name: string;
     name_en?: string;
@@ -63,7 +64,7 @@ const props = defineProps<{
         url?: string;
       }
     ];
-  };
+  } | null;
 }>();
 
 function converToCurrency(price: string | number, currency: 'MXN' | 'USD' = 'MXN') {
@@ -76,16 +77,17 @@ function stripHTML(html?: string) {
   return html.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
 }
 
-function defineImage(product: { images?: { url?: string }[] }) {
+function defineImage(product?: any) {
   const image =
     "https://res.cloudinary.com/dhils8jyq/image/upload/v1725562192/plata_generico_on9yy1.jpg";
 
-  if (product.images && product.images.length > 0) return product.images[0].url;
+  if (product && product.images && product.images.length > 0) return product.images[0].url;
 
   return image;
 }
 
 function goToProduct() {
+  if (!props.product) return;
   const id = props.product.id;
   const lang = route.params.lang || 'es';
   router.push({

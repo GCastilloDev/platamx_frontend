@@ -37,7 +37,7 @@
     </q-card>
   </div>
 
-  <section v-if="!loading" class="product__container">
+  <section v-if="!loading && product" class="product__container">
     <div class="product__section">
       <q-carousel
         swipeable
@@ -49,6 +49,7 @@
       >
         <q-carousel-slide
           v-for="image in product.images"
+          :key="image.id"
           :name="image.file_name"
           :img-src="image.url"
         />
@@ -64,18 +65,6 @@
             />
           </q-carousel-control>
         </template>
-        <!-- <q-carousel-slide
-          :name="2"
-          img-src="../assets/images/Imagen de producto 04 652 x 630.jpg"
-        />
-        <q-carousel-slide
-          :name="3"
-          img-src="../assets/images/Imagen de producto 07 652 x 631.jpg"
-        />
-        <q-carousel-slide
-          :name="4"
-          img-src="../assets/images/Imagen de producto 08 652 x 632.jpg"
-        /> -->
       </q-carousel>
     </div>
     <div class="product__section">
@@ -94,8 +83,8 @@
       <h2 class="product__title">{{ locale === 'en-US' ? (product.name_en || product.name) : product.name }}</h2>
       <p class="product__price">
         {{ locale === 'en-US'
-          ? formatCurrency(product.price_usd ?? product.price, 'USD')
-          : formatCurrency(product.price, 'MXN') }}
+          ? formatCurrency(String(product.price_usd ?? product.price), 'USD')
+          : formatCurrency(String(product.price), 'MXN') }}
       </p>
 
       <section v-if="product.variants && product.variants.length > 0">
@@ -113,7 +102,7 @@
           </a>
         </div>
       </section>
-      <!-- <p>Conoce tu talla</p> -->
+
       <a class="product__btn" @click="addProduct" ref="addProductButton">
         <span v-if="!loadingBtn">{{ t('product_add_to_cart') }}</span>
         <q-spinner-tail v-if="loadingBtn" color="white" size="2em" />

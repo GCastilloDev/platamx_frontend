@@ -47,7 +47,7 @@
       </div>
     </section>
 
-    <section class="menu__container" :class="{ 'menu--open': isMenuOpen }" v-show="!$q.screen.lt.md || isMenuOpen">
+    <section class="menu__container" :class="{ 'menu--open': isMenuOpen, 'menu--mobile-hidden': !isMenuOpen }">
       <span
         class="menu__item"
         v-for="(item, index) in menu"
@@ -392,6 +392,16 @@ a {
   border-bottom: 1px solid #e8e9ef;
 }
 
+.menu--mobile-hidden {
+  display: none;
+}
+
+@media (min-width: 1025px) {
+  .menu--mobile-hidden {
+    display: flex;
+  }
+}
+
 .menu__item {
   padding: 12px 24px 12px 24px;
   font-size: 16px;
@@ -476,6 +486,11 @@ a {
     align-items: center;
     border-bottom: none;
     padding-top: 15px;
+    display: none; // Hidden by default on mobile
+  }
+  
+  .menu--open {
+    display: flex; // Shown when open
   }
   .menu__item {
     width: 100%;

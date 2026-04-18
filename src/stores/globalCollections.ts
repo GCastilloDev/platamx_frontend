@@ -10,22 +10,26 @@ export const useCollectionsStore = defineStore('globalCollections', {
   }),
   actions: {
     async fetchCollections() {
-      // Don't refetch if already loaded
-      if (this.collections.length > 0) return;
+      // If we already have collections in state (from SSR hydration), skip fetch
+      if (this.collections && this.collections.length > 0) {
+        return;
+      }
 
       this.loading = true;
       try {
         const url = `${API_BASE_URL}/collections?page=1&items=25`;
         const { data: response } = await axios.get(url);
         
-        this.collections = response.data.map((e: any) => ({
-          id: e.id,
-          title: e.name,
-          title_en: e.name_en || e.name,
-          selected: false,
-        }));
+        if (response && response.data) {
+          this.collections = response.data.map((e: any) => ({
+            id: e.id,
+            title: e.name,
+            title_en: e.name_en || e.name,
+            selected: false,
+          }));
+        }
       } catch (err: any) {
-        console.error('Error prefetching collections:', err);
+        console.error('Error fetching collections:', err);
         this.error = err;
       } finally {
         this.loading = false;
