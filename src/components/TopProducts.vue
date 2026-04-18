@@ -166,4 +166,24 @@ getCollections();
   margin-top: 50px;
   padding-left: 30px;
 }
+
+@media (max-width: 1024px) {
+  .top-products__container-card {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .top-products__title {
+    font-size: 32px;
+    line-height: 48px;
+    padding: 0 10px;
+  }
+  .top-products__menu {
+    flex-wrap: wrap;
+    column-gap: 15px;
+    row-gap: 15px;
+  }
+  .top-products__menu--item {
+    font-size: 16px;
+  }
+}
 </style>

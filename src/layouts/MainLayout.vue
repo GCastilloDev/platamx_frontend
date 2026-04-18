@@ -7,14 +7,17 @@
     </section>
 
     <section class="header-action">
-      <router-link :to="{ name: 'home' }">
-        <img
-          class="header-action__logo"
-          src="../assets/images/plata_mx_logo.png"
-          alt=""
-          srcset=""
-        />
-      </router-link>
+      <div style="display: flex; align-items: center;">
+        <q-btn v-if="$q.screen.lt.md" flat dense round icon="menu" @click="isMenuOpen = !isMenuOpen" class="q-mr-md" />
+        <router-link :to="{ name: 'home' }">
+          <img
+            class="header-action__logo"
+            src="../assets/images/plata_mx_logo.png"
+            alt=""
+            srcset=""
+          />
+        </router-link>
+      </div>
       <div class="header-action__search">
         <q-input
           :ref="(el) => (prueba['prueba'] = el)"
@@ -44,7 +47,7 @@
       </div>
     </section>
 
-    <section class="menu__container">
+    <section class="menu__container" :class="{ 'menu--open': isMenuOpen }" v-show="!$q.screen.lt.md || isMenuOpen">
       <span
         class="menu__item"
         v-for="(item, index) in menu"
@@ -151,6 +154,7 @@ useMeta(() => {
   };
 });
 
+const isMenuOpen = ref(false);
 const loginButton = ref(null);
 const createAccountButton = ref(null);
 const loginForm = ref(null);
@@ -281,6 +285,7 @@ function sessionExists() {
 }
 
 function goToSection(index: number) {
+  isMenuOpen.value = false;
   const idSection = menu.value[index].id;
   const item = menu.value[index];
   const nameSection = locale.value === 'en-US'
@@ -626,5 +631,49 @@ a {
   color: #a7a7a7;
   margin: 0;
   padding: 0;
+}
+
+@media (max-width: 1024px) {
+  .header-action {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0px 20px;
+    gap: 15px;
+  }
+  .header-action__logo {
+    width: 140px;
+  }
+  .header-action__search {
+    order: 3;
+    width: 100%;
+  }
+  .header-action__search--input {
+    width: 100%;
+  }
+  .header-action__icons {
+    order: 2;
+  }
+
+  .menu__container {
+    flex-direction: column;
+    align-items: center;
+    border-bottom: none;
+    padding-top: 15px;
+  }
+  .menu__item {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #e8e9ef;
+  }
+
+  .footer__container {
+    padding: 40px 20px;
+    flex-direction: column;
+    gap: 30px;
+  }
+  .footer__container > div {
+    width: 100%;
+  }
 }
 </style>

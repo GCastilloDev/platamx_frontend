@@ -79,4 +79,43 @@ const { t } = useI18n();
   line-height: 27.7px;
   letter-spacing: calc(21px * 0.035);
 }
+
+@media (max-width: 1024px) {
+  .promotion__container {
+    margin-top: 50px;
+  }
+  .promotion__img {
+    height: 350px;
+  }
+  .promotion__title,
+  .promotion__subtitle {
+    margin-left: 20px;
+    width: calc(100% - 40px);
+  }
+
+  .promotion__title {
+    font-size: 28px;
+    line-height: 36px;
+    top: 15%;
+  }
+  .promotion__subtitle {
+    font-size: 15px;
+    line-height: 22px;
+    top: 45%;
+  }
+  .promotion__button {
+    margin-left: 20px;
+    border-radius: 30px;
+    top: 73%;
+    padding: 10px 0px;
+    height: 48px;
+    width: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .promotion__button span {
+    font-size: 16px;
+  }
+}
 </style>

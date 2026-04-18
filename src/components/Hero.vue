@@ -105,4 +105,19 @@ img {
   font-size: 16px;
   letter-spacing: 1px;
 }
+
+@media (max-width: 1024px) {
+  .hero__container {
+    padding: 40px 20px 0px 20px;
+  }
+  .hero__title {
+    font-size: 36px;
+    line-height: 48px;
+  }
+  .hero__images {
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(300px, auto);
+  }
+}
+
 </style>

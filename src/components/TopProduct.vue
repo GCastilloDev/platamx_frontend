@@ -5,6 +5,7 @@
         class="prueba"
         autoplay="1"
         animated
+        swipeable
         v-model="slide"
         navigation
         infinite
@@ -147,5 +148,26 @@ h2 {
   font-size: 14px;
   color: #707279;
   padding-left: 14px;
+}
+
+@media (max-width: 1024px) {
+  .top-product__container {
+    flex-direction: column;
+    margin-top: 50px;
+  }
+  .top-product__images {
+    width: 100%;
+  }
+  .prueba {
+    height: 400px;
+  }
+  .top-product__detail {
+    width: 100%;
+    margin-top: 20px;
+  }
+  h2 {
+    font-size: 32px;
+    line-height: 42px;
+  }
 }
 </style>

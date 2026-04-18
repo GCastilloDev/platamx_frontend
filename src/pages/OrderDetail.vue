@@ -16,20 +16,20 @@
       <div v-else class="order__wrapper">
         <div class="order__content">
           <!-- Cabecera Limpia (Flecha + Título de Orden) -->
-          <div class="row items-center q-mb-sm">
-            <q-icon name="arrow_back" size="sm" class="cursor-pointer icon-back q-mr-md" @click="goBack" />
+          <div class="row items-start q-mb-md order__header-row" style="flex-wrap: nowrap;">
+            <q-icon name="arrow_back" size="md" class="cursor-pointer icon-back q-mr-md q-mt-xs" @click="goBack" />
             <h1 class="order__title q-my-none">
               {{ t('profile_table_order') }} {{ order.folio || '' }}
             </h1>
           </div>
 
           <!-- Metadatos de la Orden (Fecha, Status, Tracking) -->
-          <div class="row items-center q-mb-xl q-pl-xl" style="padding-left: 44px; margin-bottom: 64px;">
-            <span class="text-grey-7 q-mr-md" style="font-family: 'Switzer-Variable', serif; font-weight: 500; font-size: 15px;">
+          <div class="row items-center q-mb-xl q-pl-xl order__metadata" style="padding-left: 44px; margin-bottom: 64px;">
+            <span class="text-grey-7 q-mr-md order__date" style="font-family: 'Switzer-Variable', serif; font-weight: 500; font-size: 15px;">
               {{ t('order_detail_date') }}: {{ formatDate(order.datePurchase) }}
             </span>
 
-            <div v-if="order.shipment_status" class="row items-center">
+            <div v-if="order.shipment_status" class="row items-center order__status-tracker">
               <q-badge
                 outline
                 class="q-px-sm"
@@ -61,14 +61,14 @@
           </div>
           
           <!-- Iteración Viva de Artículos -->
-          <div class="row q-py-lg order__row" v-for="item in order.items" :key="item.id">
-            <div class="col-2 text-center self-center">
+          <div class="row q-py-lg order__row order__item-container" v-for="item in order.items" :key="item.id">
+            <div class="col-2 text-center self-center order__item-image-col">
               <q-img :src="item.image" loading="lazy" class="order__image" />
             </div>
-            <div class="col-6 self-center q-pl-sm order__product-name">
+            <div class="col-6 self-center q-pl-sm order__product-name order__item-title-col">
               {{ locale === 'en-US' ? (item.productName_en || item.productName) : item.productName }}
             </div>
-            <div class="col-4 self-center text-right order__cost">
+            <div class="col-4 self-center text-right order__cost order__item-price-col">
               {{ converToCurrency(order.payment_currency === 'USD' ? item.totalUsd : item.total, order.payment_currency) }} <span style="font-size: 14px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span>
             </div>
           </div>
@@ -94,9 +94,9 @@
           </div>
           
           <!-- Dirección de entrega adaptativa -->
-          <div class="row q-py-lg order__summary-row" style="border-bottom: 1px solid #e3e4eb;">
-            <div class="col-3 summary__label">{{ t('order_detail_address') }}</div>
-            <div class="col-9 text-right summary__address">{{ order.deliveryAddress }}</div>
+          <div class="row q-py-lg order__summary-row order__address-row" style="border-bottom: 1px solid #e3e4eb;">
+            <div class="col-3 summary__label order__address-label">{{ t('order_detail_address') }}</div>
+            <div class="col-9 text-right summary__address order__address-value">{{ order.deliveryAddress }}</div>
           </div>
         </div>
         
@@ -297,5 +297,71 @@ onUnmounted(() => {
   background-color: #f4f4f4;
   border-radius: 8px;
   color: #2F3033 !important;
+}
+
+@media (max-width: 1024px) {
+  .order__container {
+    padding: 30px 20px;
+  }
+  .order__title {
+    font-size: 26px;
+    line-height: 1.3;
+  }
+  .order__metadata {
+    padding-left: 0 !important;
+    margin-bottom: 30px !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .order__header {
+    display: none;
+  }
+  .order__item-container {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    grid-template-areas:
+      "img title"
+      "img price";
+    gap: 10px;
+    align-items: center;
+  }
+  .order__item-image-col {
+    grid-area: img;
+    width: 100%;
+  }
+  .order__item-title-col {
+    grid-area: title;
+    width: 100%;
+    padding-left: 0 !important;
+  }
+  .order__item-price-col {
+    grid-area: price;
+    width: 100%;
+    text-align: left;
+  }
+  .order__image {
+    width: 100%;
+    height: 80px;
+  }
+  .order__address-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .order__address-label {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  .order__address-value {
+    width: 100%;
+    margin-left: 0;
+    text-align: left;
+    max-width: 100%;
+  }
+  .order__status-tracker {
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+  }
 }
 </style>

@@ -1,12 +1,12 @@
 <template>
   <div
     v-if="loading"
-    style="margin-top: 50px; padding-left: 60px; padding-right: 60px"
+    class="product__loading-container"
   >
     <q-card flat class="row">
-      <q-skeleton height="250px" square class="col-6" />
+      <q-skeleton height="250px" square class="col-12 col-md-6" />
 
-      <q-card-section class="col-6">
+      <q-card-section class="col-12 col-md-6">
         <q-skeleton
           animation="fade"
           type="QBadge"
@@ -473,5 +473,35 @@ getProduct();
 .btn__zoom {
   background-color: #2f3033;
   color: #ffffff;
+}
+
+.product__loading-container {
+  margin-top: 50px;
+  padding-left: 60px;
+  padding-right: 60px;
+}
+
+@media (max-width: 1024px) {
+  .product__container {
+    margin-left: 20px;
+    margin-right: 20px;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .product__section {
+    width: 100%;
+  }
+  .product__title {
+    font-size: 32px;
+    line-height: 40px;
+  }
+  .product__btn {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .product__loading-container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 </style>

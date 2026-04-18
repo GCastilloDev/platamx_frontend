@@ -100,6 +100,7 @@ function goToProduct() {
 .product-card__container {
   height: 474px;
   width: 288px;
+  min-width: 288px;
   border-radius: 8px;
   border: 1px solid #e3e4eb;
   cursor: pointer;

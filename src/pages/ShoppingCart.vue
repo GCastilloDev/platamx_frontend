@@ -13,7 +13,7 @@
       </div>
       <div class="products__cart">
         <div class="products__container" v-if="products.length > 0">
-          <div class="row q-pt-lg q-pb-lg border">
+          <div class="row q-pt-lg q-pb-lg border cart-header-row">
             <div class="col-1"></div>
             <div class="col-2 table__title text-center">{{ t('cart_col_qty') }}</div>
             <div class="col-4 table__title">{{ t('cart_col_product') }}</div>
@@ -21,14 +21,14 @@
             <div class="col-2"></div>
           </div>
           <div
-            class="row q-pt-lg q-pb-lg border"
+            class="row q-pt-lg q-pb-lg border product-item-row"
             v-for="(product, index) in products"
           >
-            <div class="col-1">
+            <div class="col-1 product-item-img">
               <img class="product__image" :src="product.imageUrl" alt="" />
             </div>
             <div
-              class="col-2 self-center justify-center table__product-title prueba"
+              class="col-2 self-center justify-center table__product-title prueba product-item-qty"
             >
               <q-btn
                 flat
@@ -47,13 +47,13 @@
                 @click="updateProduct(index, 'add')"
               ></q-btn>
             </div>
-            <div class="col-4 table__product-title self-center q-pr-lg">
+            <div class="col-4 table__product-title self-center q-pr-lg product-item-title">
               {{ locale === 'en-US' ? (product.nameItem_en || product.nameItem) : product.nameItem }}
             </div>
-            <div class="col-3 self-center table__product-price">
+            <div class="col-3 self-center table__product-price product-item-price">
               {{ formatPrice(product.total, product.totalUsd) }}
             </div>
-            <div class="col-2 text-center self-center">
+            <div class="col-2 text-center self-center product-item-delete">
               <q-btn
                 flat
                 round
@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useQuasar } from "quasar";
 import { useI18n } from 'vue-i18n';
@@ -283,7 +283,14 @@ async function purchase() {
   }
 }
 
-getShoppingCart();
+onMounted(() => {
+  getShoppingCart();
+  window.addEventListener('user-login', getShoppingCart);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('user-login', getShoppingCart);
+});
 </script>
 
 <style scoped>
@@ -392,5 +399,64 @@ h2 {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 30px;
+  }
+  .cart-header-row {
+    display: none;
+  }
+  .product-item-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 40px;
+    grid-template-areas:
+      "img title delete"
+      "img price price"
+      "img qty qty";
+    row-gap: 5px;
+    column-gap: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    align-items: center;
+  }
+  .product-item-img {
+    grid-area: img;
+    width: 100%;
+  }
+  .product-item-title {
+    grid-area: title;
+    width: 100%;
+    padding: 0;
+  }
+  .product-item-price {
+    grid-area: price;
+    width: 100%;
+    margin-top: 0;
+    text-align: left;
+  }
+  .product-item-qty {
+    grid-area: qty;
+    width: 100%;
+    margin-top: 0;
+    justify-content: flex-start;
+  }
+  .product-item-delete {
+    grid-area: delete;
+    position: static;
+    width: 100%;
+    text-align: right;
+  }
+  .product__image {
+    width: 100%;
+    max-width: none;
+  }
+  .product__btn {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }
 </style>

@@ -96,4 +96,23 @@ const { t } = useI18n();
   grid-column: 3/5;
   grid-row: 1/3;
 }
+
+@media (max-width: 1024px) {
+  .collection__title {
+    font-size: 32px;
+  }
+  .collection__subtitle {
+    font-size: 16px;
+  }
+  .collection__sections {
+    padding-left: 20px;
+    padding-right: 20px;
+    grid-template-columns: 1fr;
+    grid-gap: 15px;
+  }
+  .img__one, .img__two, .img__three, .img__four {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
 </style>

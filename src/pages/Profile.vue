@@ -37,7 +37,6 @@
         <q-tab-panels
           v-model="tab"
           animated
-          swipeable
           vertical
           transition-prev="jump-up"
           transition-next="jump-up"
@@ -68,9 +67,9 @@
                         <p class="input__title q-mb-sm">{{ t('profile_name_full') }}</p>
                         <q-input outlined v-model="formName" :rules="rules.maxLength200" placeholder="" class="q-mb-lg custom-input-border" />
                         
-                        <div class="row q-mt-lg items-center">
+                        <div class="row q-mt-lg items-center form-buttons-container">
                           <button
-                            class="login__button"
+                            class="login__button form-btn-save"
                             type="submit"
                             style="outline: none; border: none; font-family: 'Switzer-Variable', Switzer, serif; width: auto; padding: 0 32px;"
                             :disabled="loadingSaveName"
@@ -79,7 +78,7 @@
                             <q-spinner-tail v-if="loadingSaveName" color="white" size="20px" />
                           </button>
                           <span
-                            class="btn-cancel-form q-ml-xl cursor-pointer"
+                            class="btn-cancel-form q-ml-xl cursor-pointer form-btn-cancel"
                             @click="closeNameModal"
                           >
                              {{ t('profile_cancel') }}
@@ -143,9 +142,9 @@
                       <p class="input__title q-mb-sm">{{ t('profile_phone') }}</p>
                       <q-input outlined v-model="formAddress.phone" :rules="rules.phone" mask="##########" placeholder="" class="q-mb-lg custom-input-border" />
                       
-                      <div class="row q-mt-lg items-center">
+                      <div class="row q-mt-lg items-center form-buttons-container">
                         <button
-                          class="login__button"
+                          class="login__button form-btn-save"
                           type="submit"
                           style="outline: none; border: none; font-family: 'Switzer-Variable', Switzer, serif; width: auto; padding: 0 32px;"
                           :disabled="loadingSaveAddress"
@@ -154,7 +153,7 @@
                           <q-spinner-tail v-if="loadingSaveAddress" color="white" size="20px" />
                         </button>
                         <span
-                          class="btn-cancel-form q-ml-xl cursor-pointer"
+                          class="btn-cancel-form q-ml-xl cursor-pointer form-btn-cancel"
                           @click="closeAddressModal"
                         >
                           {{ t('profile_cancel') }}
@@ -242,9 +241,9 @@
                           </template>
                         </q-input>
                         
-                        <div class="row q-mt-lg items-center">
+                        <div class="row q-mt-lg items-center form-buttons-container">
                           <button
-                            class="login__button"
+                            class="login__button form-btn-save"
                             type="submit"
                             style="outline: none; border: none; font-family: 'Switzer-Variable', Switzer, serif; width: auto; padding: 0 32px;"
                             :disabled="loadingSavePassword"
@@ -253,7 +252,7 @@
                             <q-spinner-tail v-if="loadingSavePassword" color="white" size="20px" />
                           </button>
                           <span
-                            class="btn-cancel-form q-ml-xl cursor-pointer"
+                            class="btn-cancel-form q-ml-xl cursor-pointer form-btn-cancel"
                             @click="closePasswordModal"
                           >
                             {{ t('profile_cancel') }}
@@ -293,7 +292,7 @@
                 :key="order.id"
               >
                 <!-- Col 1: ID -->
-                <div class="col-4 q-pr-sm">
+                <div class="col-12 col-md-4 q-pr-sm">
                   <div class="purchases__folio">{{ t('profile_table_order') }} {{ order.folio }}</div>
                   <div class="purchases__product-name ellipsis">{{ locale === 'en-US' ? (order.productName_en || order.productName) : order.productName }}</div>
                   <div class="flex items-center q-mt-sm">
@@ -318,19 +317,19 @@
                 </div>
 
                 <!-- Col 2: Fecha -->
-                <div class="col-3 self-center purchases__date">
+                <div class="col-12 col-md-3 q-mt-sm q-mt-md-none self-center purchases__date">
                   {{ formatDate(order.datePurchase) }}
                 </div>
 
                 <!-- Col 3: Costo (Moneda de Compra Real) -->
-                <div class="col-3 self-center purchases__cost">
+                <div class="col-12 col-md-3 q-mt-sm q-mt-md-none self-center purchases__cost">
                   {{ converToCurrency(order.payment_currency === 'USD' ? order.totalUsd : order.total, order.payment_currency) }} 
                   <span style="font-size: 14px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span>
                 </div>
 
                 <!-- Col 4: Action -->
-                <div class="col-2 self-center">
-                  <a href="#" class="purchases__action" @click.prevent="router.push('/' + route.params.lang + '/order/' + order.id)">{{ t('profile_view_order') }}</a>
+                <div class="col-12 col-md-2 q-mt-md q-mt-md-none self-center text-center text-md-left">
+                  <a href="#" class="purchases__action purchases__action--mobile-full" @click.prevent="router.push('/' + route.params.lang + '/order/' + order.id)">{{ t('profile_view_order') }}</a>
                 </div>
               </div>
             </section>
@@ -829,8 +828,46 @@ async function savePassword() {
   font-family: "Switzer-Variable", serif;
   font-weight: 600;
   font-size: 14px;
-  color: #707279;
+  color: #2f3033;
   text-decoration: underline;
   cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 30px;
+  }
+  .purchases__header {
+    display: none;
+  }
+  .purchases__row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .purchases__action--mobile-full {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    background-color: #2f3033;
+    color: white !important;
+    text-align: center;
+    padding: 12px 0;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 16px;
+  }
+  .form-buttons-container {
+    flex-direction: column;
+    justify-content: center;
+  }
+  .form-btn-save {
+    width: 100% !important;
+  }
+  .form-btn-cancel {
+    margin-left: 0 !important;
+    margin-top: 20px;
+  }
 }
 </style>

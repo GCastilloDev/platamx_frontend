@@ -14,8 +14,8 @@
       </div>
     </div> -->
 
-    <div class="row">
-      <div class="col-3" v-for="product in products">
+    <div class="row items-stretch items-center q-col-gutter-lg">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 flex flex-center" v-for="product in products">
         <ProductCard
           class="search__result_item"
           :loading="loading"
@@ -141,7 +141,7 @@ watch(
 .btn__more {
   font-family: "Switzer-Variable", serif;
   font-weight: 600;
-  font-size: 64px;
+  font-size: 20px;
   text-align: center;
   width: 260px;
   height: 50px;
@@ -150,5 +150,28 @@ watch(
   background-color: #2f3033;
   color: white;
   letter-spacing: 1px;
+}
+
+@media (max-width: 1024px) {
+  .search__container {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  .search__title {
+    font-size: 32px;
+    line-height: 48px;
+    text-align: center;
+  }
+  .btn__more {
+    width: 100%;
+  }
+
+  /* Force product cards to take 100% width on mobile without breaking TopProducts horizontal scroll */
+  :deep(.product-card__container) {
+    width: 100%;
+    min-width: 100%;
+    height: auto;
+    padding-bottom: 20px;
+  }
 }
 </style>
