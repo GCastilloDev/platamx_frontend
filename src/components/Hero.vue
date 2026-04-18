@@ -16,21 +16,23 @@
 
   <!-- Desktop Grid -->
   <section class="hero__images desktop-only">
-    <q-img
-      class="hero__image"
-      :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg', 'f_auto,q_auto')"
-      :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
-      spinner-color="grey"
+    <!-- LCP image: native img for fetchpriority support -->
+    <img
+      class="hero__image hero__image--lcp"
+      :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg', 'w_600,f_auto,q_auto')"
+      fetchpriority="high"
+      loading="eager"
+      alt="Joyería Plata MX"
     />
     <q-img
       class="hero__image"
-      :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg', 'f_auto,q_auto')"
+      :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg', 'w_600,f_auto,q_auto')"
       :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
       spinner-color="grey"
     />
     <q-img
       class="hero__image"
-      :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg', 'f_auto,q_auto')"
+      :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg', 'w_600,f_auto,q_auto')"
       :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
       spinner-color="grey"
     />
@@ -49,17 +51,19 @@
       class="bg-transparent"
     >
       <q-carousel-slide :name="1" class="q-pa-none">
-        <q-img
-          class="hero__image"
-          :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg', 'f_auto,q_auto')"
-          :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
-          spinner-color="grey"
+        <!-- LCP image on mobile: native img for fetchpriority support -->
+        <img
+          class="hero__image hero__image--lcp"
+          :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg', 'w_500,f_auto,q_auto')"
+          fetchpriority="high"
+          loading="eager"
+          alt="Joyería Plata MX"
         />
       </q-carousel-slide>
       <q-carousel-slide :name="2" class="q-pa-none">
         <q-img
           class="hero__image"
-          :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg', 'f_auto,q_auto')"
+          :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg', 'w_500,f_auto,q_auto')"
           :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
           spinner-color="grey"
         />
@@ -67,7 +71,7 @@
       <q-carousel-slide :name="3" class="q-pa-none">
         <q-img
           class="hero__image"
-          :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg', 'f_auto,q_auto')"
+          :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg', 'w_500,f_auto,q_auto')"
           :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
           spinner-color="grey"
         />
@@ -109,6 +113,10 @@ const slide = ref(1);
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.hero__image--lcp {
+  display: block;
 }
 
 .hero__signature,

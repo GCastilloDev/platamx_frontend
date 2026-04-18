@@ -3,7 +3,7 @@
     <div class="top-product__images">
       <q-carousel
         class="prueba"
-        autoplay="1"
+        :autoplay="3000"
         animated
         swipeable
         v-model="slide"
