@@ -8,14 +8,18 @@
 
     <section class="header-action">
       <div style="display: flex; align-items: center;">
-        <q-btn v-if="$q.screen.lt.md" flat dense round icon="menu" @click="isMenuOpen = !isMenuOpen" class="q-mr-md" />
-        <router-link :to="{ name: 'home' }">
-          <img
-            class="header-action__logo"
-            src="../assets/images/plata_mx_logo.png"
-            alt=""
-            srcset=""
-          />
+        <q-btn v-if="$q.screen.lt.md" flat dense round icon="menu" @click="isMenuOpen = !isMenuOpen" class="q-mr-md" aria-label="Abrir menú" />
+        <router-link :to="{ name: 'home', params: { lang: route.params.lang || 'es' } }" aria-label="Plata MX - Inicio">
+          <picture>
+            <source srcset="../assets/images/plata_mx_logo.webp" type="image/webp" />
+            <img
+              class="header-action__logo"
+              src="../assets/images/plata_mx_logo.png"
+              alt="Plata MX"
+              width="257"
+              height="48"
+            />
+          </picture>
         </router-link>
       </div>
       <div class="header-action__search">
@@ -58,7 +62,7 @@
       </span>
     </section>
 
-    <q-page-container>
+    <q-page-container role="main">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -68,11 +72,11 @@
       <p class="footer__title">{{ t('footer_contact') }}</p>
       <p class="footer__list">
         <phone class="icon__info" />
-        <a href="https://wa.link/zydit9" target="”_blank”"> +52 81 1079 0972</a>
+        <a href="https://wa.link/zydit9" target="_blank" rel="noopener"> +52 81 1079 0972</a>
       </p>
       <p class="footer__list">
         <email class="icon__info" />
-        <a href="mailto:platam_mx0925@hotmail.com" target="”_blank”">
+        <a href="mailto:platam_mx0925@hotmail.com">
           platam_mx0925@hotmail.com</a
         >
       </p>
@@ -87,15 +91,15 @@
     </div>
     <div>
       <p class="footer__title">{{ t('footer_follow') }}</p>
-      <a href="https://www.facebook.com/PLATAMX21MX" target="”_blank”">
-        <facebook
-      /></a>
-      <a href="https://www.instagram.com/platamx.925" target="”_blank”">
-        <instagram
-      /></a>
-      <a href="https://www.tiktok.com/@platamx925" target="”_blank”">
-        <tiktok
-      /></a>
+      <a href="https://www.facebook.com/PLATAMX21MX" target="_blank" rel="noopener" aria-label="Visítanos en Facebook">
+        <facebook />
+      </a>
+      <a href="https://www.instagram.com/platamx.925" target="_blank" rel="noopener" aria-label="Síguenos en Instagram">
+        <instagram />
+      </a>
+      <a href="https://www.tiktok.com/@platamx925" target="_blank" rel="noopener" aria-label="Síguenos en TikTok">
+        <tiktok />
+      </a>
     </div>
 
     <Login
@@ -365,6 +369,7 @@ a {
 
 .header-action__logo {
   width: 230px;
+  height: auto;
 }
 
 .header-action__search {

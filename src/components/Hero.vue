@@ -49,7 +49,11 @@
       navigation
       height="500px"
       class="bg-transparent"
+      aria-label="Galería de imágenes"
     >
+      <template v-slot:navigation-icon="{ props, onClick, index }">
+        <q-btn v-bind="props" round icon="circle" @click="onClick" :aria-label="`Imagen ${index + 1}`" />
+      </template>
       <q-carousel-slide :name="1" class="q-pa-none">
         <!-- LCP image on mobile: native img for fetchpriority support -->
         <img
