@@ -364,14 +364,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useQuasar } from "quasar";
-import { apiAuth, apiNoAuth } from "../boot/axios";
+import { apiAuth } from "../boot/axios";
 import validationRules from "../rules";
 import { getBackendError } from "../utils/error";
 import { useI18n } from 'vue-i18n';
 
 import { useRouter, useRoute } from "vue-router";
+import { useAuthStore } from "../stores/auth";
+import { useCartStore } from "../stores/cart";
 
 const { t, locale } = useI18n();
 const rules = validationRules(t);
@@ -379,6 +381,8 @@ const $q = useQuasar();
 const router = useRouter();
 const route = useRoute();
 const auth = apiAuth();
+const authStore = useAuthStore();
+const cartStore = useCartStore();
 const tab = ref("account");
 const splitterModel = ref("30");
 const userProfile = ref<any>({});
@@ -404,12 +408,10 @@ onMounted(() => {
   } else {
     getProfile();
   }
-  
-  window.addEventListener('user-login', handleLogin);
 });
 
-onUnmounted(() => {
-  window.removeEventListener('user-login', handleLogin);
+watch(() => authStore.isLoggedIn, (loggedIn) => {
+  if (loggedIn) handleLogin();
 });
 
 function handleLogin() {
@@ -436,8 +438,8 @@ async function tabEvent(event: string) {
   }
 
   if (event === "exit") {
-    localStorage.clear();
-    window.dispatchEvent(new CustomEvent("user-logout"));
+    authStore.logout();
+    cartStore.reset();
     router.push({
       name: "home",
     });
