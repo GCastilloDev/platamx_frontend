@@ -60,7 +60,12 @@ module.exports = configure(function (/* ctx */) {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf (viteConf) {},
+      extendViteConf(viteConf, { isClient }) {
+        if (!isClient) {
+          viteConf.ssr = viteConf.ssr || {};
+          viteConf.ssr.noExternal = ['pinia'];
+        }
+      },
       // viteVuePluginOptions: {},
 
       vitePlugins: [

@@ -13,7 +13,6 @@
     "start": "cd dist/ssr; npm i; npm start"
   },
   "dependencies": {
-    "@pinia/testing": "^1.0.3",
     "@quasar/extras": "^1.16.4",
     "axios": "^1.7.7",
     "pinia": "^3.0.4",
@@ -24,6 +23,7 @@
   },
   "devDependencies": {
     "@intlify/vite-plugin-vue-i18n": "^3.3.1",
+    "@pinia/testing": "^1.0.3",
     "@quasar/app-vite": "^1.8.0",
     "@types/node": "^12.20.21",
     "autoprefixer": "^10.4.2",
