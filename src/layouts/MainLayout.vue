@@ -162,7 +162,7 @@ const accountCreateForm = ref(null);
 
 const route = useRoute();
 
-const rules = validationRules();
+const rules = validationRules(t);
 const searchQ = ref("");
 const email = ref("");
 const password = ref("");
@@ -538,17 +538,20 @@ a {
 
 .promotion {
   background-color: #2f3033;
-  height: 44px;
+  min-height: 44px;
+  height: auto;
   font-size: 16px;
   display: flex;
   align-items: center;
+  padding: 8px 15px;
 }
 
 .promotion__text {
   margin: auto;
-  line-height: 24px;
-  font-size: 16px;
+  line-height: 1.4;
+  font-size: 15px;
   color: #ffffff;
+  text-align: center;
 }
 
 .header-action {
@@ -635,24 +638,36 @@ a {
 
 @media (max-width: 1024px) {
   .header-action {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: 
+      "left right"
+      "search search";
+    padding: 10px 20px;
+    column-gap: 5px;
+    row-gap: 15px;
+    align-items: center;
+  }
+  .header-action > div:nth-child(1) {
+    grid-area: left;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 0px 20px;
-    gap: 15px;
+    align-items: center;
   }
   .header-action__logo {
-    width: 140px;
+    width: 100%;
+    max-width: 130px;
   }
   .header-action__search {
-    order: 3;
+    grid-area: search;
     width: 100%;
   }
   .header-action__search--input {
     width: 100%;
   }
   .header-action__icons {
-    order: 2;
+    grid-area: right;
+    justify-content: flex-end;
+    gap: 8px;
   }
 
   .menu__container {

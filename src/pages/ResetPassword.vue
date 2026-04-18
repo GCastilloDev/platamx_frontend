@@ -74,7 +74,7 @@ const router = useRouter();
 const $q = useQuasar();
 
 // Validaciones
-const rules = validationRules();
+const rules = validationRules(t);
 
 // Estados
 const password = ref("");

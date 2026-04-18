@@ -64,7 +64,7 @@ import { getBackendError } from "../utils/error";
 
 const { t } = useI18n();
 const $q = useQuasar();
-const rules = validationRules();
+const rules = validationRules(t);
 
 const props = defineProps<{
   open: boolean;

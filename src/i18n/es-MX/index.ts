@@ -139,6 +139,16 @@ export default {
   reset_error: 'Error al restablecer la contraseña',
   reset_token_error: 'Token inválido o faltante.',
 
+  // Validation
+  val_required: 'Campo requerido',
+  val_email_required: 'Email es requerido',
+  val_email_format: 'Formato de correo incorrecto',
+  val_password_format: '8-16 caracteres, al menos un número, mayúscula, minúscula y carácter especial ($#@_-)',
+  val_password_match: 'Las contraseñas deben ser iguales',
+  val_zipcode_format: 'El código postal debe tener exactamente 5 números',
+  val_phone_format: 'El teléfono debe tener exactamente 10 números',
+  val_max_200: 'El texto excede los 200 caracteres permitidos',
+
   // Forgot Password
   forgot_password_link: '¿Olvidaste tu contraseña?',
   forgot_title: 'Recuperar contraseña',

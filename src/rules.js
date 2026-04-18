@@ -1,41 +1,39 @@
-const validationRules = () => ({
+const validationRules = (t) => ({
   email: [
-    (v) => !!v || "Email es requerido",
+    (v) => !!v || t('val_email_required'),
     (v) =>
       /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/.test(
         v
-      ) || "Formato de correo incorrecto",
+      ) || t('val_email_format'),
   ],
   password: [
     (v) =>
       /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[$#@_-])(?!.* ).{8,16}$/.test(
         v
-      ) ||
-      "Contraseña con formato incorrecto, la contraseña debe ser de entre 8 y 16 caracteres, incluyendo al menos un numero, mayuscula, minuscula y un caracter especial ($#@_-)",
+      ) || t('val_password_format'),
   ],
   confirmPassword: (password) => {
     return [
-      (v) => v === password || "La contraseñas deben ser iguales",
-      (v) => v.length === password.length || "La contraseñas deben ser iguales",
+      (v) => v === password || t('val_password_match'),
+      (v) => v.length === password.length || t('val_password_match'),
       (v) =>
         /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[$#@_-])(?!.* ).{8,16}$/.test(
           v
-        ) ||
-        "Contraseña con formato incorrecto, la contraseña debe ser de entre 8 y 16 caracteres, incluyendo al menos un numero, mayuscula, minuscula y un caracter especial ($#@_-)",
+        ) || t('val_password_format'),
     ];
   },
-  required: [(v) => !!v || "Campo requerido"],
+  required: [(v) => !!v || t('val_required')],
   zipcode: [
-    (v) => !!v || "Campo requerido",
-    (v) => /^\d{5}$/.test(v) || "El código postal debe tener exactamente 5 números",
+    (v) => !!v || t('val_required'),
+    (v) => /^\d{5}$/.test(v) || t('val_zipcode_format'),
   ],
   phone: [
-    (v) => !!v || "Campo requerido",
-    (v) => /^\d{10}$/.test(v) || "El teléfono debe tener exactamente 10 números",
+    (v) => !!v || t('val_required'),
+    (v) => /^\d{10}$/.test(v) || t('val_phone_format'),
   ],
   maxLength200: [
-    (v) => !!v || "Campo requerido",
-    (v) => v.length <= 200 || "El texto excede los 200 caracteres permitidos",
+    (v) => !!v || t('val_required'),
+    (v) => v.length <= 200 || t('val_max_200'),
   ],
 });
 

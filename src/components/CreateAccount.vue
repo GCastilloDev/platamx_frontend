@@ -108,7 +108,7 @@ import validationRules from "../rules";
 import { getBackendError } from "../utils/error";
 
 const { t } = useI18n();
-const rules = validationRules();
+const rules = validationRules(t);
 const $q = useQuasar();
 const dialogCreateAccount = ref(false);
 const backdropFilter = ref("blur(5px) saturate(150%)");

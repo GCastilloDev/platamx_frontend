@@ -374,7 +374,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from "vue-router";
 
 const { t, locale } = useI18n();
-const rules = validationRules();
+const rules = validationRules(t);
 const $q = useQuasar();
 const router = useRouter();
 const route = useRoute();

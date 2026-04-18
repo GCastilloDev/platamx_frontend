@@ -1,6 +1,6 @@
 export default {
   // Layout
-  promotion_banner: 'Free shipping 🔥 on orders over $1,000 MXN',
+  promotion_banner: 'Free shipping 🔥 on orders over $50.00',
   search_placeholder: 'Search our entire collection',
   menu_home: 'Home',
   footer_contact: 'Contact',
@@ -138,6 +138,16 @@ export default {
   reset_success: 'Password updated successfully. You can now login.',
   reset_error: 'Error resetting password',
   reset_token_error: 'Invalid or missing token.',
+
+  // Validation
+  val_required: 'Required',
+  val_email_required: 'Email is required',
+  val_email_format: 'Invalid email format',
+  val_password_format: '8-16 characters, at least one number, uppercase, lowercase and special character ($#@_-)',
+  val_password_match: 'Passwords must match',
+  val_zipcode_format: 'ZIP code must be exactly 5 digits',
+  val_phone_format: 'Phone must be exactly 10 digits',
+  val_max_200: 'Text exceeds 200 characters',
 
   // Forgot Password
   forgot_password_link: 'Forgot your password?',

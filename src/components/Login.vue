@@ -85,7 +85,7 @@ import { getBackendError } from "../utils/error";
 
 const { t } = useI18n();
 const $q = useQuasar();
-const rules = validationRules();
+const rules = validationRules(t);
 const email = ref("");
 const password = ref("");
 const iconPassword = ref("visibility");

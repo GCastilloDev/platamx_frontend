@@ -111,8 +111,10 @@ img {
     padding: 40px 20px 0px 20px;
   }
   .hero__title {
-    font-size: 36px;
-    line-height: 48px;
+    font-size: clamp(26px, 9vw, 36px);
+    line-height: 1.2;
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .hero__images {
     grid-template-columns: 1fr;
