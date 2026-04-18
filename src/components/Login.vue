@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="dialogLogin" persistent :backdrop-filter="backdropFilter">
-    <q-card style="width: 420px">
+    <q-card style="width: 100%; max-width: 420px;">
       <q-card-section class="text-right q-pb-none">
         <q-icon
           @click="closeLogin"
