@@ -486,11 +486,11 @@ a {
     align-items: center;
     border-bottom: none;
     padding-top: 15px;
-    display: none; // Hidden by default on mobile
+    display: none; /* Hidden by default on mobile */
   }
   
   .menu--open {
-    display: flex; // Shown when open
+    display: flex; /* Shown when open */
   }
   .menu__item {
     width: 100%;
