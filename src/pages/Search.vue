@@ -44,7 +44,7 @@ import ProductCard from "../components/ProductCard.vue";
 
 import axios from "axios";
 import { useRoute } from "vue-router";
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { useI18n } from 'vue-i18n';
 import { API_BASE_URL } from "../constants/api";
 
