@@ -10,13 +10,16 @@
       <div style="display: flex; align-items: center;">
         <q-btn v-if="$q.screen.lt.md" flat dense round icon="menu" @click="isMenuOpen = !isMenuOpen" class="q-mr-md" aria-label="Abrir menú" />
         <router-link :to="{ name: 'home', params: { lang: route.params.lang || 'es' } }" aria-label="Plata MX - Inicio">
-          <img
-            class="header-action__logo"
-            src="../assets/images/plata_mx_logo.png"
-            alt="Plata MX"
-            width="257"
-            height="48"
-          />
+          <picture>
+            <source srcset="../assets/images/plata_mx_logo.webp" type="image/webp" />
+            <img
+              class="header-action__logo"
+              src="../assets/images/plata_mx_logo.png"
+              alt="Plata MX"
+              width="257"
+              height="48"
+            />
+          </picture>
         </router-link>
       </div>
       <div class="header-action__search">
