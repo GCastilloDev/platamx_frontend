@@ -51,7 +51,7 @@
           v-for="image in product.images"
           :key="image.id"
           :name="image.file_name"
-          :img-src="image.url"
+          :img-src="getCloudinaryUrl(image.url, 'w_800,f_auto,q_auto')"
         />
 
         <template v-slot:control>
