@@ -151,11 +151,23 @@ const collectionsStore = useCollectionsStore();
 const { collections } = storeToRefs(collectionsStore);
 
 useMeta(() => {
+  const metaDescription = 'Descubre la elegancia en Plata MX: tu tienda en línea de joyería exclusiva en auténtica plata fina 925. Catálogo premium, envíos seguros. ¡Compra hoy!';
+  const ogImageUrl = 'https://res.cloudinary.com/dhils8jyq/image/upload/c_fill,g_center,w_1200,h_630,f_auto,q_auto/v1773097612/product/750001001/cadena-ojo-egipcio-de-oro-10k-italiano-_55cm-x-3mm_-2_krek6b.jpg';
+
   return {
     title: 'Plata MX',
     titleTemplate: (title) => title === 'Plata MX' ? title : `${title} | Plata MX`,
     meta: {
-      ogTitle: { property: 'og:title', content: 'Plata MX' }
+      description: { name: 'description', content: metaDescription },
+      ogTitle: { property: 'og:title', content: 'Plata MX' },
+      ogDesc: { property: 'og:description', content: metaDescription },
+      ogImage: { property: 'og:image', content: ogImageUrl },
+      ogImageWidth: { property: 'og:image:width', content: '1200' },
+      ogImageHeight: { property: 'og:image:height', content: '630' },
+      twCard: { name: 'twitter:card', content: 'summary_large_image' },
+      twTitle: { name: 'twitter:title', content: 'Plata MX' },
+      twDesc: { name: 'twitter:description', content: metaDescription },
+      twImage: { name: 'twitter:image', content: ogImageUrl }
     }
   };
 });
