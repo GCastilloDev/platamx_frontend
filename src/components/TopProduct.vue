@@ -9,7 +9,11 @@
         v-model="slide"
         navigation
         infinite
+        aria-label="Imágenes del producto destacado"
       >
+        <template v-slot:navigation-icon="{ props, onClick, index }">
+          <q-btn v-bind="props" round icon="circle" @click="onClick" :aria-label="`Imagen ${index + 1}`" />
+        </template>
         <q-carousel-slide
           :name="1"
           img-src="../assets/images/Imagen de producto 07 652 x 631.jpg"
