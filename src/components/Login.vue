@@ -83,11 +83,11 @@ import { useI18n } from 'vue-i18n';
 import validationRules from "../rules";
 import { API_BASE_URL } from "../constants/api";
 import { getBackendError } from "../utils/error";
-import { useAuthStore } from "../stores/auth";
+import { useAuth } from "../composables/useAuth";
 
 const { t } = useI18n();
 const $q = useQuasar();
-const authStore = useAuthStore();
+const { saveToken } = useAuth();
 const rules = validationRules(t);
 const email = ref("");
 const password = ref("");
@@ -168,7 +168,7 @@ async function login() {
     };
     const { data: response } = await axios.post(url, data);
     const token = response.data.access_token;
-    authStore.saveToken(token);
+    saveToken(token);
 
     email.value = "";
     password.value = "";
