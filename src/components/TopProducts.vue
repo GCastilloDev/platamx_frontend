@@ -28,6 +28,7 @@
 import axios from "axios";
 import { ref } from "vue";
 import { useI18n } from 'vue-i18n';
+import { API_BASE_URL } from "../constants/api";
 
 import ProductCard from "../components/ProductCard.vue";
 import { globalCollections } from "../stores/globalCollections";
@@ -49,7 +50,7 @@ async function getProductsByCollection(collectionID: number) {
   try {
     loading.value = true;
     productsByCollection.value = [null, null, null];
-    const url = `https://platamx-backend-1cvg.onrender.com/products?page=1&items=10&collestionsIds=${collectionID}`;
+    const url = `${API_BASE_URL}/products?page=1&items=10&collestionsIds=${collectionID}`;
     const { data: response } = await axios.get(url);
     productsByCollection.value = response.data;
     loading.value = false;

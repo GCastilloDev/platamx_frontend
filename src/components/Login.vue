@@ -81,6 +81,7 @@ import axios from "axios";
 import { useI18n } from 'vue-i18n';
 
 import validationRules from "../rules";
+import { API_BASE_URL } from "../constants/api";
 import { getBackendError } from "../utils/error";
 
 const { t } = useI18n();
@@ -157,7 +158,7 @@ async function login() {
   try {
     loginButton.value?.setAttribute("disabled", "");
     loading.value = true;
-    const url = "https://platamx-backend-1cvg.onrender.com/auth/login";
+    const url = `${API_BASE_URL}/auth/login`;
 
     const data = {
       email: email.value,

@@ -1,10 +1,11 @@
 import { boot } from 'quasar/wrappers';
 import axios from 'axios';
 import { globalCollections } from '../stores/globalCollections';
+import { API_BASE_URL } from '../constants/api';
 
 export default boot(async () => {
   try {
-    const url = "https://platamx-backend-1cvg.onrender.com/collections?page=1&items=25";
+    const url = `${API_BASE_URL}/collections?page=1&items=25`;
     const { data: response } = await axios.get(url);
     
     globalCollections.value = response.data.map((e: any) => ({

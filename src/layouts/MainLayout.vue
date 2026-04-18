@@ -127,6 +127,7 @@ import { useQuasar, useMeta } from "quasar";
 
 import validationRules from "../rules";
 import { apiAuth } from "../boot/axios";
+import { API_BASE_URL } from "../constants/api";
 
 import ShopBag from "../components/icons/ShopBag.vue";
 import Account from "../components/icons/Account.vue";
@@ -348,7 +349,7 @@ async function login() {
   try {
     loginButton.value?.setAttribute("disabled", "");
     loading.value = true;
-    const url = "https://platamx-backend-1cvg.onrender.com/auth/login";
+    const url = `${API_BASE_URL}/auth/login`;
 
     const data = {
       email: email.value,
@@ -446,7 +447,7 @@ async function createAccount() {
   try {
     createAccountButton.value?.setAttribute("disabled", "");
     loading.value = true;
-    const url = "https://platamx-backend-1cvg.onrender.com/users";
+    const url = `${API_BASE_URL}/users`;
 
     await axios.post(url, user.value);
     dialogCreateAccount.value = false;

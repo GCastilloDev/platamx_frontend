@@ -106,6 +106,7 @@ import { useI18n } from 'vue-i18n';
 
 import validationRules from "../rules";
 import { getBackendError } from "../utils/error";
+import { API_BASE_URL } from "../constants/api";
 
 const { t } = useI18n();
 const rules = validationRules(t);
@@ -191,7 +192,7 @@ async function createAccount() {
   try {
     createAccountButton.value?.setAttribute("disabled", "");
     loading.value = true;
-    const url = "https://platamx-backend-1cvg.onrender.com/users";
+    const url = `${API_BASE_URL}/users`;
 
     await axios.post(url, user.value);
 
