@@ -16,7 +16,7 @@
     <template v-if="!loading && product">
       <q-img
         class="product-card__image"
-        :src="getCloudinaryUrl(defineImage(props.product), 'f_auto,q_auto')"
+        :src="getCloudinaryUrl(defineImage(props.product), 'w_400,f_auto,q_auto')"
         :placeholder-src="getCloudinaryUrl(defineImage(props.product), 'w_50,e_blur:1000,f_auto,q_auto')"
         spinner-color="grey"
         alt=""
