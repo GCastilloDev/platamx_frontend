@@ -1,6 +1,6 @@
 <template>
   <section class="promotion__container">
-    <img class="promotion__img" src="../assets/images/promocion.jpg" alt="" />
+    <img class="promotion__img" src="../assets/images/promocion.jpg" alt="" loading="lazy" />
     <h2 class="promotion__title">
       {{ t('promo_title') }}
     </h2>
@@ -26,6 +26,7 @@ const { t } = useI18n();
 .promotion__img {
   width: 100%;
   object-fit: cover;
+  aspect-ratio: 2160 / 576;
 }
 
 .promotion__title,
