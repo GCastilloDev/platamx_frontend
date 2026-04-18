@@ -8,25 +8,25 @@
     <div class="collection__sections">
       <q-img
         class="collection__sections--images img__one"
-        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_OCTUBRE_2023_Tama%C3%B1o_original_dlp2sw.jpg', 'f_auto,q_auto')"
+        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_OCTUBRE_2023_Tama%C3%B1o_original_dlp2sw.jpg', 'w_800,f_auto,q_auto')"
         :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_OCTUBRE_2023_Tama%C3%B1o_original_dlp2sw.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
         spinner-color="grey"
       />
       <q-img
         class="collection__sections--images img__two"
-        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_pwbqnb.jpg', 'f_auto,q_auto')"
+        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_pwbqnb.jpg', 'w_400,f_auto,q_auto')"
         :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_pwbqnb.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
         spinner-color="grey"
       />
       <q-img
         class="collection__sections--images img__three"
-        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_vc0o5d.jpg', 'f_auto,q_auto')"
+        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_vc0o5d.jpg', 'w_400,f_auto,q_auto')"
         :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_vc0o5d.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
         spinner-color="grey"
       />
       <q-img
         class="collection__sections--images img__four"
-        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_-_167_e7uea2.jpg', 'f_auto,q_auto')"
+        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_-_167_e7uea2.jpg', 'w_800,f_auto,q_auto')"
         :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_-_167_e7uea2.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
         spinner-color="grey"
       />
@@ -70,6 +70,7 @@ const { t } = useI18n();
 .collection__sections {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 300px 300px;
   grid-gap: 25px;
   padding-left: 60px;
   padding-right: 60px;
@@ -118,6 +119,7 @@ const { t } = useI18n();
   .img__one, .img__two, .img__three, .img__four {
     grid-column: 1;
     grid-row: auto;
+    height: 280px;
   }
 }
 </style>
