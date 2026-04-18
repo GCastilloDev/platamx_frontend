@@ -15,23 +15,30 @@
   </section>
 
   <section class="hero__images">
-    <img
-      src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg"
-      alt=""
+    <q-img
+      class="hero__image"
+      :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg', 'f_auto,q_auto')"
+      :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
+      spinner-color="grey"
     />
-    <img
-      src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg"
-      alt=""
+    <q-img
+      class="hero__image"
+      :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg', 'f_auto,q_auto')"
+      :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
+      spinner-color="grey"
     />
-    <img
-      src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg"
-      alt=""
+    <q-img
+      class="hero__image"
+      :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg', 'f_auto,q_auto')"
+      :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
+      spinner-color="grey"
     />
   </section>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
+import { getCloudinaryUrl } from '../utils/cloudinary';
 const { t } = useI18n();
 </script>
 
@@ -50,7 +57,7 @@ const { t } = useI18n();
   // clip-path: circle(50% at 0 0px);
 }
 
-img {
+.hero__image {
   width: 100%;
   height: 100%;
   object-fit: cover;

@@ -63,7 +63,12 @@
           <!-- Iteración Viva de Artículos -->
           <div class="row q-py-lg order__row order__item-container" v-for="item in order.items" :key="item.id">
             <div class="col-2 text-center self-center order__item-image-col">
-              <q-img :src="item.image" loading="lazy" class="order__image" />
+              <q-img
+                :src="getCloudinaryUrl(item.image, 'f_auto,q_auto')"
+                :placeholder-src="getCloudinaryUrl(item.image, 'w_50,e_blur:1000,f_auto,q_auto')"
+                spinner-color="grey"
+                class="order__image"
+              />
             </div>
             <div class="col-6 self-center q-pl-sm order__product-name order__item-title-col">
               {{ locale === 'en-US' ? (item.productName_en || item.productName) : item.productName }}
@@ -113,6 +118,7 @@ import { useI18n } from 'vue-i18n';
 import { apiAuth } from "../boot/axios";
 import { useAuth } from "../composables/useAuth";
 import { formatCurrency } from "../utils/currency";
+import { getCloudinaryUrl } from "../utils/cloudinary";
 import type { Order } from "../types";
 
 // Instancias de Quasar

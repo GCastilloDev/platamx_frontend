@@ -13,9 +13,11 @@
         />
       </q-card-section>
     </q-card>
-    <img
+    <q-img
       class="product-card__image"
-      :src="defineImage(props.product)"
+      :src="getCloudinaryUrl(defineImage(props.product), 'f_auto,q_auto')"
+      :placeholder-src="getCloudinaryUrl(defineImage(props.product), 'w_50,e_blur:1000,f_auto,q_auto')"
+      spinner-color="grey"
       alt=""
       v-if="!loading"
     />
@@ -40,6 +42,7 @@
 import { useRouter, useRoute } from "vue-router";
 import { useI18n } from 'vue-i18n';
 import { formatCurrency } from "../utils/currency";
+import { getCloudinaryUrl } from "../utils/cloudinary";
 
 const router = useRouter();
 const route = useRoute();

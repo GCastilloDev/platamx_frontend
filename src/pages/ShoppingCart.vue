@@ -27,7 +27,13 @@
             v-for="(product, index) in products"
           >
             <div class="col-1 product-item-img">
-              <img class="product__image" :src="product.imageUrl" alt="" />
+              <q-img
+                class="product__image"
+                :src="getCloudinaryUrl(product.imageUrl, 'f_auto,q_auto')"
+                :placeholder-src="getCloudinaryUrl(product.imageUrl, 'w_50,e_blur:1000,f_auto,q_auto')"
+                spinner-color="grey"
+                alt=""
+              />
             </div>
             <div
               class="col-2 self-center justify-center table__product-title qty-controls product-item-qty"
@@ -113,6 +119,7 @@ import { apiAuth } from "../boot/axios";
 import { useCart } from "../composables/useCart";
 import { useAuth } from "../composables/useAuth";
 import { formatBilingual } from "../utils/currency";
+import { getCloudinaryUrl } from "../utils/cloudinary";
 import type { CartItem } from "../types";
 
 const route = useRoute();

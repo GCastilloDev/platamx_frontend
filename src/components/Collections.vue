@@ -6,25 +6,29 @@
     </h3>
 
     <div class="collection__sections">
-      <img
+      <q-img
         class="collection__sections--images img__one"
-        src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_OCTUBRE_2023_Tama%C3%B1o_original_dlp2sw.jpg"
-        alt=""
+        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_OCTUBRE_2023_Tama%C3%B1o_original_dlp2sw.jpg', 'f_auto,q_auto')"
+        :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_OCTUBRE_2023_Tama%C3%B1o_original_dlp2sw.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
+        spinner-color="grey"
       />
-      <img
+      <q-img
         class="collection__sections--images img__two"
-        src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_pwbqnb.jpg"
-        alt=""
+        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_pwbqnb.jpg', 'f_auto,q_auto')"
+        :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_pwbqnb.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
+        spinner-color="grey"
       />
-      <img
+      <q-img
         class="collection__sections--images img__three"
-        src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_vc0o5d.jpg"
-        alt=""
+        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_vc0o5d.jpg', 'f_auto,q_auto')"
+        :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039753/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_vc0o5d.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
+        spinner-color="grey"
       />
-      <img
+      <q-img
         class="collection__sections--images img__four"
-        src="https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_-_167_e7uea2.jpg"
-        alt=""
+        :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_-_167_e7uea2.jpg', 'f_auto,q_auto')"
+        :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039752/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_-_167_e7uea2.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
+        spinner-color="grey"
       />
     </div>
   </section>
@@ -32,6 +36,7 @@
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
+import { getCloudinaryUrl } from '../utils/cloudinary';
 const { t } = useI18n();
 </script>
 
