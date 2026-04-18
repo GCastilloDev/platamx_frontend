@@ -69,11 +69,11 @@
       <p class="footer__title">{{ t('footer_contact') }}</p>
       <p class="footer__list">
         <phone class="icon__info" />
-        <a href=”https://wa.link/zydit9” target=”_blank” rel=”noopener”> +52 81 1079 0972</a>
+        <a href="https://wa.link/zydit9" target="_blank" rel="noopener"> +52 81 1079 0972</a>
       </p>
-      <p class=”footer__list”>
-        <email class=”icon__info” />
-        <a href=”mailto:platam_mx0925@hotmail.com”>
+      <p class="footer__list">
+        <email class="icon__info" />
+        <a href="mailto:platam_mx0925@hotmail.com">
           platam_mx0925@hotmail.com</a
         >
       </p>
@@ -88,13 +88,13 @@
     </div>
     <div>
       <p class="footer__title">{{ t('footer_follow') }}</p>
-      <a href=”https://www.facebook.com/PLATAMX21MX” target=”_blank” rel=”noopener” aria-label=”Visítanos en Facebook”>
+      <a href="https://www.facebook.com/PLATAMX21MX" target="_blank" rel="noopener" aria-label="Visítanos en Facebook">
         <facebook />
       </a>
-      <a href=”https://www.instagram.com/platamx.925” target=”_blank” rel=”noopener” aria-label=”Síguenos en Instagram”>
+      <a href="https://www.instagram.com/platamx.925" target="_blank" rel="noopener" aria-label="Síguenos en Instagram">
         <instagram />
       </a>
-      <a href=”https://www.tiktok.com/@platamx925” target=”_blank” rel=”noopener” aria-label=”Síguenos en TikTok”>
+      <a href="https://www.tiktok.com/@platamx925" target="_blank" rel="noopener" aria-label="Síguenos en TikTok">
         <tiktok />
       </a>
     </div>
