@@ -69,7 +69,7 @@
               {{ locale === 'en-US' ? (item.productName_en || item.productName) : item.productName }}
             </div>
             <div class="col-4 self-center text-right order__cost order__item-price-col">
-              {{ converToCurrency(order.payment_currency === 'USD' ? item.totalUsd : item.total, order.payment_currency) }} <span style="font-size: 14px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span>
+              {{ converToCurrency(order.payment_currency === 'USD' ? item.totalUsd : item.total, order.payment_currency) }}
             </div>
           </div>
         </div>
@@ -80,17 +80,17 @@
           
           <div class="row q-py-md order__summary-row">
             <div class="col-6 summary__label">{{ t('cart_subtotal') }}</div>
-            <div class="col-6 text-right summary__value">{{ converToCurrency(order.payment_currency === 'USD' ? order.subTotalUsd : order.subTotal, order.payment_currency) }} <span style="font-size: 13px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span></div>
+            <div class="col-6 text-right summary__value">{{ converToCurrency(order.payment_currency === 'USD' ? order.subTotalUsd : order.subTotal, order.payment_currency) }}</div>
           </div>
-          
+
           <div class="row q-py-md order__summary-row">
             <div class="col-6 summary__label">{{ t('cart_shipping') }}</div>
-            <div class="col-6 text-right summary__value">{{ converToCurrency(order.payment_currency === 'USD' ? order.deliveryCostUsd : order.deliveryCost, order.payment_currency) }} <span style="font-size: 13px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span></div>
+            <div class="col-6 text-right summary__value">{{ converToCurrency(order.payment_currency === 'USD' ? order.deliveryCostUsd : order.deliveryCost, order.payment_currency) }}</div>
           </div>
-          
+
           <div class="row q-py-md order__summary-row">
             <div class="col-6 summary__label">{{ t('cart_total') }}</div>
-            <div class="col-6 text-right summary__value">{{ converToCurrency(order.payment_currency === 'USD' ? order.totalUsd : order.total, order.payment_currency) }} <span style="font-size: 13px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span></div>
+            <div class="col-6 text-right summary__value">{{ converToCurrency(order.payment_currency === 'USD' ? order.totalUsd : order.total, order.payment_currency) }}</div>
           </div>
           
           <!-- Dirección de entrega adaptativa -->
@@ -112,6 +112,8 @@ import { useRoute, useRouter } from "vue-router";
 import { useI18n } from 'vue-i18n';
 import { apiAuth } from "../boot/axios";
 import { useAuth } from "../composables/useAuth";
+import { formatCurrency } from "../utils/currency";
+import type { Order } from "../types";
 
 // Instancias de Quasar
 const route = useRoute();
@@ -120,16 +122,12 @@ const { t, locale } = useI18n();
 const { onLogin } = useAuth();
 
 // Variables Reactivas 
-const order = ref<any>(null);
+const order = ref<Order | null>(null);
 const loading = ref(true);
 
 // ---------------- Helpers Internacionalizados ----------------
-function converToCurrency(price: any, currency: string = "MXN") {
-  return new Intl.NumberFormat(currency === "USD" ? "en-US" : "es-MX", {
-    style: "currency",
-    currency: currency || "MXN",
-    currencyDisplay: "symbol",
-  }).format(price || 0);
+function converToCurrency(price: number, currency: 'MXN' | 'USD' = 'MXN') {
+  return formatCurrency(price, currency);
 }
 
 function formatDate(dateStr: string) {

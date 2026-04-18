@@ -93,19 +93,9 @@
       </div>
       <h2 class="product__title">{{ locale === 'en-US' ? (product.name_en || product.name) : product.name }}</h2>
       <p class="product__price">
-        {{
-          locale === 'en-US'
-            ? new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                currencyDisplay: 'code',
-              }).format(product.price_usd ?? product.price)
-            : new Intl.NumberFormat('es-MX', {
-                style: 'currency',
-                currency: 'MXN',
-                currencyDisplay: 'code',
-              }).format(product.price)
-        }}
+        {{ locale === 'en-US'
+          ? formatCurrency(product.price_usd ?? product.price, 'USD')
+          : formatCurrency(product.price, 'MXN') }}
       </p>
 
       <section v-if="product.variants && product.variants.length > 0">
@@ -162,15 +152,17 @@ import CreateAccount from "../components/CreateAccount.vue";
 import { apiAuth } from "../boot/axios";
 import { getBackendError } from "../utils/error";
 import { API_BASE_URL } from "../constants/api";
-import { useAuthStore } from "../stores/auth";
-import { useCartStore } from "../stores/cart";
+import { useAuth } from "../composables/useAuth";
+import { useCart } from "../composables/useCart";
+import { formatCurrency } from "../utils/currency";
+import type { Product } from "../types";
 
 const { t, locale } = useI18n();
 const $q = useQuasar();
 
 const api = apiAuth();
-const authStore = useAuthStore();
-const cartStore = useCartStore();
+const { isLoggedIn } = useAuth();
+const cartStore = useCart();
 
 const route = useRoute();
 const loading = ref(true);
@@ -181,7 +173,7 @@ const openCreateAccount = ref(false);
 const isAddProduct = ref(false);
 const addProductButton = ref(null);
 
-const product = ref<any>({
+const product = ref<Product>({
   collections: [{ description: "Colección de dijes", id: 2, name: "Anillos" }],
   name: "Arracadas Huggies",
   price: "8599",
@@ -256,7 +248,7 @@ useMeta(() => {
 function addProduct() {
   loadingBtn.value = true;
 
-  if (!authStore.isLoggedIn) {
+  if (!isLoggedIn.value) {
     loadingBtn.value = false;
     isAddProduct.value = true;
     openLogin.value = true;

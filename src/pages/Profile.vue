@@ -323,8 +323,7 @@
 
                 <!-- Col 3: Costo (Moneda de Compra Real) -->
                 <div class="col-12 col-md-3 q-mt-sm q-mt-md-none self-center purchases__cost">
-                  {{ converToCurrency(order.payment_currency === 'USD' ? order.totalUsd : order.total, order.payment_currency) }} 
-                  <span style="font-size: 14px; font-weight: 500; color: #707279">{{ order.payment_currency || 'MXN' }}</span>
+                  {{ converToCurrency(order.payment_currency === 'USD' ? order.totalUsd : order.total, order.payment_currency) }}
                 </div>
 
                 <!-- Col 4: Action -->
@@ -374,6 +373,8 @@ import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from "vue-router";
 import { useAuth } from "../composables/useAuth";
 import { useCart } from "../composables/useCart";
+import { formatCurrency } from "../utils/currency";
+import type { Order, UserProfile } from "../types";
 
 const { t, locale } = useI18n();
 const rules = validationRules(t);
@@ -385,8 +386,8 @@ const { logout: authLogout, onLogin } = useAuth();
 const { reset: cartReset } = useCart();
 const tab = ref("account");
 const splitterModel = ref("30");
-const userProfile = ref<any>({});
-const userOrders = ref<any[]>([]);
+const userProfile = ref<UserProfile>({} as UserProfile);
+const userOrders = ref<Order[]>([]);
 const userAddress = ref(null);
 const loadingProfile = ref(true);
 const loadingOrders = ref(false);
@@ -470,12 +471,8 @@ async function getProfile() {
   }
 }
 
-function converToCurrency(price: any, currency: string = "MXN") {
-  return new Intl.NumberFormat(currency === "USD" ? "en-US" : "es-MX", {
-    style: "currency",
-    currency: currency || "MXN",
-    currencyDisplay: "symbol",
-  }).format(price || 0);
+function converToCurrency(price: number, currency: 'MXN' | 'USD' = 'MXN') {
+  return formatCurrency(price, currency);
 }
 
 function formatDate(dateStr: string) {

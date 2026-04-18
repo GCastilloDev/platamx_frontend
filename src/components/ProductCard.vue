@@ -39,6 +39,7 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from "vue-router";
 import { useI18n } from 'vue-i18n';
+import { formatCurrency } from "../utils/currency";
 
 const router = useRouter();
 const route = useRoute();
@@ -63,12 +64,7 @@ const props = defineProps<{
 }>();
 
 function converToCurrency(price: string | number, currency: 'MXN' | 'USD' = 'MXN') {
-  const numericPrice = typeof price === 'string' ? parseFloat(price) : price;
-  return new Intl.NumberFormat(currency === 'USD' ? 'en-US' : 'es-MX', {
-    style: "currency",
-    currency,
-    currencyDisplay: "code",
-  }).format(numericPrice || 0);
+  return formatCurrency(price, currency);
 }
 
 function stripHTML(html?: string) {

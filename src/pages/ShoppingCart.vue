@@ -102,6 +102,8 @@ import { useI18n } from 'vue-i18n';
 import { apiAuth } from "../boot/axios";
 import { useCart } from "../composables/useCart";
 import { useAuth } from "../composables/useAuth";
+import { formatBilingual } from "../utils/currency";
+import type { CartItem } from "../types";
 
 const route = useRoute();
 const router = useRouter();
@@ -109,7 +111,7 @@ const { t, locale } = useI18n();
 const api = apiAuth();
 const cartStore = useCart();
 const { onLogin } = useAuth();
-const products = ref<any[]>([]);
+const products = ref<CartItem[]>([]);
 const subtotal = ref<any>(0);
 const shipping = ref<any>(0);
 const total = ref<any>(0);
@@ -120,19 +122,8 @@ const loadingCart = ref(true);
 
 const $q = useQuasar();
 
-function formatPrice(priceMxn: any, priceUsd: any) {
-  const isEn = locale.value === 'en-US';
-  const currency = isEn ? 'USD' : 'MXN';
-  const price = isEn ? (priceUsd ?? priceMxn) : priceMxn;
-  const numericPrice = typeof price === 'string' ? parseFloat(price) : price;
-  
-  const formatted = new Intl.NumberFormat(isEn ? 'en-US' : 'es-MX', {
-    style: "currency",
-    currency: currency,
-    currencyDisplay: "symbol",
-  }).format(numericPrice || 0);
-  
-  return `${formatted} ${currency}`;
+function formatPrice(priceMxn: number, priceUsd: number) {
+  return formatBilingual(priceMxn, priceUsd, locale.value === 'en-US');
 }
 
 async function getShoppingCart() {
