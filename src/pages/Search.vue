@@ -46,6 +46,7 @@ import axios from "axios";
 import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
 import { useI18n } from 'vue-i18n';
+import { API_BASE_URL } from "../constants/api";
 
 const { t } = useI18n();
 
@@ -71,7 +72,7 @@ function init() {
 
 async function getProductsBySearch(search) {
   try {
-    const url = `https://platamx-backend-1cvg.onrender.com/products?page=${page.value}&items=8&find=${search}`;
+    const url = `${API_BASE_URL}/products?page=${page.value}&items=8&find=${search}`;
     const { data: response } = await axios.get(url);
     total.value = response.pagination.total;
     products.value = response.data;
@@ -87,7 +88,7 @@ async function chargeMoreProducts() {
     search.value = route.query.q;
     loadingBtn.value = true;
     page.value += 1;
-    const url = `https://platamx-backend-1cvg.onrender.com/products?page=${page.value}&items=8&find=${search.value}`;
+    const url = `${API_BASE_URL}/products?page=${page.value}&items=8&find=${search.value}`;
     const { data: response } = await axios.get(url);
 
     response.data.forEach((e) => {

@@ -161,6 +161,7 @@ import Login from "../components/Login.vue";
 import CreateAccount from "../components/CreateAccount.vue";
 import { apiAuth } from "../boot/axios";
 import { getBackendError } from "../utils/error";
+import { API_BASE_URL } from "../constants/api";
 
 const { t, locale } = useI18n();
 const $q = useQuasar();
@@ -204,7 +205,7 @@ async function getProduct() {
   try {
     loading.value = true;
     const idProduct = route.params.id;
-    const url = `https://platamx-backend-1cvg.onrender.com/products/${idProduct}`;
+    const url = `${API_BASE_URL}/products/${idProduct}`;
 
     const { data: response } = await axios.get(url);
     if (response.data.images.length === 0) {

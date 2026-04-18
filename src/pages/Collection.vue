@@ -37,6 +37,7 @@ import ProductCard from "../components/ProductCard.vue";
 import { useRoute } from "vue-router";
 import { ref, watch } from "vue";
 import { useI18n } from 'vue-i18n';
+import { API_BASE_URL } from "../constants/api";
 
 const { t } = useI18n();
 
@@ -63,7 +64,7 @@ async function chargeMoreProducts() {
     const idCollection = route.params.id;
     loadingBtn.value = true;
     page.value += 1;
-    const url = `https://platamx-backend-1cvg.onrender.com/products?page=${page.value}&items=8&collestionsIds=${idCollection}`;
+    const url = `${API_BASE_URL}/products?page=${page.value}&items=8&collestionsIds=${idCollection}`;
     const { data: response } = await axios.get(url);
 
     response.data.forEach((e) => {
@@ -79,7 +80,7 @@ async function chargeMoreProducts() {
 
 async function getProductsByCollection(idCollection) {
   try {
-    const url = `https://platamx-backend-1cvg.onrender.com/products?page=${page.value}&items=8&collestionsIds=${idCollection}`;
+    const url = `${API_BASE_URL}/products?page=${page.value}&items=8&collestionsIds=${idCollection}`;
     const { data: response } = await axios.get(url);
     products.value = response.data;
     loading.value = false;
