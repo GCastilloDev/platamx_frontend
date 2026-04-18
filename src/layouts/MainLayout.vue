@@ -41,7 +41,7 @@
         <language-selector />
         <div class="cursor-pointer relative-position" style="display: inline-flex;" @click="goToShoppingCart">
           <shop-bag class="icon__pointer" />
-          <q-badge v-if="cartStore.totalItems > 0" color="red" rounded floating>{{ cartStore.totalItems }}</q-badge>
+          <q-badge v-if="totalItems > 0" color="red" rounded floating>{{ totalItems }}</q-badge>
         </div>
         <account class="icon__pointer" @click="openDialogLogin" />
       </div>
@@ -119,17 +119,14 @@
 </template>
 
 <script lang="ts" setup>
-import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from "vue-router";
 import { useQuasar, useMeta } from "quasar";
 
-import validationRules from "../rules";
 import { apiAuth } from "../boot/axios";
-import { API_BASE_URL } from "../constants/api";
-import { useAuthStore } from "../stores/auth";
-import { useCartStore } from "../stores/cart";
+import { useAuth } from "../composables/useAuth";
+import { useCart } from "../composables/useCart";
 
 import ShopBag from "../components/icons/ShopBag.vue";
 import Account from "../components/icons/Account.vue";
@@ -146,8 +143,8 @@ import { globalCollections } from "../stores/globalCollections";
 
 const { t, locale } = useI18n();
 const $q = useQuasar();
-const authStore = useAuthStore();
-const cartStore = useCartStore();
+const { isLoggedIn, init: initAuth, logout } = useAuth();
+const { totalItems, setTotal, reset: resetCart } = useCart();
 
 useMeta(() => {
   return {
@@ -159,52 +156,57 @@ useMeta(() => {
   };
 });
 
-const isMenuOpen = ref(false);
-const loginButton = ref(null);
-const createAccountButton = ref(null);
-const loginForm = ref(null);
-const accountCreateForm = ref(null);
-
 const route = useRoute();
-
-const rules = validationRules(t);
+const router = useRouter();
+const isMenuOpen = ref(false);
 const searchQ = ref("");
-const email = ref("");
-const password = ref("");
 const prueba = ref({});
 const dialogLogin = ref(false);
 const dialogCreateAccount = ref(false);
 const dialogForgotPassword = ref(false);
-const backdropFilter = ref("blur(5px) saturate(150%)");
+
+const menu = ref([
+  { id: -1, title: 'Inicio', title_en: 'Home', expand: false },
+]);
+
+function getCollections() {
+  try {
+    menu.value = menu.value.filter(m => m.id === -1);
+    globalCollections.value.forEach((e: any) => {
+      menu.value.push({ id: e.id, title: e.title, title_en: e.title_en, expand: false });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+getCollections();
 
 async function fetchCartItems() {
   if (typeof window === "undefined") return;
-  if (!authStore.isLoggedIn) {
-    cartStore.setTotal(0);
+  if (!isLoggedIn.value) {
+    setTotal(0);
     return;
   }
   try {
     const { data } = await apiAuth().get("shopping-cart/user");
     const items = data.data?.items ?? [];
-    const total = items.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0);
-    cartStore.setTotal(total);
+    const count = items.reduce((sum: number, item: any) => sum + (item.quantity || 0), 0);
+    setTotal(count);
   } catch (error) {
     console.log("Error trayendo carrito:", error);
-    cartStore.setTotal(0);
+    setTotal(0);
   }
 }
 
-// Solo ejecutar en el cliente, NUNCA en Node SSR
 onMounted(() => {
-  authStore.init();
+  initAuth();
   fetchCartItems();
 });
 
-// Sesión expirada: el interceptor de axios emite este evento ante un 401
 if (typeof window !== "undefined") {
   window.addEventListener("auth-expired", () => {
-    authStore.logout();
-    cartStore.reset();
+    logout();
+    resetCart();
     dialogLogin.value = true;
   });
 }
@@ -213,27 +215,6 @@ function onLoginClose() {
   dialogLogin.value = false;
   fetchCartItems();
 }
-const iconPassword = ref("visibility");
-const iconPasswordConfirm = ref("visibility");
-const typeInputPassword = ref("password");
-const typeInputPasswordConfirm = ref("password");
-const loading = ref(false);
-const user = ref({
-  name: "",
-  email: "",
-  password: "",
-  password_comfirm: "",
-});
-
-const router = useRouter();
-const menu = ref([
-  {
-    id: -1,
-    title: 'Inicio',
-    title_en: 'Home',
-    expand: false,
-  },
-]);
 
 function openLogin() {
   dialogCreateAccount.value = false;
@@ -251,208 +232,35 @@ function openForgotPassword() {
 }
 
 function openDialogLogin() {
-  if (!authStore.isLoggedIn) {
+  if (!isLoggedIn.value) {
     dialogLogin.value = true;
     return;
   }
-
-  router.push({
-    name: "profile",
-    params: { lang: route.params.lang || 'es' },
-  });
+  router.push({ name: "profile", params: { lang: route.params.lang || 'es' } });
 }
 
 function goToShoppingCart() {
-  router.push({
-    name: "shopping-cart",
-    params: { lang: route.params.lang || 'es' },
-  });
+  router.push({ name: "shopping-cart", params: { lang: route.params.lang || 'es' } });
 }
 
 function goToSection(index: number) {
   isMenuOpen.value = false;
-  const idSection = menu.value[index].id;
   const item = menu.value[index];
-  const nameSection = locale.value === 'en-US'
-    ? (item.title_en || item.title)
-    : item.title;
   const lang = route.params.lang || 'es';
+  const nameSection = locale.value === 'en-US' ? (item.title_en || item.title) : item.title;
 
-  if (idSection != -1) {
-    router.push({
-      name: "collection",
-      params: {
-        id: idSection,
-        name: nameSection,
-        lang,
-      },
-    });
+  if (item.id !== -1) {
+    router.push({ name: "collection", params: { id: item.id, name: nameSection, lang } });
     return;
   }
-
-  router.push({
-    name: "home",
-    params: { lang },
-  });
+  router.push({ name: "home", params: { lang } });
 }
-
-function getCollections() {
-  try {
-    // Vaciar todo excepto el item inicial ("Inicio") si es que Vue vuelve a montar
-    menu.value = menu.value.filter(m => m.id === -1);
-    
-    globalCollections.value.forEach((e: any) => {
-      const item = {
-        id: e.id,
-        title: e.title,
-        title_en: e.title_en,
-        expand: false,
-      };
-
-      menu.value.push(item);
-    });
-  } catch (error) {
-    console.log(error);
-  }
-}
-getCollections();
 
 function search() {
-  router.push({
-    name: "search",
-    query: {
-      q: searchQ.value,
-    },
-  });
-
+  router.push({ name: "search", query: { q: searchQ.value } });
   searchQ.value = "";
   prueba.value.prueba.blur();
 }
-
-async function login() {
-  try {
-    loginButton.value?.setAttribute("disabled", "");
-    loading.value = true;
-    const url = `${API_BASE_URL}/auth/login`;
-
-    const data = {
-      email: email.value,
-      password: password.value,
-    };
-    const { data: response } = await axios.post(url, data);
-    const token = response.data.access_token;
-    saveToken(token);
-    dialogLogin.value = false;
-    $q.notify("Sesión iniciada correctamente");
-  } catch (error) {
-    $q.notify({
-      message: "Usuario y/o contraseña incorrectos",
-      color: "red",
-    });
-    console.log(error);
-  } finally {
-    email.value = "";
-    password.value = "";
-    loginButton.value?.removeAttribute("disabled");
-    loading.value = false;
-  }
-}
-
-function saveToken(token: string) {
-  const data = {
-    token,
-  };
-  localStorage.setItem("plataMX", JSON.stringify(data));
-}
-
-function closeCreateAccount() {
-  for (const property in user.value) {
-    user.value[property] = "";
-  }
-
-  iconPassword.value = "visibility";
-  iconPasswordConfirm.value = "visibility";
-  typeInputPassword.value = "password";
-  typeInputPasswordConfirm.value = "password";
-  dialogCreateAccount.value = false;
-}
-
-function changeIcon() {
-  if (iconPassword.value === "visibility") {
-    iconPassword.value = "visibility_off";
-    typeInputPassword.value = "text";
-    return;
-  }
-  if (iconPassword.value === "visibility_off") {
-    iconPassword.value = "visibility";
-    typeInputPassword.value = "password";
-    return;
-  }
-}
-
-function changeIconConfirm() {
-  if (iconPasswordConfirm.value === "visibility") {
-    iconPasswordConfirm.value = "visibility_off";
-    typeInputPasswordConfirm.value = "text";
-    return;
-  }
-  if (iconPasswordConfirm.value === "visibility_off") {
-    iconPasswordConfirm.value = "visibility";
-    typeInputPasswordConfirm.value = "password";
-    return;
-  }
-}
-
-function closeLogin() {
-  password.value = "";
-  email.value = "";
-  iconPassword.value = "visibility";
-  typeInputPassword.value = "password";
-  dialogLogin.value = false;
-}
-
-function loginValidate() {
-  loginForm.value.validate().then((success) => {
-    if (success) {
-      login();
-    }
-  });
-}
-
-function createAccountValidate() {
-  accountCreateForm.value.validate().then((success) => {
-    if (success) {
-      createAccount();
-    }
-  });
-}
-
-async function createAccount() {
-  try {
-    createAccountButton.value?.setAttribute("disabled", "");
-    loading.value = true;
-    const url = `${API_BASE_URL}/users`;
-
-    await axios.post(url, user.value);
-    dialogCreateAccount.value = false;
-    $q.notify("Cuenta creada correctamente");
-    dialogLogin.value = true;
-  } catch (error) {
-    console.log(error);
-    $q.notify({
-      message: "Error al crear la cuenta",
-      color: "red",
-    });
-  } finally {
-    for (const property in user.value) {
-      user.value[property] = "";
-    }
-    createAccountButton.value?.removeAttribute("disabled");
-    loading.value = false;
-  }
-}
-
-getCollections();
 </script>
 
 <style>
