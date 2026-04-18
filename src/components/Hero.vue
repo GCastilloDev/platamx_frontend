@@ -14,7 +14,8 @@
     </div>
   </section>
 
-  <section class="hero__images">
+  <!-- Desktop Grid -->
+  <section class="hero__images desktop-only">
     <q-img
       class="hero__image"
       :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg', 'f_auto,q_auto')"
@@ -34,12 +35,54 @@
       spinner-color="grey"
     />
   </section>
+
+  <!-- Mobile Carousel -->
+  <section class="mobile-only q-mt-lg">
+    <q-carousel
+      v-model="slide"
+      swipeable
+      animated
+      infinite
+      autoplay
+      navigation
+      height="500px"
+      class="bg-transparent"
+    >
+      <q-carousel-slide :name="1" class="q-pa-none">
+        <q-img
+          class="hero__image"
+          :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg', 'f_auto,q_auto')"
+          :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_gkatue.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
+          spinner-color="grey"
+        />
+      </q-carousel-slide>
+      <q-carousel-slide :name="2" class="q-pa-none">
+        <q-img
+          class="hero__image"
+          :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg', 'f_auto,q_auto')"
+          :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_ru0lwt.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
+          spinner-color="grey"
+        />
+      </q-carousel-slide>
+      <q-carousel-slide :name="3" class="q-pa-none">
+        <q-img
+          class="hero__image"
+          :src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg', 'f_auto,q_auto')"
+          :placeholder-src="getCloudinaryUrl('https://res.cloudinary.com/dhils8jyq/image/upload/v1726039551/Copia_de_CATALOGO_ENERO_2024_Tama%C3%B1o_original_sgxyts.jpg', 'w_50,e_blur:1000,f_auto,q_auto')"
+          spinner-color="grey"
+        />
+      </q-carousel-slide>
+    </q-carousel>
+  </section>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getCloudinaryUrl } from '../utils/cloudinary';
+
 const { t } = useI18n();
+const slide = ref(1);
 </script>
 
 <style lang="scss" scoped>
@@ -47,14 +90,19 @@ const { t } = useI18n();
   padding: 80px 60px 0px 60px;
 }
 
-.hero__images {
+.desktop-only {
   display: grid;
+}
+.mobile-only {
+  display: none;
+}
+
+.hero__images {
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 512px;
   grid-gap: 15px;
   position: relative;
   margin-top: 35px;
-  // clip-path: circle(50% at 0 0px);
 }
 
 .hero__image {
@@ -122,6 +170,12 @@ const { t } = useI18n();
     line-height: 1.2;
     padding-left: 10px;
     padding-right: 10px;
+  }
+  .desktop-only {
+    display: none;
+  }
+  .mobile-only {
+    display: block;
   }
   .hero__images {
     grid-template-columns: 1fr;
