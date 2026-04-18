@@ -1,9 +1,9 @@
 {
   "name": "plata-mx",
   "version": "0.0.1",
-  "description": "Silver jewelry online store",
+  "description": "Tienda en línea de joyería de plata",
   "productName": "Plata MX",
-  "productDescription": "Página de venta Plata MX",
+  "productDescription": "Tienda en línea de joyería de plata fina 925",
   "author": "GCN",
   "private": true,
   "scripts": {

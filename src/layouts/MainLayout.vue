@@ -120,7 +120,7 @@ import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from "vue-router";
-import { useQuasar } from "quasar";
+import { useQuasar, useMeta } from "quasar";
 
 import validationRules from "../rules";
 import { apiAuth } from "../boot/axios";
@@ -140,6 +140,17 @@ import { globalCollections } from "../stores/globalCollections";
 
 const { t, locale } = useI18n();
 const $q = useQuasar();
+
+useMeta(() => {
+  return {
+    title: 'Plata MX',
+    titleTemplate: (title) => title === 'Plata MX' ? title : `${title} | Plata MX`,
+    meta: {
+      ogTitle: { property: 'og:title', content: 'Plata MX' }
+    }
+  };
+});
+
 const loginButton = ref(null);
 const createAccountButton = ref(null);
 const loginForm = ref(null);

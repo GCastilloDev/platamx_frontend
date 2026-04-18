@@ -153,7 +153,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import axios from "axios";
-import { useQuasar } from "quasar";
+import { useQuasar, useMeta } from "quasar";
 import { useRoute } from "vue-router";
 import { useI18n } from 'vue-i18n';
 
@@ -227,6 +227,26 @@ async function getProduct() {
     console.log(error);
   }
 }
+
+useMeta(() => {
+  const productName = locale.value === 'en-US' ? (product.value.name_en || product.value.name) : product.value.name;
+  const productDesc = locale.value === 'en-US' ? (product.value.description_en || product.value.description) : product.value.description;
+  const cleanDesc = productDesc ? productDesc.replace(/<[^>]*>?/gm, '').substring(0, 160) : '';
+  const firstImage = product.value.images && product.value.images.length > 0 ? product.value.images[0].url : 'icons/favicon-128x128.png';
+
+  return {
+    title: productName ? `${productName} | Plata MX` : 'Plata MX',
+    meta: {
+      description: { name: 'description', content: cleanDesc },
+      ogTitle:     { property: 'og:title', content: productName },
+      ogDesc:      { property: 'og:description', content: cleanDesc },
+      ogImage:     { property: 'og:image', content: firstImage },
+      twTitle:     { name: 'twitter:title', content: productName },
+      twDesc:      { name: 'twitter:description', content: cleanDesc },
+      twImage:     { name: 'twitter:image', content: firstImage }
+    }
+  };
+});
 
 function addProduct() {
   loadingBtn.value = true;
