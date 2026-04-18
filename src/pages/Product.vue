@@ -141,7 +141,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { ref, watchEffect } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useQuasar, useMeta } from "quasar";
 import { useRoute } from "vue-router";
@@ -177,17 +177,24 @@ const addProductButton = ref<any>(null);
 const slide = ref(product.value?.images?.[0]?.file_name || "default");
 const selectedVariant = ref<any>(product.value?.variants?.[0]?.id || null);
 
-// If the product changes (e.g. CSR navigation), update defaults
-watchEffect(() => {
-  if (product.value) {
-    if (!slide.value || slide.value === 'default') {
-       slide.value = product.value.images?.[0]?.file_name || "default";
-    }
-    if (!selectedVariant.value && product.value.variants && product.value.variants.length > 0) {
-       selectedVariant.value = product.value.variants[0].id;
-    }
+// Red de seguridad: si por alguna razón el SSR no hidrató el producto, lo pedimos en el cliente.
+onMounted(() => {
+  if (!product.value) {
+    productStore.fetchProduct(route.params.id as string);
   }
 });
+
+// Mantener v-models sincronizados si el producto cambia (navegación CSR)
+watch(product, (newProduct) => {
+  if (newProduct) {
+    if (!slide.value || slide.value === "default") {
+      slide.value = newProduct.images?.[0]?.file_name || "default";
+    }
+    if (!selectedVariant.value && newProduct.variants?.length > 0) {
+      selectedVariant.value = newProduct.variants[0].id;
+    }
+  }
+}, { immediate: true });
 
 useMeta(() => {
   if (!product.value) return { title: 'Plata MX' };
